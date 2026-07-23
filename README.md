@@ -22,9 +22,6 @@ opposites, a fragile fast assassin versus a tanky dreadful bruiser:
   `rappel` power directly rather than reimplementing it.
 - **Scuttle** (secondary key, unbound by default): a burst of Speed IV for 4 seconds, at the cost
   of burning through food much faster while it's active. 15 second cooldown.
-- **Latch On**: sneak + left-click a nearby player (or an armor stand) to climb onto them like
-  prey. A perch (you ride them), not free movement — sneak again to let go. Left-click is also
-  attack, so this lands a hit on whatever you're aiming at too.
 - Can't use a shield.
 - Weakened while touching water — a spider out of its element.
 - Produces 6 string in your inventory every 20 minutes.

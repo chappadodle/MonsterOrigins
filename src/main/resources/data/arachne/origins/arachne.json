@@ -13,10 +13,8 @@
 		"origins_minus:rappel",
 		"arachne:arachne/poison_immunity",
 		"arachne:arachne/scuttle",
-		"arachne:arachne/latch_on",
 		"arachne:arachne/water_weakness",
-		"arachne:arachne/silk_glands",
-		"arachne:arachne/let_go"
+		"arachne:arachne/silk_glands"
 	],
 	"icon": {
 		"item": "arachne:arachne_eye"

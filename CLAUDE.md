@@ -54,17 +54,19 @@ just two reskins of the same kit.
   world join/leave, not on choosing the origin — `entity_action_gained`/`entity_action_lost` are
   needed too so the effect applies immediately on selection, not just after a relog.
 - **A power that silently does nothing might not be loading at all — check `logs/latest.log`
-  before touching the JSON further.** `latch_on.json` (the "climb onto another player" power)
-  went through several plausible-looking fix attempts (wrong key, wrong `block` flag, a condition
-  that seemed reasonable) that each changed real behavior but produced *zero* observable
-  difference in-game. The actual cause was `origins:raycast`'s `distance` field: origins-docs
-  states it's optional, but this project's pinned Origins/Apoli version requires it. Without it,
-  the whole power failed a schema check and got skipped at data-load time — logged as `ERROR:
-  There was a problem reading power file ... (skipping)` in the client log, not shown to the
-  player anywhere in-game. No amount of reasoning about key bindings or raycast mechanics would
-  have found this; the log line named the exact field immediately. When a power "does nothing" and
-  a plausible fix doesn't change that at all, check the load-time log before iterating further —
-  it's a much faster path than re-deriving Apoli's internals from source.
+  before touching the JSON further.** (Historical lesson from a "Latch On" climb-onto-another-
+  player power, since removed at the user's request — kept here because the debugging lesson
+  still applies to any future power.) It went through several plausible-looking fix attempts
+  (wrong key, wrong `block` flag, a condition that seemed reasonable) that each changed real
+  behavior but produced *zero* observable difference in-game. The actual cause was
+  `origins:raycast`'s `distance` field: origins-docs states it's optional, but this project's
+  pinned Origins/Apoli version requires it. Without it, the whole power failed a schema check and
+  got skipped at data-load time — logged as `ERROR: There was a problem reading power file ...
+  (skipping)` in the client log, not shown to the player anywhere in-game. No amount of reasoning
+  about key bindings or raycast mechanics would have found this; the log line named the exact
+  field immediately. When a power "does nothing" and a plausible fix doesn't change that at all,
+  check the load-time log before iterating further — it's a much faster path than re-deriving
+  Apoli's internals from source.
 - **Dependency versions are pinned to what's actually installed** in this machine's PrismLauncher
   test instances ("SOLO origin" and "1.20.1"), not just "whatever's newest" — see
   `gradle.properties` for the full list and reasoning.
@@ -73,7 +75,8 @@ just two reskins of the same kit.
   `TargetGoal#canAttack` gives "friendly until this specific mob is hit by this specific player,
   then hostile toward them" for free, without inventing any new NBT/Cardinal Components data.
 - **A mixin targeting the wrong class is a hard crash, not a graceful skip — unlike a missing
-  JSON field.** An early version of `RidingOffsetMixin` targeted `Player.class` for
+  JSON field.** (Also from the since-removed "Latch On" feature — `RidingOffsetMixin` no longer
+  exists in this repo, but the lesson applies to any future mixin.) It targeted `Player.class` for
   `getPassengersRidingOffset()`, a method actually declared on `Entity` and never overridden by
   `Player`. Missing JSON fields get logged and skipped; a mixin injector that can't find its
   target method in the specified class fails the whole mixin apply pass, which crashes Minecraft

@@ -4,8 +4,7 @@
 	"package": "com.example.originmodstudy.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ArthropodPassiveTargetMixin",
-		"RidingOffsetMixin"
+		"ArthropodPassiveTargetMixin"
 	],
 	"client": [],
 	"injectors": {
