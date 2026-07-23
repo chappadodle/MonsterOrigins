@@ -17,6 +17,13 @@ public class ModEffects {
 	public static final MobEffect BLEED = register("bleed",
 			new BleedMobEffect(MobEffectCategory.HARMFUL, 0x8B1A1A));
 
+	// Siren's Call (see data/arachne/powers/siren/sirens_call.json) applies this to hostiles
+	// caught in the song. A pure marker — no tick behavior of its own, CharmedPassiveTargetMixin
+	// only ever checks for its presence. MobEffect's constructor is protected, so an anonymous
+	// subclass (rather than a whole new file, unlike BleedMobEffect) is enough for a no-op marker.
+	public static final MobEffect CHARMED = register("charmed",
+			new MobEffect(MobEffectCategory.NEUTRAL, 0x8ED1E0) {});
+
 	private static MobEffect register(String name, MobEffect effect) {
 		return Registry.register(BuiltInRegistries.MOB_EFFECT, OriginModStudy.id(name), effect);
 	}

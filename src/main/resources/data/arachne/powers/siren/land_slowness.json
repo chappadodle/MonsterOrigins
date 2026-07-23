@@ -1,0 +1,11 @@
+{
+	"type": "origins:attribute",
+	"modifier": {
+		"name": "Siren land slowness",
+		"attribute": "minecraft:generic.movement_speed",
+		"value": -0.2,
+		"operation": "multiply_base"
+	},
+	"name": "Landlegs",
+	"description": "0.8x normal walking speed — she belongs in the water, not on land."
+}

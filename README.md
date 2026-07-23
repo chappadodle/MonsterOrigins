@@ -5,9 +5,9 @@
 > rough edges.
 
 A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
-three origins — **Arachne** (a humanoid spider), **Medusa** (a gorgon), and **Harpy** (a
-storm-wind bird-woman) — each built around a different playstyle: fragile fast assassin, tanky
-bruiser, and aerial skirmisher.
+four origins — **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a storm-wind
+bird-woman), and **Siren** (a singer of the deep) — each built around a different playstyle:
+fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/crowd-control.
 
 ### Arachne
 
@@ -33,6 +33,8 @@ bruiser, and aerial skirmisher.
   Arachne can't eat — apples aren't meat). Same crafting cost (8 gold ingots around the center
   item) and the same buff (Regeneration II for 5s, Absorption I for 2 minutes), just built around
   a spider eye instead of an apple.
+- **Silk**: a new crafting material (4 string → 1 silk), craftable by anyone but thematically
+  Arachne's own — no use yet, reserved for future recipes.
 
 ### Medusa
 
@@ -66,6 +68,29 @@ bruiser, and aerial skirmisher.
   unaffected. 10 second cooldown. Uses a real barn owl screech recording (CC BY-SA 4.0, credited
   in [`CREDITS.md`](CREDITS.md)).
 - 85% of normal height/width (via Pehkui).
+- **Hardy Stomach**: raw meat and rotten flesh are perfectly safe to eat — no Hunger effect, just
+  a brief 2-second burst of Regeneration.
+
+### Siren
+
+- Carnivore-only diet. 90% of normal height/width (via Pehkui).
+- **Fully at home in the water**: breathes, sees, and swims underwater with no trouble, and mines
+  at full (Aqua Affinity) speed while submerged.
+- **Landbound**: can stay out of water (rain counts as wet too) for 5 minutes at a time before
+  starting to suffocate.
+- **1.5x swim speed, 0.8x walking speed** — she belongs in the water, not on land.
+- **Siren's Call** (primary key, unbound by default): a song that gives everyone nearby, including
+  herself, Saturation and Regeneration — while hostile creatures caught in it are also slowed,
+  blinded, and charmed into leaving everyone alone entirely for the duration. 4 second duration,
+  20 second cooldown.
+- **Every sea creature is friendly** unless attacked first — including Drowned and Guardians, not
+  just the obviously-passive fish.
+- **Siren's Crown**: exclusive armor, crafted from diamonds and a Heart of the Sea. Grants +2
+  hearts and continuous Regeneration while worn.
+- A new global recipe unlocks crafting a vanilla trident (3 prismarine shards + 2 sticks) —
+  craftable by anyone, not exclusive to Siren, same recipe-can't-see-the-player limitation as
+  every other weapon in this mod.
+- No secondary ability yet — still being decided.
 
 ### Weapons
 

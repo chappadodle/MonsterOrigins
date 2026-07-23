@@ -1,0 +1,11 @@
+{
+	"type": "origins:attribute",
+	"modifier": {
+		"name": "Siren swim speed",
+		"attribute": "additionalentityattributes:water_speed",
+		"value": 0.875,
+		"operation": "multiply_base"
+	},
+	"name": "Swift Current",
+	"description": "1.5x normal swimming speed."
+}

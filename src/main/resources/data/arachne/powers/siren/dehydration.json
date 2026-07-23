@@ -1,0 +1,24 @@
+{
+	"type": "origins:damage_over_time",
+	"onset_delay": 6000,
+	"interval": 20,
+	"damage": 2.0,
+	"damage_type": "origins:no_water_for_gills",
+	"condition": {
+		"type": "origins:or",
+		"inverted": true,
+		"conditions": [
+			{
+				"type": "origins:fluid_height",
+				"fluid": "minecraft:water",
+				"comparison": ">",
+				"compare_to": 0.0
+			},
+			{
+				"type": "origins:in_rain"
+			}
+		]
+	},
+	"name": "Landbound",
+	"description": "Can stay out of water for 5 minutes at a time before starting to suffocate — rain counts as wet too."
+}

@@ -5,15 +5,17 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 **Origin Mod Study** — an **experimental** Minecraft **1.20.1 / Fabric** addon for the
-[Origins](https://modrinth.com/mod/origins) mod (a learning/hobby project). Adds three origins,
-**Arachne** (a humanoid spider), **Medusa** (a gorgon), and **Harpy** (a storm-wind bird-woman),
-as worked, documented examples of a data-driven pattern for adding more origins later — see
-**TEMPLATE.md** for that pattern and its decision checklist. Each plays differently on purpose
-(fragile/fast/poison, tanky/slow/petrify, aerial/fragile/knockback) so the pattern gets exercised
-against genuinely different design directions, not reskins of the same kit. Harpy is also the
-first origin needing real custom code *beyond* a single mixin — a new status effect and a custom
-Apoli action type, both because nothing data-driven could express what was asked for; see the
-gotchas below for exactly why, verified rather than assumed in both cases.
+[Origins](https://modrinth.com/mod/origins) mod (a learning/hobby project). Adds four origins,
+**Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a storm-wind bird-woman), and
+**Siren** (a singer of the deep), as worked, documented examples of a data-driven pattern for
+adding more origins later — see **TEMPLATE.md** for that pattern and its decision checklist. Each
+plays differently on purpose (fragile/fast/poison, tanky/slow/petrify, aerial/fragile/knockback,
+aquatic/support/crowd-control) so the pattern gets exercised against genuinely different design
+directions, not reskins of the same kit. Harpy was the first origin needing real custom code
+*beyond* a single mixin — a new status effect and a custom Apoli action type. Siren needed a
+second custom status effect plus two more mixins (a generalized version of the same
+friendly-mob-targeting trick Arachne's arthropods use), but turned out to be *more* data-driven
+than expected once real Origins source was checked — see the gotchas below for both origins.
 
 ## Critical environment facts (read before building)
 
@@ -175,6 +177,75 @@ gotchas below for exactly why, verified rather than assumed in both cases.
   repository at a time, and the compile still succeeds because `ActionFactory`/`ApoliRegistries`
   don't actually reference those excluded modules' types in their own public signatures.
 
+- **`multiply_base` attribute modifier values are the *added* fraction, not the final
+  multiplier — easy to get backwards, and I did, once, in this project's own planning doc.**
+  Vanilla's `AttributeModifier.Operation.MULTIPLY_BASE` computes `final = base * (1 + value)`, so
+  a value of `0.2` means +20% (matches Avian's real `tailwind` power, verified via `gh api`
+  against `apace100/origins-fabric`). While planning Siren's swim speed, I initially read
+  Merling's own `swim_speed` power (`value: 1.5`) as "exactly the 1.5x the user asked for" —
+  wrong: a `multiply_base` value of `1.5` actually gives `base * 2.5`, not `base * 1.5`. Caught
+  and corrected during implementation (not left in the shipped power) by re-deriving the formula
+  directly rather than trusting the earlier plan-time claim. The lesson: when a requested multiplier
+  is "N times normal," the JSON value for `multiply_base` is `N - 1`, not `N` — worth
+  double-checking every time, since the mistake is easy to make and easy to miss in review.
+- **Origins' own `swim_speed` power depends on a third `additionalentityattributes:water_speed`
+  attribute (from the separate "Additional Entity Attributes" mod, already present at runtime via
+  Origins' own jar-in-jar) — and it's computed *from* the current `generic.movement_speed` value
+  every tick, not independently.** Decompiled `AdditionalEntityAttributes`' own
+  `LivingEntityMixin` directly: its `@ModifyArg` on `LivingEntity.travel()` takes the
+  already-computed land-speed float (`original`, which already reflects any `generic
+  .movement_speed` modifiers), sets that as `water_speed`'s *base* value, then applies
+  `water_speed`'s own modifiers on top. Consequence: a flat land-speed penalty and a flat
+  swim-speed bonus **multiply together** rather than acting as two independent numbers — Siren's
+  `land_slowness.json` (0.8x land) and `swim_speed.json` had to have the water value corrected
+  to `0.875` (not the naively-expected `0.5` for "1.5x") specifically to cancel out the land
+  penalty's bleed-through and land on the literal "1.5x swim / 0.8x walk" the user asked for.
+  Verify this kind of cross-attribute interaction from source before assuming two numbers are
+  independent, especially when a third-party attribute is involved.
+- **Some Origins/Apoli power types support a generic top-level `"condition"` field, but only if
+  their factory explicitly opts in via `.allowCondition()` — it's not universal across every power
+  type the way `"inverted"` is universal across every *condition* type.** Checked
+  `AttributePower.java` (no `.allowCondition()` call) vs. `DamageOverTimePower.java`/
+  `ConditionedAttributePower.java` (both call it) directly rather than assume a plain
+  `origins:attribute` power could be conditionally gated — it can't; a conditional attribute needs
+  the dedicated `origins:conditioned_attribute` power type instead (not used in this project yet,
+  since Siren's land/water speed split was solved by correcting the numbers instead — see above —
+  rather than introducing a power type with no confirmed real-world JSON example to crib from).
+- **A base Origins origin can be the fastest path to verifying a whole cluster of requirements at
+  once.** Before writing any of Siren's aquatic powers, checking `apace100/origins-fabric`'s own
+  `merling.json` (a real, already-shipped aquatic origin) directly answered "does Origins have a
+  data-driven way to do underwater breathing/vision/mining speed" in one search, instead of
+  guessing at power type names one at a time. Worth checking whether a existing base-mod origin
+  already covers a requested theme before designing power-by-power from scratch.
+- **`origins:damage_over_time`'s `onset_delay` is a continuous-condition timer with a small
+  reset-grace window, not a one-shot delay — verified from `DamageOverTimePower.java`'s actual
+  tick logic, not assumed from the field name.** It only starts dealing damage once its
+  `condition` has been true for `onset_delay` ticks *in a row*, and the whole counter resets to
+  zero if the condition goes false for more than 20 ticks straight (a deliberate 1-second grace
+  buffer against flicker, not an accident). This is exactly what Siren's `dehydration.json` needed
+  for "5 minutes out of water" — brief water contact doesn't fully interrupt an already-dry spell
+  within that grace window, but stepping back into water for real does reset the clock. Confirmed
+  reusable "no water for gills" damage type/death message already exists in base Origins
+  (`origins:no_water_for_gills`), used as-is rather than defining a new one.
+- **Guardian's laser attack still goes through the same `TargetGoal#canAttack` choke point every
+  other hostile mob's targeting does — verified by decompiling `Guardian.registerGoals()`
+  directly, not assumed from its unusual attack animation.** It adds a real
+  `NearestAttackableTargetGoal` (a `TargetGoal` subclass) at `targetSelector` priority 1 for
+  target *acquisition*; the laser beam itself (`GuardianAttackGoal`) only ever fires against a
+  target already acquired that way. This meant generalizing `ArthropodPassiveTargetMixin`'s
+  technique to Siren's friendly-sea-creatures requirement (which explicitly includes Guardians)
+  needed no special-casing at all — the existing injection point already covers it.
+- **A vanilla `ArmorItem` subclass's own item model has no effect on how it looks *worn on the
+  body*.** Confirmed via `javap`/decompilation the same way as every other custom-code piece in
+  this project: the in-hand/inventory appearance comes from the item's own model+texture (fully
+  custom, same technique as every other item here), but the actual 3D-worn appearance is
+  determined by the `ArmorMaterial` passed to the constructor (`SirenCrownItem` reuses
+  `ArmorMaterials.DIAMOND`) via vanilla's own per-material armor layer texture system — a
+  genuinely different, separate texture pipeline this project hasn't touched. `SirenCrownItem`
+  deliberately doesn't attempt to override this (same proportionate-scope reasoning as the Harpy
+  Javelin's mid-flight-visual decision) — the crown has its own custom icon, but renders as a
+  generic diamond helmet when actually worn.
+
 ## Build / verify
 
 ```bash
@@ -212,15 +283,21 @@ also not a regression.
     `ModSounds`, `ScreamConeAction`); the mixin needs no Java-side registration (declared in
     `arachne.mixins.json` instead).
   - `item/ModItems.java` — the real items this mod adds: `GOLDEN_SPIDER_EYE` (a craftable, edible
-    carnivore-diet food), `ARACHNE_EYE`/`MEDUSA_EYE`/`HARPY_EYE` (icon-only, no recipe, not in any
-    creative tab — exist purely to give each origin a real picker icon instead of a borrowed
-    vanilla item), and `FANG`/`PETRIFYING_TRIDENT`/`HARPY_JAVELIN` (craftable weapons — anyone can
-    craft/swing either, but the poison/petrify/bleed on-hit effect only triggers if the wielder has
-    the matching origin, checked via `OriginUtil` in `hurtEnemy`; see `util/OriginUtil.java` below
-    for why that's a hit-time check, not a recipe restriction). `HARPY_JAVELIN` is also this
-    project's first item with a real custom 3D model (Blockbench-authored by the user, not a
-    recolored flat icon like every other item here) — see `assets/arachne/models/item/
-    harpy_javelin.json`.
+    carnivore-diet food), `ARACHNE_EYE`/`MEDUSA_EYE`/`HARPY_EYE`/`SIREN_EYE` (icon-only, no recipe,
+    not in any creative tab — exist purely to give each origin a real picker icon instead of a
+    borrowed vanilla item), `SILK` (a plain crafting material, no functionality yet), and
+    `FANG`/`PETRIFYING_TRIDENT`/`HARPY_JAVELIN` (craftable weapons — anyone can craft/swing either,
+    but the poison/petrify/bleed on-hit effect only triggers if the wielder has the matching
+    origin, checked via `OriginUtil` in `hurtEnemy`; see `util/OriginUtil.java` below for why
+    that's a hit-time check, not a recipe restriction). `HARPY_JAVELIN` is also this project's
+    first item with a real custom 3D model (Blockbench-authored by the user, not a recolored flat
+    icon like every other item here) — see `assets/arachne/models/item/harpy_javelin.json`.
+    `SIREN_CROWN` is `SirenCrownItem` (below).
+  - `item/SirenCrownItem.java` — Siren's exclusive armor: `+2` hearts via
+    `getDefaultAttributeModifiers` (`HEAD` slot, same technique `HarpyJavelinItem` uses for
+    `MAINHAND`) plus continuous Regeneration via `inventoryTick`, guarded by an actually-worn
+    check. See the gotcha above for why its worn-on-body appearance is still a generic vanilla
+    Diamond helmet regardless of its own custom icon.
   - `util/OriginUtil.java` — `hasOrigin(LivingEntity, ResourceLocation)`, the same
     `ModComponents.ORIGIN`/`OriginLayers` lookup `ArthropodPassiveTargetMixin` uses, pulled out so
     the two origin-gated weapons don't duplicate it. **Vanilla's `CraftingRecipe#matches` has no
@@ -249,6 +326,13 @@ also not a regression.
   - `mixin/ThrownTridentAccessor.java` — a Mixin `@Accessor` interface exposing `ThrownTrident`'s
     private `tridentItem` field, since `ThrownJavelin` (below) needs to set/read it directly and
     nothing else can reach a private field from outside its own class.
+  - `mixin/SeaCreaturePassiveTargetMixin.java`, `mixin/CharmedPassiveTargetMixin.java` — the same
+    `TargetGoal#canAttack` suppression technique `ArthropodPassiveTargetMixin` uses, generalized
+    for Siren: one keyed off a new entity-type tag (sea creatures, including Drowned/Guardian —
+    see the Guardian AI gotcha above), one keyed off a new passive marker status effect
+    (`ModEffects.CHARMED`, applied by Siren's Call) instead of a static tag. Kept as two separate
+    files rather than one shared abstraction, matching this project's one-mixin-one-purpose
+    convention.
 - `src/main/java/com/example/originmodstudy/entity/`
   - `ThrownJavelin.java`, `ModEntities.java` — the dedicated entity type a thrown Harpy Javelin
     actually spawns as (registered with `EntityType.TRIDENT`'s own real size/tracking-range
@@ -272,34 +356,47 @@ also not a regression.
     permanent elytra-less flight, a flight-speed boost power, bare-fist bonus damage + the custom
     Bleed effect, a directional knockback scream). The one origin in this mod needing real custom
     code beyond a single mixin.
+  - `origins/siren.json` — the fourth origin, aquatic support/crowd-control (breathes/sees/mines
+    underwater with no penalty, a 5-minute out-of-water grace period before suffocating, a
+    speed/land tradeoff, a buff-everyone/pacify-hostiles song, every sea creature friendly). Turned
+    out to be the *most* data-driven origin in this mod, despite looking like the most
+    custom-code-heavy one going in — see the gotchas above for why.
   - `origins/example_stub.json` — TEMPLATE.md's worked-example starting point; deliberately not
     wired into the origin picker.
-  - `powers/arachne/*.json`, `powers/medusa/*.json`, `powers/harpy/*.json` — each addon origin's
-    own custom powers, one subfolder per origin (the convention TEMPLATE.md documents, to keep
-    same-named powers across different origins from colliding). Each power has an inline
-    `name`/`description` — Origins supports these as plain strings directly on the power JSON, so
-    no separate lang file entries were needed for powers (items are different, see below).
+  - `powers/arachne/*.json`, `powers/medusa/*.json`, `powers/harpy/*.json`, `powers/siren/*.json` —
+    each addon origin's own custom powers, one subfolder per origin (the convention TEMPLATE.md
+    documents, to keep same-named powers across different origins from colliding). Each power has
+    an inline `name`/`description` — Origins supports these as plain strings directly on the power
+    JSON, so no separate lang file entries were needed for powers (items are different, see below).
   - `recipes/golden_spider_eye.json` — mirrors vanilla's real `golden_apple` recipe shape exactly
     (8 gold ingots around the center item), just swapping the center for a spider eye.
+  - `recipes/trident.json` — a new global recipe for the vanilla trident (3 prismarine shards + 2
+    sticks), craftable by anyone, not Siren-exclusive — same recipe-can't-see-the-player
+    limitation documented under `util/OriginUtil.java` above.
   - `tags/entity_types/enemies.json` — curated hostile-mob list, originally for Arachne's
-    tracking-glow power, reused as-is by Medusa's Dreadful Presence and Stone Gaze Burst (same
-    mod/namespace, so cross-origin tag reuse is just a normal reference, not a hack).
+    tracking-glow power, reused as-is by Medusa's Dreadful Presence/Stone Gaze Burst and Siren's
+    Call (same mod/namespace, so cross-origin tag reuse is just a normal reference, not a hack).
   - `tags/entity_types/friendly_arthropods.json` — spider/cave_spider/silverfish/endermite (the
     vanilla arthropod grouping; bees deliberately excluded, they aren't in it).
+  - `tags/entity_types/friendly_sea_creatures.json` — the vanilla aquatic mobs plus Drowned and
+    Guardian/Elder Guardian (verified their targeting AI still routes through the same choke point
+    this mixin technique intercepts — see the Guardian gotcha above).
+  - `tags/items/raw_meat.json` — the raw-meat items (plus rotten flesh) Harpy's Hardy Stomach power
+    checks against.
 - `src/main/resources/assets/arachne/`
-  - `lang/en_us.json` — display names for the two real items. Items (unlike powers) always need a
+  - `lang/en_us.json` — display names for every real item. Items (unlike powers) always need a
     translation key; there's no inline-string option for them.
-  - `textures/item/*.png` — every item texture is a *vanilla* texture (`spider_eye.png`,
-    `ender_eye.png`, `feather.png`, `iron_sword.png`, `trident.png` — extracted from Loom's mapped
-    Minecraft jar as needed) run through a Pillow luminance-remap script with a different color
-    gradient per item (gold, violet, stone-green, storm-grey, cave-spider teal/red) — not
+  - `textures/item/*.png` — every item texture except the Harpy Javelin is a *vanilla* texture
+    (`spider_eye.png`, `ender_eye.png`, `feather.png`, `iron_sword.png`, `trident.png`,
+    `string.png`, `diamond_helmet.png` — extracted from Loom's mapped Minecraft jar as needed) run
+    through a Pillow luminance-remap script with a different color gradient per item — not
     hand-drawn art.
   - `sounds/harpy_scream.ogg`, `sounds.json` — Harpy's Scream audio (see CREDITS.md for license);
     the one non-recolored, non-code-generated asset in this project.
 - `src/main/resources/data/origins/` — files here are **overriding/extending Origins' own
   namespace**, not this addon's:
-  - `origin_layers/origin.json` — the merge file that actually adds Arachne, Medusa, and Harpy to
-    the standard origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
+  - `origin_layers/origin.json` — the merge file that actually adds Arachne, Medusa, Harpy, and
+    Siren to the standard origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
   - `powers/master_of_webs.json` — a full-content override (via `loading_priority`) of Origins'
     own `master_of_webs` power, changing only the on-hit cobweb cooldown (120 → 40 ticks). If
     Origins ever changes that power's structure upstream, this override goes stale silently — no

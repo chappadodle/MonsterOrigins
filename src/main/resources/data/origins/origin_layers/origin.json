@@ -3,6 +3,7 @@
 	"origins": [
 		"arachne:arachne",
 		"arachne:medusa",
-		"arachne:harpy"
+		"arachne:harpy",
+		"arachne:siren"
 	]
 }

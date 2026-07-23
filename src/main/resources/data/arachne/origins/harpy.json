@@ -8,7 +8,8 @@
 		"arachne:harpy/gust",
 		"arachne:harpy/talons",
 		"arachne:harpy/scale",
-		"arachne:harpy/scream"
+		"arachne:harpy/scream",
+		"arachne:harpy/hardy_stomach"
 	],
 	"icon": {
 		"item": "arachne:harpy_eye"

@@ -6,7 +6,9 @@
 	"mixins": [
 		"ArthropodPassiveTargetMixin",
 		"ThrownTridentMixin",
-		"ThrownTridentAccessor"
+		"ThrownTridentAccessor",
+		"SeaCreaturePassiveTargetMixin",
+		"CharmedPassiveTargetMixin"
 	],
 	"client": [],
 	"injectors": {
