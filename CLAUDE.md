@@ -335,6 +335,18 @@ than expected once real Origins source was checked — see the gotchas below for
   it only ever touches `minecraft:poison`, so it has no mechanism to affect Bleed or Wither at
   all, applied by completely separate code (`FangItem.hurtEnemy`).
 
+- **Vanilla's undead immunity (`LivingEntity#canBeAffected`) only actually special-cases Poison
+  and Regeneration — not every harmful effect, and not Wither.** `FangItem`'s original blanket
+  "skip everything if the target is undead" check (copied from the Poison-only precedent set by
+  the original Fang) was accidentally also blocking Widowfang's Wither from ever reaching undead
+  targets, which vanilla itself never actually blocks. Confirmed directly from
+  `LivingEntity.canBeAffected`'s real body (`getMobType() != UNDEAD || (effect != REGENERATION &&
+  effect != POISON)`) rather than assuming "undead = immune to everything harmful." Widowfang's
+  Wither now applies to undead too; Poison/Bleed stay undead-gated as before. Separately,
+  `WitherBoss` has its own `canBeAffected` override rejecting `MobEffects.WITHER` specifically —
+  already enforced automatically by vanilla's own `addEffect`, so "except the Wither boss itself"
+  needed no extra code at all once the undead over-blocking was fixed.
+
 ## Build / verify
 
 ```bash

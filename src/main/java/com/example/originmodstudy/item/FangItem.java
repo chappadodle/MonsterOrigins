@@ -42,12 +42,19 @@ public class FangItem extends SwordItem {
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		boolean result = super.hurtEnemy(stack, target, attacker);
-		if (target.getMobType() != MobType.UNDEAD && OriginUtil.hasOrigin(attacker, ARACHNE_ORIGIN_ID)) {
-			target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0));
-			if (bleedOnHit) {
-				target.addEffect(new MobEffectInstance(ModEffects.BLEED, 100, 0));
+		if (OriginUtil.hasOrigin(attacker, ARACHNE_ORIGIN_ID)) {
+			if (target.getMobType() != MobType.UNDEAD) {
+				target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0));
+				if (bleedOnHit) {
+					target.addEffect(new MobEffectInstance(ModEffects.BLEED, 100, 0));
+				}
 			}
 			if (witherOnHit) {
+				// Unlike Poison, Wither was never vanilla-blocked on the undead — confirmed via
+				// LivingEntity#canBeAffected, which only special-cases Poison/Regeneration — so
+				// this applies to undead too. WitherBoss itself is separately immune to Wither
+				// via its own canBeAffected override, enforced automatically by addEffect, no
+				// extra check needed here.
 				target.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 0));
 			}
 		}
