@@ -148,9 +148,6 @@ Drop these into your `mods/` folder (all for **1.20.1 Fabric**):
 4. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21`)
 5. This mod's jar (build it with `./gradlew build`, output in `build/libs/`)
 
-Optionally, **[`SKINS.md`](SKINS.md)** has a mythology-inspired player skin for each origin —
-purely cosmetic, not required, and not installed as a mod (a skin is an account-level choice).
-
 ## Building / developing
 
 See **[`TUTORIAL.md`](TUTORIAL.md)** — a full beginner walkthrough (what an Origins addon even
