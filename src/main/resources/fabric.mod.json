@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "arachne",
 	"version": "${version}",
-	"name": "Origin Mod Study: Arachne",
-	"description": "An Origins addon adding the Arachne origin (a humanoid spider), built as a worked, documented example of the data-driven pattern for adding more origins later. See TEMPLATE.md.",
+	"name": "Monster Origins",
+	"description": "An Origins addon adding four mythological-monster origins — Arachne, Medusa, Harpy, and Siren — built as a worked, documented example of the data-driven pattern for adding more origins later. See TEMPLATE.md.",
 	"authors": [
 		"You"
 	],

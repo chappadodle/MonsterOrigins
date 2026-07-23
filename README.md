@@ -1,8 +1,10 @@
-# Origin Mod Study
+# Monster Origins
 
 > ⚠️ **This project is an experiment.** It's a learning/hobby project for exploring how to build
 > an addon for an existing Fabric mod (Origins) — not a polished, production-ready mod. Expect
-> rough edges.
+> rough edges. (In-game mod name: **Monster Origins**. Internally — mod ID, package names, file
+> paths — it's still `arachne`/`originmodstudy`, unchanged from this project's original working
+> name to avoid breaking any existing world that already has this mod's items/origins in it.)
 
 A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
 four origins — **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a storm-wind

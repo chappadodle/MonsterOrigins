@@ -4,7 +4,9 @@ Guidance for Claude Code when working in this repository.
 
 ## What this is
 
-**Origin Mod Study** — an **experimental** Minecraft **1.20.1 / Fabric** addon for the
+**Monster Origins** (in-game mod name — this repo/project is still internally called "Origin Mod
+Study", and the mod ID stays `arachne` on purpose, see the gotcha below) — an **experimental**
+Minecraft **1.20.1 / Fabric** addon for the
 [Origins](https://modrinth.com/mod/origins) mod (a learning/hobby project). Adds four origins,
 **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a storm-wind bird-woman), and
 **Siren** (a singer of the deep), as worked, documented examples of a data-driven pattern for
@@ -307,6 +309,17 @@ than expected once real Origins source was checked — see the gotchas below for
   and purple line" in-game. All `bar_index` values in this mod are now unique and within 0–8 —
   worth checking against this real limit (not just "must be a small number") whenever a new
   key-bound/cooldown power gets a `hud_render` block.
+
+- **The mod's display name (`Monster Origins`) and its technical mod ID (`arachne`) are
+  deliberately different, and that's a real decision, not an oversight.** `fabric.mod.json`'s
+  `"id"` field is baked into every single resource/data path and every item/origin/power
+  identifier in this project (`data/arachne/...`, `arachne:fang`, `arachne:medusa`, etc.) — a full
+  rename would mean moving every folder and rewriting every namespaced string across hundreds of
+  files, *and* it would break any existing world that already has this mod's items in an inventory
+  or an origin selected (Minecraft saves reference the full namespaced ID; a renamed namespace
+  makes old references show up as missing). The user explicitly chose a display-name-only rename
+  for exactly this reason — if a full namespace rename is ever wanted later, treat it as a
+  deliberate, separate, disruptive migration, not a quick find-and-replace.
 
 ## Build / verify
 
