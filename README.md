@@ -52,7 +52,7 @@ bruiser, and aerial skirmisher.
   normally.
 - **Wings**: true flight, always — no elytra item needed.
 - **Sudden Gust** (primary key, unbound by default, hold while flying): a firework-rocket-style
-  boost in whatever direction you're currently facing, not a launch into the air. 5 second
+  boost in whatever direction you're currently facing, not a launch into the air. 3.5 second
   cooldown — effectively unlimited flight.
 - **Talons**: bare-handed strikes deal 2.5 extra hearts of damage and inflict **Bleed** for 10
   seconds (undead immune) — a brand new status effect added by this mod, ticking just like Poison
@@ -60,7 +60,7 @@ bruiser, and aerial skirmisher.
   it can kill.
 - **Scream** (secondary key, unbound by default): a shrieking blast (with a Sonic Boom particle
   burst) that knocks back whatever's in front of you within 8 blocks — behind you is completely
-  unaffected. 20 second cooldown. Uses a real barn owl screech recording (CC BY-SA 4.0, credited
+  unaffected. 10 second cooldown. Uses a real barn owl screech recording (CC BY-SA 4.0, credited
   in [`CREDITS.md`](CREDITS.md)).
 - 85% of normal height/width (via Pehkui).
 

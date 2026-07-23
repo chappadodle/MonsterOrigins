@@ -4,7 +4,7 @@
 		"key": "key.origins.primary_active",
 		"continuous": true
 	},
-	"cooldown": 100,
+	"cooldown": 70,
 	"entity_action": {
 		"type": "origins:and",
 		"actions": [
@@ -24,5 +24,5 @@
 		"bar_index": 4
 	},
 	"name": "Sudden Gust",
-	"description": "While flying, hold your primary key (unbound by default — set it in Controls) for a firework-rocket-style boost in whatever direction you're facing. 5 second cooldown — effectively unlimited flight."
+	"description": "While flying, hold your primary key (unbound by default — set it in Controls) for a firework-rocket-style boost in whatever direction you're facing. 3.5 second cooldown — effectively unlimited flight."
 }
