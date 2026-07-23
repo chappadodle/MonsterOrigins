@@ -12,5 +12,7 @@
 	"item.arachne.siren_eye": "Siren's Eye",
 	"item.arachne.siren_crown": "Siren's Crown",
 	"subtitle.arachne.harpy_scream": "Harpy screeches",
-	"subtitle.arachne.mermaid_song": "Siren sings"
+	"subtitle.arachne.mermaid_song": "Siren sings",
+	"effect.arachne.bleed": "Bleed",
+	"effect.arachne.charmed": "Charmed"
 }

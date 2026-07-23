@@ -321,6 +321,20 @@ than expected once real Origins source was checked — see the gotchas below for
   for exactly this reason — if a full namespace rename is ever wanted later, treat it as a
   deliberate, separate, disruptive migration, not a quick find-and-replace.
 
+- **A custom `MobEffect` needs its own icon texture and lang key, same as a custom item —
+  neither is optional or auto-generated, and both were missing for Bleed (and Charmed) until
+  this was reported as "the effect doesn't seem to apply."** Confirmed against vanilla's own
+  `poison.png`/`wither.png` (18×18, `assets/<namespace>/textures/mob_effect/<path>.png`) that
+  this is a plain convention-based lookup, no Java override needed — `BleedMobEffect`/the
+  anonymous `CHARMED` effect never needed any icon-related code, just the missing asset files.
+  Without the texture, the effect's HUD/inventory icon silently fails to render; without the lang
+  key (`effect.<namespace>.<path>`), its name shows as the raw untranslated key
+  (`effect.arachne.bleed`) instead of "Bleed" — both easy to mistake for "the effect isn't
+  actually applying" when it's really just rendering badly. Ruled out the user's own "same tick"
+  theory first by re-reading `on_hit_poison.json` (Arachne's innate Venomous Bite power) directly:
+  it only ever touches `minecraft:poison`, so it has no mechanism to affect Bleed or Wither at
+  all, applied by completely separate code (`FangItem.hurtEnemy`).
+
 ## Build / verify
 
 ```bash
