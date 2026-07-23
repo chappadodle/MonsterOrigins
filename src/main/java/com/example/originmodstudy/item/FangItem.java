@@ -57,14 +57,13 @@ public class FangItem extends SwordItem {
 	@Override
 	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, level, tooltip, flag);
-		StringBuilder text = new StringBuilder("Poisons on hit (undead immune)");
+		OriginUtil.addOriginGatedTooltip(tooltip, "Poisons on hit");
 		if (bleedOnHit) {
-			text.append(", also causes Bleed");
+			OriginUtil.addOriginGatedTooltip(tooltip, "+ Bleed");
 		}
 		if (witherOnHit) {
-			text.append(" and Wither");
+			OriginUtil.addOriginGatedTooltip(tooltip, "+ Wither");
 		}
-		text.append(" — Arachne only.");
-		OriginUtil.addOriginGatedTooltip(tooltip, text.toString());
+		OriginUtil.addOriginGatedTooltip(tooltip, "Arachne only");
 	}
 }
