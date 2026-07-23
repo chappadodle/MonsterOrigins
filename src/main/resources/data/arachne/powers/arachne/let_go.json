@@ -1,0 +1,19 @@
+{
+	"type": "origins:action_over_time",
+	"interval": 1,
+	"hidden": true,
+	"condition": {
+		"type": "origins:and",
+		"conditions": [
+			{
+				"type": "origins:sneaking"
+			},
+			{
+				"type": "origins:riding"
+			}
+		]
+	},
+	"entity_action": {
+		"type": "origins:dismount"
+	}
+}

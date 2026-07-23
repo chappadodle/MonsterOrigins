@@ -15,7 +15,8 @@
 		"arachne:arachne/scuttle",
 		"arachne:arachne/latch_on",
 		"arachne:arachne/water_weakness",
-		"arachne:arachne/silk_glands"
+		"arachne:arachne/silk_glands",
+		"arachne:arachne/let_go"
 	],
 	"icon": {
 		"item": "arachne:arachne_eye"

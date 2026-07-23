@@ -1,10 +1,13 @@
 {
 	"type": "origins:active_self",
 	"key": {
-		"key": "key.use",
+		"key": "key.attack",
 		"continuous": false
 	},
 	"cooldown": 20,
+	"condition": {
+		"type": "origins:sneaking"
+	},
 	"entity_action": {
 		"type": "origins:raycast",
 		"distance": 4,
@@ -36,5 +39,5 @@
 		"bar_index": 8
 	},
 	"name": "Latch On",
-	"description": "Right-click a nearby player (or an armor stand) to climb onto them, spider-style. Press sneak to let go — this is a perch, not free movement around them, so it can feel a little stiff."
+	"description": "Sneak and left-click a nearby player (or an armor stand) to climb onto them, spider-style. Press sneak to let go — this is a perch, not free movement around them, so it can feel a little stiff. Since left-click is also attack, this will land a hit on whatever you're aiming at too."
 }
