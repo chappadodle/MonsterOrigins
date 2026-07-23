@@ -121,22 +121,23 @@ gotchas below for exactly why, verified rather than assumed in both cases.
   `EntityActionType` registration (a dot-product cone check + per-target outward knockback), the
   correct escalation once the data-driven options are actually exhausted, not just assumed absent.
 - **A thrown trident-type item's mid-air visual is hardcoded, completely separate from its item
-  model.** Decompiled (via a locally-fetched CFR jar, since Loom's cache had no Minecraft sources
-  jar — see "Build / verify" below for how) `TridentItem.releaseUsing` and `ThrownTridentRenderer`
-  directly rather than assume: `releaseUsing` always constructs `new ThrownTrident(level, player,
-  itemStack)` — no override point for a different thrown-entity type — and that entity's own
-  `EntityType` is hardcoded to `EntityType.TRIDENT` even inside `ThrownTrident`'s own
-  itemstack-carrying constructor. Worse, `ThrownTridentRenderer` doesn't even look at the carried
-  itemstack for its visual: it renders a dedicated vanilla `TridentModel` baked from
-  `ModelLayers.TRIDENT` with a hardcoded `textures/entity/trident.png`, full stop. This means any
-  `TridentItem` subclass (Petrifying Trident, Harpy Javelin) — no matter how its own item model is
-  reskinned — will always render as a plain vanilla trident shape for the moment it's actually
-  flying through the air after being thrown; the custom model only ever shows in-hand, in the
-  inventory, and equipped-on-back. Fixing this for real would need a genuinely new `EntityType` +
-  matching `EntityRenderer` (e.g. one that renders the carried `ItemStack` via `ItemRenderer`
-  instead of a hardcoded model, the same technique vanilla's `ThrownItemRenderer` uses for
-  snowballs/eggs) — real scope, deliberately not done for the Harpy Javelin; see
-  `ThrownTridentMixin`'s class doc.
+  model — fixed for the Harpy Javelin with a dedicated entity type + renderer, not worked around.**
+  Decompiled (via a locally-fetched CFR jar, since Loom's cache had no Minecraft sources jar — see
+  "Build / verify" below for how) `TridentItem.releaseUsing` and `ThrownTridentRenderer` directly
+  rather than assume: `releaseUsing` always constructs `new ThrownTrident(level, player,
+  itemStack)` — no override point for a different thrown-entity type — and `ThrownTridentRenderer`
+  doesn't even look at the carried itemstack for its visual: it renders a dedicated vanilla
+  `TridentModel` baked from `ModelLayers.TRIDENT` with a hardcoded `textures/entity/trident.png`,
+  full stop. Any plain `TridentItem` subclass (Petrifying Trident) is stuck with that — its custom
+  model only shows in-hand/inventory/equipped-on-back, never in flight. `HarpyJavelinItem` instead
+  overrides `releaseUsing` (a faithful reproduction of the real decompiled method, since there's no
+  extension point to build on top of) to spawn `ThrownJavelin` — a real second `EntityType`
+  extending `ThrownTrident` (see `entity/ThrownJavelin.java`) — with its own client renderer
+  (`client/ThrownHarpyJavelinRenderer.java`) extending vanilla's `ThrownItemRenderer`, the same
+  base class used for snowballs/eggs/ender pearls, which renders the entity's own `ItemStack` via
+  `ItemRenderer` instead of a hardcoded model. No third-party rendering library needed or used —
+  confirmed by web search that this is exactly the mechanism the Fabric wiki's own "Creating a
+  Custom Projectile" tutorial teaches, not a gap that needs a dependency to fill.
 - **Vanilla's real on-hit damage for a thrown trident bypasses `ItemStack.hurtEnemy` entirely.**
   Also found by decompiling rather than assuming: `ThrownTrident.onHitEntity` calls
   `entity.hurt(damageSource, f)` directly — `hurtEnemy` on the `TridentItem`/subclass is *only*
@@ -197,6 +198,13 @@ unrelated to the pattern-matching `instanceof` avoided in that file) — this on
 auxiliary `-sources.jar`'s IDE-navigation copy of that one file, not compilation or the real mod
 jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
 
+A second benign warning (`warning: unknown enum constant Env.CLIENT` /
+`com.demonwav.mcdev.annotations.Env not found`) started appearing once this project added its
+first client-only code (`client/OriginModStudyClient.java` and friends, for the Harpy Javelin's
+renderer) — an IntelliJ/MCDev annotation-processor shim referenced by vanilla's own
+`@Environment`-annotated classes, not something this mod's code triggers directly. Also expected,
+also not a regression.
+
 ## Layout
 
 - `src/main/java/com/example/originmodstudy/`
@@ -237,8 +245,21 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
   - `mixin/ThrownTridentMixin.java` — makes a thrown Harpy Javelin's on-hit damage go through the
     same Harpy-origin-gated Bleed/airborne-bonus rules a melee hit gets, since vanilla's real
     thrown-trident damage path (`ThrownTrident.onHitEntity`) completely bypasses `hurtEnemy`. See
-    the gotchas above for the decompilation that found this and why the mid-flight visual is a
-    known, accepted limitation rather than something this mixin also fixes.
+    the gotchas above for the decompilation that found this.
+  - `mixin/ThrownTridentAccessor.java` — a Mixin `@Accessor` interface exposing `ThrownTrident`'s
+    private `tridentItem` field, since `ThrownJavelin` (below) needs to set/read it directly and
+    nothing else can reach a private field from outside its own class.
+- `src/main/java/com/example/originmodstudy/entity/`
+  - `ThrownJavelin.java`, `ModEntities.java` — the dedicated entity type a thrown Harpy Javelin
+    actually spawns as (registered with `EntityType.TRIDENT`'s own real size/tracking-range
+    parameters), so its client renderer can draw the javelin's real item model instead of vanilla's
+    hardcoded trident shape. See the gotcha above for why this was necessary at all.
+- `src/main/java/com/example/originmodstudy/client/`
+  - `OriginModStudyClient.java` — this mod's only client-only entrypoint (registered in
+    `fabric.mod.json`'s `"client"` list, separate from the common `"main"` one), needed because
+    `EntityRendererRegistry.register` doesn't exist on a dedicated server's classpath.
+  - `ThrownHarpyJavelinRenderer.java` — renders `ThrownJavelin` via vanilla's `ThrownItemRenderer`
+    (the same base class snowballs/eggs/ender pearls use), instead of writing a renderer by hand.
 - `src/main/resources/data/arachne/`
   - `origins/arachne.json` — the origin: name, description, icon (`arachne:arachne_eye`), and its
     power list (16 entries as of this writing — a mix of references to base-Origins/Origins Minus

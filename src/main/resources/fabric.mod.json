@@ -17,6 +17,9 @@
 	"entrypoints": {
 		"main": [
 			"com.example.originmodstudy.OriginModStudy"
+		],
+		"client": [
+			"com.example.originmodstudy.client.OriginModStudyClient"
 		]
 	},
 	"mixins": [

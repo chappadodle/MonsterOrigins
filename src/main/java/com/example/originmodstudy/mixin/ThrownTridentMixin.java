@@ -15,26 +15,18 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * {@code TridentItem.releaseUsing} (decompiled and read directly, not assumed from docs) always
- * hardcodes {@code new ThrownTrident(level, player, itemstack)} — there is no override point for
- * a thrown-item entity type, so a thrown Harpy Javelin is a real {@link ThrownTrident} carrying a
- * {@link HarpyJavelinItem} stack. Its real damage-dealing lives in {@code onHitEntity}, calling
- * {@code entity.hurt(damageSource, f)} directly — completely bypassing {@code ItemStack.hurtEnemy},
- * which only fires for melee swings. This mixin is what makes the thrown hit apply the same
- * Harpy-origin-gated rules {@link HarpyJavelinItem#hurtEnemy} applies on a melee hit.
+ * {@code ThrownTrident.onHitEntity} (decompiled and read directly, not assumed from docs) deals
+ * its own damage via {@code entity.hurt(damageSource, f)} directly — completely bypassing
+ * {@code ItemStack.hurtEnemy}, which only fires for melee swings. This mixin is what makes a
+ * thrown hit apply the same Harpy-origin-gated rules {@link HarpyJavelinItem#hurtEnemy} applies
+ * on a melee hit. It targets {@code ThrownTrident} itself (not the dedicated {@code ThrownJavelin}
+ * subclass) so the transformed method is inherited automatically — {@code ThrownJavelin} doesn't
+ * override {@code onHitEntity} at all, it only exists for its entity type and renderer.
  *
  * <p>The airborne bonus checks {@link LivingEntity#isFallFlying()} at the moment of impact rather
  * than capturing whether the thrower was airborne at the moment of the throw — simpler, and for a
  * javelin's short flight time the two are practically the same "dove and threw it" case the user
  * asked for.
- *
- * <p>Deliberately does *not* attempt to make the mid-air thrown visual use the javelin's own
- * model — {@code ThrownTridentRenderer} (also decompiled directly) hardcodes a dedicated vanilla
- * {@code TridentModel} + {@code textures/entity/trident.png} for every thrown trident-type entity,
- * unrelated to the item's own model. Doing that properly would need a whole separate entity type
- * and renderer; out of scope here, so the javelin renders as a plain vanilla trident shape for the
- * brief moment it's actually in flight (same pre-existing, previously-unnoticed limitation the
- * Petrifying Trident already has).
  */
 @Mixin(ThrownTrident.class)
 public abstract class ThrownTridentMixin {

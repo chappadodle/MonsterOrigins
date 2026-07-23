@@ -1,0 +1,11 @@
+{
+	"type": "origins:attribute",
+	"modifier": {
+		"name": "Arachne quickness",
+		"attribute": "minecraft:generic.movement_speed",
+		"value": 0.35,
+		"operation": "multiply_base"
+	},
+	"name": "Quickness",
+	"description": "Noticeably faster base movement speed — spiders are quick for their size."
+}

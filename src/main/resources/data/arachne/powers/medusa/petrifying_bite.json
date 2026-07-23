@@ -18,6 +18,11 @@
 				"effect": "minecraft:blindness",
 				"amplifier": 0,
 				"duration": 60
+			},
+			{
+				"effect": "minecraft:darkness",
+				"amplifier": 0,
+				"duration": 60
 			}
 		]
 	},
@@ -26,5 +31,5 @@
 		"bar_index": 6
 	},
 	"name": "Petrifying Bite",
-	"description": "Your attacks briefly turn the target to stone: 3 seconds of heavy Slowness, Mining Fatigue, and Blindness. 5 second cooldown."
+	"description": "Your attacks briefly turn the target to stone: 3 seconds of heavy Slowness, Mining Fatigue, Blindness, and Darkness. 5 second cooldown."
 }

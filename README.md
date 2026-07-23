@@ -27,6 +27,8 @@ bruiser, and aerial skirmisher.
 - No fall damage from falls under 10 blocks.
 - Weakened while touching water — a spider out of its element.
 - Produces 6 string in your inventory every 20 minutes.
+- **Quickness**: noticeably faster base movement speed (+35%, well past Avian's own barely-there
+  +20% tailwind) — spiders are quick for their size. A flat attribute bonus, not a potion effect.
 - **Golden Spider Eye**: a new food item, the carnivore-diet equivalent of a golden apple (which
   Arachne can't eat — apples aren't meat). Same crafting cost (8 gold ingots around the center
   item) and the same buff (Regeneration II for 5s, Absorption I for 2 minutes), just built around
@@ -36,14 +38,15 @@ bruiser, and aerial skirmisher.
 
 - Carnivore-only diet. 12 hearts of health, solid natural armor — a bruiser, not a glass cannon.
 - **Petrifying Bite**: attacks briefly turn the target to stone — 3 seconds of heavy Slowness,
-  Mining Fatigue, and Blindness. 5 second cooldown.
+  Mining Fatigue, Blindness, and Darkness. 5 second cooldown.
 - **Stone-Cursed**: immune to Slowness and Mining Fatigue — her own curse can't touch her.
 - Immune to fall damage.
 - Permanent night vision, but weakened by direct sunlight — a monster of the dark.
 - **Dreadful Presence**: hostile creatures within 8 blocks are continuously weakened just by being
   near her.
 - **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature
-  within 5 blocks (same effect as Petrifying Bite) for 3 seconds. 30 second cooldown.
+  within 5 blocks (same effects as Petrifying Bite, including Darkness) for 3 seconds. 30 second
+  cooldown.
 
 ### Harpy
 
@@ -78,12 +81,12 @@ not generically useful loot:
   Medusa only.
   Crafted from stone and iron ingots.
 - **Harpy Javelin**: a real 3D-modeled throwing spear (a custom Blockbench model, not a flat
-  icon), lighter and faster-swinging than the vanilla trident it's built on. Causes Bleed on hit
-  (undead excluded), whether thrown or swung, and deals bonus damage on a thrown hit landed while
-  flying — Harpy only. Crafted from an iron ingot, a stick, and a feather. Note: it briefly
-  renders as a plain vanilla trident shape mid-flight after being thrown (a real Minecraft engine
-  limitation for any trident-based weapon, not specific to this one) — the custom model shows
-  correctly in your hand, in the inventory, and on your back.
+  icon), lighter and faster-swinging than the vanilla trident it's built on. Renders as its own
+  model everywhere, including in flight and lying on the ground after landing — via a dedicated
+  thrown-entity type and renderer, since (unlike the item model) that's hardcoded per-projectile
+  in vanilla and not something a simple reskin gets for free. Causes Bleed on hit (undead
+  excluded), whether thrown or swung, and deals bonus damage on a thrown hit landed while flying —
+  Harpy only. Crafted from an iron ingot, a stick, and a feather.
 
 It's also written as a **worked, documented example** of a data-driven pattern for adding more
 origins — see **[`TEMPLATE.md`](TEMPLATE.md)**. Medusa is the second worked example (the first

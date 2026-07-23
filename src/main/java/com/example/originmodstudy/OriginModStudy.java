@@ -1,6 +1,7 @@
 package com.example.originmodstudy;
 
 import com.example.originmodstudy.effect.ModEffects;
+import com.example.originmodstudy.entity.ModEntities;
 import com.example.originmodstudy.item.ModItems;
 import com.example.originmodstudy.power.ScreamConeAction;
 import com.example.originmodstudy.sound.ModSounds;
@@ -20,6 +21,7 @@ public class OriginModStudy implements ModInitializer {
 		// needs Java registration like vanilla would: items, the custom Bleed status effect (Harpy's
 		// Talons), the bundled Scream sound event, and the one custom Apoli action type (Scream's
 		// forward-cone knockback, which nothing data-driven can express).
+		ModEntities.registerModEntities();
 		ModItems.registerModItems();
 		ModEffects.registerModEffects();
 		ModSounds.registerModSounds();
