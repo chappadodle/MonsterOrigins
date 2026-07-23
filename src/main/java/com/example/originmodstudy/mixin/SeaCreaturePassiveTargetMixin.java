@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Siren requirement: sea creatures (including Drowned and Guardian) are friendly toward her
+ * Mermaid requirement: sea creatures (including Drowned and Guardian) are friendly toward her
  * unless attacked — same technique and same retaliation exception as
  * {@link ArthropodPassiveTargetMixin}, just a different tag/origin pair. Kept as a separate
  * mixin rather than generalizing the two, matching this project's one-mixin-one-purpose
@@ -41,14 +41,14 @@ public abstract class SeaCreaturePassiveTargetMixin {
 	private static final TagKey<EntityType<?>> FRIENDLY_SEA_CREATURES =
 		TagKey.create(Registries.ENTITY_TYPE, FRIENDLY_SEA_CREATURES_TAG_ID);
 	private static final ResourceLocation ORIGIN_LAYER_ID = new ResourceLocation("origins", "origin");
-	private static final ResourceLocation SIREN_ORIGIN_ID = new ResourceLocation("monster_origins", "siren");
+	private static final ResourceLocation MERMAID_ORIGIN_ID = new ResourceLocation("monster_origins", "mermaid");
 
 	@Shadow
 	@Final
 	protected Mob mob;
 
 	@Inject(method = "canAttack", at = @At("HEAD"), cancellable = true)
-	private void siren$suppressFriendlySeaCreatureTargeting(
+	private void mermaid$suppressFriendlySeaCreatureTargeting(
 		LivingEntity potentialTarget, TargetingConditions targetConditions, CallbackInfoReturnable<Boolean> cir
 	) {
 		if (!(potentialTarget instanceof Player)) {
@@ -69,7 +69,7 @@ public abstract class SeaCreaturePassiveTargetMixin {
 			return;
 		}
 		Origin origin = originComponent.getOrigin(layer);
-		if (origin.getIdentifier().equals(SIREN_ORIGIN_ID)) {
+		if (origin.getIdentifier().equals(MERMAID_ORIGIN_ID)) {
 			cir.setReturnValue(false);
 		}
 	}

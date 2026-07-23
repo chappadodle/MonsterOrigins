@@ -79,6 +79,6 @@
 		"should_render": true,
 		"bar_index": 1
 	},
-	"name": "Siren's Call",
+	"name": "Mermaid's Call",
 	"description": "Press your primary key (unbound by default, set it in Controls) to sing: everyone nearby (including you) is bathed in Saturation and Regeneration, while hostile creatures are also slowed, blinded, and charmed into leaving everyone alone. 4 second duration, 20 second cooldown."
 }

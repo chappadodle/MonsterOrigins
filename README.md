@@ -2,7 +2,7 @@
 
 A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
 four origins — **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a storm-wind
-bird-woman), and **Siren** (a singer of the deep) — each built around a different playstyle:
+bird-woman), and **Mermaid** (a singer of the deep) — each built around a different playstyle:
 fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/crowd-control.
 
 ### Arachne
@@ -69,7 +69,7 @@ fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/cro
   a brief 2-second burst of Regeneration.
 - Takes 50% more damage from fire — hollow bones and feathers catch fast.
 
-### Siren
+### Mermaid
 
 - Carnivore-only diet. 90% of normal height/width (via Pehkui).
 - **Fully at home in the water**: breathes, sees, and swims underwater with no trouble, and mines
@@ -77,7 +77,7 @@ fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/cro
 - **Landbound**: can stay out of water (rain counts as wet too) for 5 minutes at a time before
   starting to suffocate.
 - **1.5x swim speed, 0.8x walking speed** — she belongs in the water, not on land.
-- **Siren's Call** (primary key, unbound by default): a real singing sound effect, and a song that
+- **Mermaid's Call** (primary key, unbound by default): a real singing sound effect, and a song that
   gives everyone nearby, including herself, Saturation and Regeneration — while hostile creatures
   caught in it are also slowed, blinded, and charmed into leaving everyone alone entirely for the
   duration. 4 second duration, 20 second cooldown.
@@ -85,10 +85,10 @@ fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/cro
   press once to go faster, press again to drop back down.
 - **Every sea creature is friendly** unless attacked first — including Drowned and Guardians, not
   just the obviously-passive fish.
-- **Siren's Crown**: exclusive armor, crafted from diamonds and a Heart of the Sea. Grants +2
+- **Mermaid's Crown**: exclusive armor, crafted from diamonds and a Heart of the Sea. Grants +2
   hearts and continuous Regeneration while worn.
 - A new global recipe unlocks crafting a vanilla trident (3 prismarine shards + 2 sticks) —
-  craftable by anyone, not exclusive to Siren, same recipe-can't-see-the-player limitation as
+  craftable by anyone, not exclusive to Mermaid, same recipe-can't-see-the-player limitation as
   every other weapon in this mod.
 - No water-breathing bubble particles while it's active — just the effect, not the visual spam.
 

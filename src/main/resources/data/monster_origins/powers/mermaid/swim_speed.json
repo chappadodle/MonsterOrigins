@@ -1,7 +1,7 @@
 {
 	"type": "origins:attribute",
 	"modifier": {
-		"name": "Siren swim speed",
+		"name": "Mermaid swim speed",
 		"attribute": "additionalentityattributes:water_speed",
 		"value": 0.875,
 		"operation": "multiply_base"

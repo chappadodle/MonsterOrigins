@@ -1,7 +1,7 @@
 {
 	"type": "origins:attribute",
 	"modifier": {
-		"name": "Siren land slowness",
+		"name": "Mermaid land slowness",
 		"attribute": "minecraft:generic.movement_speed",
 		"value": -0.2,
 		"operation": "multiply_base"

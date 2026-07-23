@@ -44,8 +44,8 @@ public class ModItems {
 	// Same purpose as ARACHNE_EYE above, for the Harpy origin's icon.
 	public static final Item HARPY_EYE = register("harpy_eye", new Item(new Item.Properties()));
 
-	// Same purpose as ARACHNE_EYE above, for the Siren origin's icon.
-	public static final Item SIREN_EYE = register("siren_eye", new Item(new Item.Properties()));
+	// Same purpose as ARACHNE_EYE above, for the Mermaid origin's icon.
+	public static final Item MERMAID_EYE = register("mermaid_eye", new Item(new Item.Properties()));
 
 	// A light, fast dagger — built on iron's tier but with a lower damage modifier (2, vs. the
 	// vanilla iron sword's 3) and a faster attack speed modifier (-1.8, vs. the vanilla sword
@@ -80,10 +80,10 @@ public class ModItems {
 	// this mod, see OriginUtil), just thematically Arachne's own material.
 	public static final Item SILK = register("silk", new Item(new Item.Properties()));
 
-	// Siren's exclusive crown: +2 hearts and continuous Regeneration while worn (see
-	// SirenCrownItem). Diamond-tier defense values, since it's partly crafted from diamonds.
-	public static final Item SIREN_CROWN = register("siren_crown",
-			new SirenCrownItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties()));
+	// Mermaid's exclusive crown: +2 hearts and continuous Regeneration while worn (see
+	// MermaidCrownItem). Diamond-tier defense values, since it's partly crafted from diamonds.
+	public static final Item MERMAID_CROWN = register("mermaid_crown",
+			new MermaidCrownItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties()));
 
 	private static Item register(String name, Item item) {
 		return Registry.register(BuiltInRegistries.ITEM, OriginModStudy.id(name), item);
@@ -99,7 +99,7 @@ public class ModItems {
 			entries.accept(WIDOWFANG);
 			entries.accept(PETRIFYING_TRIDENT);
 			entries.accept(HARPY_JAVELIN);
-			entries.accept(SIREN_CROWN);
+			entries.accept(MERMAID_CROWN);
 		});
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
 			entries.accept(SILK);

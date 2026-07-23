@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Siren's Call requirement: hostiles caught in the song stop attacking entirely, not just
+ * Mermaid's Call requirement: hostiles caught in the song stop attacking entirely, not just
  * whoever cast it — {@link ModEffects#CHARMED} is applied to every hostile in range (see
- * {@code sirens_call.json}), and this mixin suppresses target acquisition for any mob carrying
+ * {@code mermaids_call.json}), and this mixin suppresses target acquisition for any mob carrying
  * it, against any potential target, for as long as the effect lasts. Same
  * {@code TargetGoal#canAttack} choke point as {@link ArthropodPassiveTargetMixin} and
  * {@link SeaCreaturePassiveTargetMixin}, but keyed off a status effect instead of a static tag —
@@ -28,7 +28,7 @@ public abstract class CharmedPassiveTargetMixin {
 	protected Mob mob;
 
 	@Inject(method = "canAttack", at = @At("HEAD"), cancellable = true)
-	private void siren$suppressCharmedTargeting(
+	private void mermaid$suppressCharmedTargeting(
 		LivingEntity potentialTarget, TargetingConditions targetConditions, CallbackInfoReturnable<Boolean> cir
 	) {
 		if (this.mob.hasEffect(ModEffects.CHARMED)) {

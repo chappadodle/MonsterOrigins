@@ -1,0 +1,20 @@
+{
+	"powers": [
+		"origins:carnivore",
+		"origins:aqua_affinity",
+		"monster_origins:mermaid/water_breathing",
+		"monster_origins:mermaid/dehydration",
+		"monster_origins:mermaid/swim_speed",
+		"monster_origins:mermaid/land_slowness",
+		"monster_origins:mermaid/scale",
+		"monster_origins:mermaid/mermaids_call",
+		"monster_origins:mermaid/dolphins_grace_toggle"
+	],
+	"icon": {
+		"item": "monster_origins:mermaid_eye"
+	},
+	"order": 14,
+	"impact": 2,
+	"name": "Mermaid",
+	"description": "A seductive singer of the deep. At home in the water, breathes, sees, swims, and mines there with no trouble at all, but can't stay ashore for long, and every sea creature answers to her call."
+}

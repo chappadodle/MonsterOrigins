@@ -12,13 +12,13 @@ import net.minecraft.world.effect.MobEffectCategory;
  */
 public class ModEffects {
 
-	// Harpy's Talons power (see data/arachne/powers/harpy/talons.json) applies this on hit.
+	// Harpy's Talons power (see data/monster_origins/powers/harpy/talons.json) applies this on hit.
 	// Color is a dried-blood red, distinct from vanilla Poison's green.
 	public static final MobEffect BLEED = register("bleed",
 			new BleedMobEffect(MobEffectCategory.HARMFUL, 0x8B1A1A));
 
-	// Siren's Call (see data/arachne/powers/siren/sirens_call.json) applies this to hostiles
-	// caught in the song. A pure marker — no tick behavior of its own, CharmedPassiveTargetMixin
+	// Mermaid's Call (see data/monster_origins/powers/mermaid/mermaids_call.json) applies this to
+	// hostiles caught in the song. A pure marker — no tick behavior of its own, CharmedPassiveTargetMixin
 	// only ever checks for its presence. MobEffect's constructor is protected, so an anonymous
 	// subclass (rather than a whole new file, unlike BleedMobEffect) is enough for a no-op marker.
 	public static final MobEffect CHARMED = register("charmed",

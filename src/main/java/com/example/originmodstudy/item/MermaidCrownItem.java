@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 import java.util.UUID;
 
 /**
- * Siren's exclusive crown: +2 hearts while worn (a real attribute modifier, same
+ * Mermaid's exclusive crown: +2 hearts while worn (a real attribute modifier, same
  * {@code getDefaultAttributeModifiers} technique {@code HarpyJavelinItem} uses for its own stats,
  * just the HEAD slot instead of MAINHAND) plus continuous Regeneration while actually equipped —
  * for that part, {@code inventoryTick} (confirmed via {@code javap}: {@code inventoryTick
@@ -27,16 +27,16 @@ import java.util.UUID;
  * "is this stack actually the one in my head slot right now" check rather than firing for a
  * crown just sitting in a chest or the player's general inventory.
  */
-public class SirenCrownItem extends ArmorItem {
+public class MermaidCrownItem extends ArmorItem {
 	private static final UUID CROWN_HEALTH_MODIFIER_ID = UUID.fromString("6b4f6a3a-6e7e-4b8a-9f7a-3c1f0a9e2d41");
 	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-	public SirenCrownItem(ArmorMaterial material, Type type, Properties properties) {
+	public MermaidCrownItem(ArmorMaterial material, Type type, Properties properties) {
 		super(material, type, properties);
 		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 		builder.putAll(super.getDefaultAttributeModifiers(EquipmentSlot.HEAD));
 		builder.put(Attributes.MAX_HEALTH, new AttributeModifier(
-				CROWN_HEALTH_MODIFIER_ID, "Siren's Crown health bonus", 4.0, AttributeModifier.Operation.ADDITION));
+				CROWN_HEALTH_MODIFIER_ID, "Mermaid's Crown health bonus", 4.0, AttributeModifier.Operation.ADDITION));
 		this.defaultModifiers = builder.build();
 	}
 
