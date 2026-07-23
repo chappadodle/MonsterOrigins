@@ -38,7 +38,7 @@
 	},
 	"hud_render": {
 		"should_render": true,
-		"bar_index": 10
+		"bar_index": 8
 	},
 	"name": "Scream",
 	"description": "Press your secondary key (unbound by default — set it in Controls) for a shrieking blast that knocks back whatever's in front of you within 8 blocks. Behind you is safe. 10 second cooldown."

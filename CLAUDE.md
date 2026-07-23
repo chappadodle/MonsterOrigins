@@ -295,6 +295,19 @@ than expected once real Origins source was checked — see the gotchas below for
   in_fire`, `on_fire`, `lava`, `hot_floor`, plus fireball projectile damage types) was reused
   directly rather than hand-listing fire-related damage types.
 
+- **`hud_render`'s `bar_index`/`icon_index` are coordinates into Apoli's own shared
+  `resource_bar.png` atlas, not per-power texture references — and that atlas only has real
+  art for indices 0–8.** Extracted the actual texture straight from the Apoli jar (already a
+  `modCompileOnly` dependency, no download needed) and sampled every row's pixel color
+  programmatically rather than eyeballing it: indices 0–8 are distinct hand-drawn colors, and
+  *everything from index 9 up to the texture's full 256px height* is solid placeholder magenta
+  (`#d67fff`) — Apoli's own "unassigned slot" filler, not a missing-texture rendering failure.
+  Several powers added across Medusa/Harpy/Siren had drifted past 8 (9, 10, 13, 15) simply by
+  incrementing without checking real bounds, which is exactly what showed up as "purple texture
+  and purple line" in-game. All `bar_index` values in this mod are now unique and within 0–8 —
+  worth checking against this real limit (not just "must be a small number") whenever a new
+  key-bound/cooldown power gets a `hud_render` block.
+
 ## Build / verify
 
 ```bash

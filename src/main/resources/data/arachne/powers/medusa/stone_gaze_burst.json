@@ -47,7 +47,7 @@
 	},
 	"hud_render": {
 		"should_render": true,
-		"bar_index": 9
+		"bar_index": 2
 	},
 	"name": "Stone Gaze Burst",
 	"description": "Press your secondary key (unbound by default — set it in Controls) to petrify every hostile creature within 5 blocks for 3 seconds (Slowness, Mining Fatigue, Blindness, and Darkness). 30 second cooldown."
