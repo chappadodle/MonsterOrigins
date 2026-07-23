@@ -5,9 +5,12 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 **Origin Mod Study** — an **experimental** Minecraft **1.20.1 / Fabric** addon for the
-[Origins](https://modrinth.com/mod/origins) mod (a learning/hobby project). Adds the **Arachne**
-origin (a humanoid spider) as a fully worked, documented example of a data-driven pattern for
-adding more origins later — see **TEMPLATE.md** for that pattern and its decision checklist.
+[Origins](https://modrinth.com/mod/origins) mod (a learning/hobby project). Adds two origins,
+**Arachne** (a humanoid spider) and **Medusa** (a gorgon), as worked, documented examples of a
+data-driven pattern for adding more origins later — see **TEMPLATE.md** for that pattern and its
+decision checklist. The two are deliberately built as opposites (fragile/fast/poison vs.
+tanky/slow/petrify) so the pattern gets exercised against two different design directions, not
+just two reskins of the same kit.
 
 ## Critical environment facts (read before building)
 
@@ -69,6 +72,22 @@ adding more origins later — see **TEMPLATE.md** for that pattern and its decis
   tracks `getLastHurtByMob()` on every entity; checking that against the potential target inside
   `TargetGoal#canAttack` gives "friendly until this specific mob is hit by this specific player,
   then hostile toward them" for free, without inventing any new NBT/Cardinal Components data.
+- **A mixin targeting the wrong class is a hard crash, not a graceful skip — unlike a missing
+  JSON field.** An early version of `RidingOffsetMixin` targeted `Player.class` for
+  `getPassengersRidingOffset()`, a method actually declared on `Entity` and never overridden by
+  `Player`. Missing JSON fields get logged and skipped; a mixin injector that can't find its
+  target method in the specified class fails the whole mixin apply pass, which crashes Minecraft
+  at launch (well before any of this mod's own content is reachable). Verify a mixin's target
+  method is actually declared in the class you're mixing into — `javap` on the class straight out
+  of Loom's own mapped Minecraft jar (`.gradle/loom-cache/minecraftMaven/...`) settles it directly,
+  same as every power-type field in this project gets checked against real source before shipping.
+- **`bientity_condition` has no `and`/`or` combinator.** `origins:and`/`origins:or` exist for
+  plain entity conditions (`meta_condition_types`) but there's no equivalent
+  `meta_bientity_condition_types` — confirmed by checking what condition-type directories
+  origins-docs actually has. Wanting two independent bientity checks at once (e.g. "target has a
+  tag" *and* "actor can see target") needs restructuring, not a combinator; Medusa's Dreadful
+  Presence power dropped the `can_see` requirement rather than fight this, since a modest radius +
+  tag filter delivers the same "nearby hostiles" flavor without it.
 
 ## Build / verify
 
@@ -98,9 +117,10 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
 - `src/main/java/com/example/originmodstudy/`
   - `OriginModStudy.java` — main init. Calls `ModItems.registerModItems()`; the mixin needs no
     Java-side registration (declared in `arachne.mixins.json` instead).
-  - `item/ModItems.java` — the two real items this mod adds: `GOLDEN_SPIDER_EYE` (a craftable,
-    edible carnivore-diet food) and `ARACHNE_EYE` (icon-only, no recipe, not in any creative tab —
-    exists purely to give the origin a real picker icon instead of a borrowed vanilla item).
+  - `item/ModItems.java` — the real items this mod adds: `GOLDEN_SPIDER_EYE` (a craftable, edible
+    carnivore-diet food), `ARACHNE_EYE`, and `MEDUSA_EYE` (the latter two icon-only, no recipe,
+    not in any creative tab — exist purely to give each origin a real picker icon instead of a
+    borrowed vanilla item).
   - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code *power* (requirement: friendly
     arthropods) — distinct from the two items above, which are custom-code for a different reason
     (real new content, not a power Origins/Apoli has no data-driven path for).
@@ -108,26 +128,35 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
   - `origins/arachne.json` — the origin: name, description, icon (`arachne:arachne_eye`), and its
     power list (16 entries as of this writing — a mix of references to base-Origins/Origins Minus
     power IDs and this addon's own custom powers).
+  - `origins/medusa.json` — the second origin, tanky/petrify-focused (12 hearts, +6 armor,
+    on-hit and AOE petrify, immune to her own petrify effects, weakened by direct sunlight).
+    The real second worked example of the per-origin pattern — `example_stub.json` is still the
+    minimal empty-file starting point, but Medusa is what a filled-in one actually looks like.
   - `origins/example_stub.json` — TEMPLATE.md's worked-example starting point; deliberately not
     wired into the origin picker.
-  - `powers/arachne/*.json` — this addon's own custom powers. Each has an inline `name`/
-    `description` — Origins supports these as plain strings directly on the power JSON, so no
-    separate lang file entries were needed for powers (items are different, see below).
+  - `powers/arachne/*.json`, `powers/medusa/*.json` — each addon origin's own custom powers, one
+    subfolder per origin (the convention TEMPLATE.md documents, to keep same-named powers across
+    different origins from colliding). Each power has an inline `name`/`description` — Origins
+    supports these as plain strings directly on the power JSON, so no separate lang file entries
+    were needed for powers (items are different, see below).
   - `recipes/golden_spider_eye.json` — mirrors vanilla's real `golden_apple` recipe shape exactly
     (8 gold ingots around the center item), just swapping the center for a spider eye.
-  - `tags/entity_types/enemies.json` — curated hostile-mob list for the tracking-glow power.
+  - `tags/entity_types/enemies.json` — curated hostile-mob list, originally for Arachne's
+    tracking-glow power, reused as-is by Medusa's Dreadful Presence and Stone Gaze Burst (same
+    mod/namespace, so cross-origin tag reuse is just a normal reference, not a hack).
   - `tags/entity_types/friendly_arthropods.json` — spider/cave_spider/silverfish/endermite (the
     vanilla arthropod grouping; bees deliberately excluded, they aren't in it).
 - `src/main/resources/assets/arachne/`
   - `lang/en_us.json` — display names for the two real items. Items (unlike powers) always need a
     translation key; there's no inline-string option for them.
-  - `textures/item/*.png` — both item textures are the *same* vanilla `spider_eye.png` (extracted
-    from Loom's mapped Minecraft jar) run through a Pillow luminance-remap script with a different
-    color gradient per item (gold for the food, violet for the icon) — not hand-drawn art.
+  - `textures/item/*.png` — every item texture is a *vanilla* texture (`spider_eye.png` for the
+    food and Arachne's icon, `ender_eye.png` for Medusa's icon — extracted from Loom's mapped
+    Minecraft jar) run through a Pillow luminance-remap script with a different color gradient per
+    item (gold, violet, stone-green) — not hand-drawn art.
 - `src/main/resources/data/origins/` — files here are **overriding/extending Origins' own
   namespace**, not this addon's:
-  - `origin_layers/origin.json` — the merge file that actually adds Arachne to the standard
-    origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
+  - `origin_layers/origin.json` — the merge file that actually adds Arachne and Medusa to the
+    standard origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
   - `powers/master_of_webs.json` — a full-content override (via `loading_priority`) of Origins'
     own `master_of_webs` power, changing only the on-hit cobweb cooldown (120 → 40 ticks). If
     Origins ever changes that power's structure upstream, this override goes stale silently — no

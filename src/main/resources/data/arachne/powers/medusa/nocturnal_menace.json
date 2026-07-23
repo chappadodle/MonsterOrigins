@@ -1,0 +1,24 @@
+{
+	"type": "origins:multiple",
+	"sight": {
+		"type": "origins:night_vision",
+		"strength": 1.0
+	},
+	"sunburn": {
+		"type": "origins:action_over_time",
+		"interval": 20,
+		"condition": {
+			"type": "origins:exposed_to_sun"
+		},
+		"entity_action": {
+			"type": "origins:apply_effect",
+			"effect": {
+				"effect": "minecraft:weakness",
+				"amplifier": 0,
+				"duration": 40
+			}
+		}
+	},
+	"name": "Nocturnal Menace",
+	"description": "Permanent night vision, but direct sunlight weakens you — a monster of the dark."
+}

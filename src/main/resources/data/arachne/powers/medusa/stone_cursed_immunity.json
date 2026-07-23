@@ -1,0 +1,9 @@
+{
+	"type": "origins:effect_immunity",
+	"effects": [
+		"minecraft:slowness",
+		"minecraft:mining_fatigue"
+	],
+	"name": "Stone-Cursed",
+	"description": "Your own curse can't touch you — immune to Slowness and Mining Fatigue."
+}

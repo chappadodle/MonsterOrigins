@@ -1,0 +1,7 @@
+{
+	"type": "origins:modify_falling",
+	"velocity": 0.08,
+	"take_fall_damage": false,
+	"name": "Unshakeable Footing",
+	"description": "Your serpentine lower body is sure-footed — immune to fall damage."
+}

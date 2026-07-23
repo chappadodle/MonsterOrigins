@@ -35,6 +35,9 @@ public class ModItems {
 	// added to any creative tab — see CLAUDE.md.
 	public static final Item ARACHNE_EYE = register("arachne_eye", new Item(new Item.Properties()));
 
+	// Same purpose as ARACHNE_EYE above, for the Medusa origin's icon.
+	public static final Item MEDUSA_EYE = register("medusa_eye", new Item(new Item.Properties()));
+
 	private static Item register(String name, Item item) {
 		return Registry.register(BuiltInRegistries.ITEM, OriginModStudy.id(name), item);
 	}

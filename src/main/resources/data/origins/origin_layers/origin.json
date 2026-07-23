@@ -1,6 +1,7 @@
 {
 	"replace": false,
 	"origins": [
-		"arachne:arachne"
+		"arachne:arachne",
+		"arachne:medusa"
 	]
 }

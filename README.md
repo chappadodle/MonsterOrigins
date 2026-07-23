@@ -5,7 +5,10 @@
 > rough edges.
 
 A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
-the **Arachne** origin — a humanoid spider:
+two origins, **Arachne** (a humanoid spider) and **Medusa** (a gorgon) — deliberately built as
+opposites, a fragile fast assassin versus a tanky dreadful bruiser:
+
+### Arachne
 
 - Carnivore-only diet, can climb any surface, traverses/crafts cobwebs freely. Immune to poison.
 - Dangerous creatures glow with an outline once spotted (tracking).
@@ -30,8 +33,22 @@ the **Arachne** origin — a humanoid spider:
   item) and the same buff (Regeneration II for 5s, Absorption I for 2 minutes), just built around
   a spider eye instead of an apple.
 
+### Medusa
+
+- Carnivore-only diet. 12 hearts of health, solid natural armor — a bruiser, not a glass cannon.
+- **Petrifying Bite**: attacks briefly turn the target to stone — 3 seconds of heavy Slowness,
+  Mining Fatigue, and Blindness. 5 second cooldown.
+- **Stone-Cursed**: immune to Slowness and Mining Fatigue — her own curse can't touch her.
+- Immune to fall damage.
+- Permanent night vision, but weakened by direct sunlight — a monster of the dark.
+- **Dreadful Presence**: hostile creatures within 8 blocks are continuously weakened just by being
+  near her.
+- **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature
+  within 5 blocks (same effect as Petrifying Bite) for 3 seconds. 30 second cooldown.
+
 It's also written as a **worked, documented example** of a data-driven pattern for adding more
-origins — see **[`TEMPLATE.md`](TEMPLATE.md)** if you want to add your own.
+origins — see **[`TEMPLATE.md`](TEMPLATE.md)**, and Medusa herself is the second real worked
+example of that pattern (the first was Arachne).
 
 ## Requirements (to play)
 

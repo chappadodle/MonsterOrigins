@@ -1,0 +1,11 @@
+{
+	"type": "origins:attribute",
+	"modifier": {
+		"name": "Medusa serpent's vigor",
+		"attribute": "minecraft:generic.max_health",
+		"value": 4.0,
+		"operation": "addition"
+	},
+	"name": "Serpent's Vigor",
+	"description": "You have 12 hearts of health instead of 10 — a monster's constitution."
+}
