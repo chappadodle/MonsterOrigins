@@ -6,9 +6,13 @@ import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
 import io.github.apace100.origins.origin.OriginLayers;
 import io.github.apace100.origins.registry.ModComponents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.List;
 
 /**
  * Same Origins-API lookup {@code ArthropodPassiveTargetMixin} uses, pulled out so weapon items
@@ -35,5 +39,11 @@ public final class OriginUtil {
 		}
 		Origin origin = originComponent.getOrigin(layer);
 		return origin.getIdentifier().equals(originId);
+	}
+
+	/** Shared styling for every origin-gated item's tooltip (Fang tiers, Petrifying Trident,
+	 * Harpy Javelin) so a player can tell from the tooltip alone whose weapon this really is. */
+	public static void addOriginGatedTooltip(List<Component> tooltip, String text) {
+		tooltip.add(Component.literal(text).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 	}
 }

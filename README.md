@@ -79,10 +79,12 @@ fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/cro
 - **Landbound**: can stay out of water (rain counts as wet too) for 5 minutes at a time before
   starting to suffocate.
 - **1.5x swim speed, 0.8x walking speed** — she belongs in the water, not on land.
-- **Siren's Call** (primary key, unbound by default): a song that gives everyone nearby, including
-  herself, Saturation and Regeneration — while hostile creatures caught in it are also slowed,
-  blinded, and charmed into leaving everyone alone entirely for the duration. 4 second duration,
-  20 second cooldown.
+- **Siren's Call** (primary key, unbound by default): a real singing sound effect, and a song that
+  gives everyone nearby, including herself, Saturation and Regeneration — while hostile creatures
+  caught in it are also slowed, blinded, and charmed into leaving everyone alone entirely for the
+  duration. 4 second duration, 20 second cooldown.
+- **Dolphin's Grace** (secondary key, unbound by default): toggles extra swim speed on or off —
+  press once to go faster, press again to drop back down.
 - **Every sea creature is friendly** unless attacked first — including Drowned and Guardians, not
   just the obviously-passive fish.
 - **Siren's Crown**: exclusive armor, crafted from diamonds and a Heart of the Sea. Grants +2
@@ -90,7 +92,7 @@ fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/cro
 - A new global recipe unlocks crafting a vanilla trident (3 prismarine shards + 2 sticks) —
   craftable by anyone, not exclusive to Siren, same recipe-can't-see-the-player limitation as
   every other weapon in this mod.
-- No secondary ability yet — still being decided.
+- No water-breathing bubble particles while it's active — just the effect, not the visual spam.
 
 ### Weapons
 
@@ -98,9 +100,17 @@ Every origin gets a themed craftable weapon. Anyone can craft or swing either on
 on-hit effect only triggers for the matching origin — they're each origin's own signature weapon,
 not generically useful loot:
 
-- **Fang**: a light, fast dagger (built on iron's tier, less damage than an iron sword but a
-  faster swing). Poisons on every hit, undead excluded — Arachne only. Crafted from a spider eye,
-  an iron ingot, and a stick.
+- **Fang**: a light, fast dagger with a real dagger-shaped icon (not a recolored sword), in three
+  tiers — poisons on every hit, undead excluded, Arachne only. Every tier's tooltip spells out
+  exactly what it does and who it's for.
+  - **Fang** (base): iron-tier stats, Poison only. Crafted from a spider eye, an iron ingot, and a
+    stick.
+  - **Venomfang**: diamond-tier (6 attack damage), adds Bleed. Upgraded on a crafting table from a
+    Fang + a diamond + a Golden Spider Eye.
+  - **Widowfang**: netherite-tier (7 attack damage), adds Wither on top of Poison and Bleed.
+    Upgraded on a **smithing table** from a Venomfang + a netherite ingot + another Golden Spider
+    Eye — matching vanilla's own Diamond→Netherite upgrade convention rather than a plain
+    crafting recipe.
 - **Petrifying Trident**: a reskinned vanilla trident (same stats/behavior — throwable, riptide)
   that briefly petrifies whatever it hits (a lighter dose than Medusa's own Petrifying Bite) —
   Medusa only.
@@ -112,6 +122,9 @@ not generically useful loot:
   in vanilla and not something a simple reskin gets for free. Causes Bleed on hit (undead
   excluded), whether thrown or swung, and deals bonus damage on a thrown hit landed while flying —
   Harpy only. Crafted from an iron ingot, a stick, and a feather.
+
+All origin-gated weapons spell this out directly in their tooltip, not just in the README — no
+player should have to guess whose weapon they're holding.
 
 It's also written as a **worked, documented example** of a data-driven pattern for adding more
 origins — see **[`TEMPLATE.md`](TEMPLATE.md)**. Medusa is the second worked example (the first

@@ -12,6 +12,10 @@ Third-party assets used in this mod, and their licenses.
     under a compatible license — this mod's own code is CC0, but this specific audio file remains
     CC BY-SA 4.0.
 
+- **Siren's Call** (`assets/arachne/sounds/mermaid_song.ogg`) — a royalty-free stock singing
+  sound effect, provided by the user (`mermaid_song_01.ogg`). Exact source/creator not specified;
+  update this entry with the original source link if it becomes available.
+
 Everything else in this mod (textures, other data) is either built from scratch or is a
 programmatic recolor of vanilla Minecraft's own assets (Mojang/Microsoft) — see `CLAUDE.md` for
 the recolor technique used throughout.

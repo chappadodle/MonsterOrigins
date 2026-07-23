@@ -7,7 +7,8 @@
 		"arachne:siren/swim_speed",
 		"arachne:siren/land_slowness",
 		"arachne:siren/scale",
-		"arachne:siren/sirens_call"
+		"arachne:siren/sirens_call",
+		"arachne:siren/dolphins_grace_toggle"
 	],
 	"icon": {
 		"item": "arachne:siren_eye"

@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:smithing_transform",
+	"template": {
+		"item": "arachne:golden_spider_eye"
+	},
+	"base": {
+		"item": "arachne:venomfang"
+	},
+	"addition": {
+		"item": "minecraft:netherite_ingot"
+	},
+	"result": {
+		"item": "arachne:widowfang"
+	}
+}

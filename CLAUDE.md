@@ -246,6 +246,37 @@ than expected once real Origins source was checked — see the gotchas below for
   Javelin's mid-flight-visual decision) — the crown has its own custom icon, but renders as a
   generic diamond helmet when actually worn.
 
+- **`SwordItem`'s real damage formula is `attackDamageModifier + tier.getAttackDamageBonus()`,
+  added directly as the tooltip-visible attribute value** — confirmed by decompiling `SwordItem`
+  and `Tiers` together (`Tiers.DIAMOND` bonus `3.0`, `Tiers.NETHERITE` bonus `4.0`), used to land
+  Venomfang and Widowfang on exact requested/round damage numbers (6 and 7) rather than guessing a
+  modifier and checking in-game.
+- **A vanilla item's tooltip is a real, simple override (`Item#appendHoverText`), not an Origins/
+  Apoli mechanism** — confirmed via `javap`. `OriginUtil.addOriginGatedTooltip` is a tiny shared
+  helper so every origin-gated weapon's "who this is really for" line stays visually consistent
+  (gray italic) without repeating `Component`/`ChatFormatting` boilerplate in each item class.
+- **A real vanilla `smithing_transform` recipe (`template`/`base`/`addition`/`result`) doesn't
+  require its `template` slot to hold an actual vanilla smithing template item** — read directly
+  from the game's own `data/minecraft/recipes/netherite_sword_smithing.json` (extracted from the
+  same mapped jar already used for `javap`, no `gh api` needed since vanilla's own data is
+  bundled in it) rather than assumed. Widowfang's recipe repurposes that slot for a Golden Spider
+  Eye instead of a smithing template — mechanically just a third ingredient slot, no special
+  unlock/advancement gating attached the way vanilla's real template item has.
+- **A real data-driven toggle (press once to turn an effect on, press again to turn it off) is
+  possible without any custom Java, but needs `origins:if_else` + `origins:status_effect`, not a
+  dedicated "toggle" power type** — `origins:toggle_night_vision` turned out to be a one-off power
+  specific to night vision, not a generic pattern (confirmed via `gh api`, no generic sibling
+  power exists). Siren's Dolphin's Grace toggle instead checks `origins:status_effect` (does the
+  caster currently have `minecraft:dolphins_grace`) inside `origins:if_else`, then either
+  `origins:clear_effect`s it or re-`apply_effect`s it with a very long duration — the effect's own
+  presence/absence *is* the toggle state, no extra tracking needed.
+- **`origins:apply_effect`'s status effect data supports `is_ambient`/`show_particles`/
+  `show_icon` fields, not just `effect`/`amplifier`/`duration`** — found by reading Calio's real
+  `SerializationHelper.readStatusEffect` directly rather than assuming the effect JSON shape was
+  already fully known from earlier use. `show_particles: false` is what actually suppresses the
+  bubble-trail spam from Siren's periodically-reapplied Water Breathing (and reused for Dolphin's
+  Grace's own particles, for the same reason).
+
 ## Build / verify
 
 ```bash
@@ -286,13 +317,16 @@ also not a regression.
     carnivore-diet food), `ARACHNE_EYE`/`MEDUSA_EYE`/`HARPY_EYE`/`SIREN_EYE` (icon-only, no recipe,
     not in any creative tab — exist purely to give each origin a real picker icon instead of a
     borrowed vanilla item), `SILK` (a plain crafting material, no functionality yet), and
-    `FANG`/`PETRIFYING_TRIDENT`/`HARPY_JAVELIN` (craftable weapons — anyone can craft/swing either,
-    but the poison/petrify/bleed on-hit effect only triggers if the wielder has the matching
-    origin, checked via `OriginUtil` in `hurtEnemy`; see `util/OriginUtil.java` below for why
-    that's a hit-time check, not a recipe restriction). `HARPY_JAVELIN` is also this project's
-    first item with a real custom 3D model (Blockbench-authored by the user, not a recolored flat
-    icon like every other item here) — see `assets/arachne/models/item/harpy_javelin.json`.
-    `SIREN_CROWN` is `SirenCrownItem` (below).
+    `FANG`/`VENOMFANG`/`WIDOWFANG`/`PETRIFYING_TRIDENT`/`HARPY_JAVELIN` (craftable weapons —
+    anyone can craft/swing any of them, but the poison/bleed/wither/petrify on-hit effect only
+    triggers if the wielder has the matching origin, checked via `OriginUtil` in `hurtEnemy`; see
+    `util/OriginUtil.java` below for why that's a hit-time check, not a recipe restriction — and
+    `FangItem`'s own class doc for the three-tier progression). Every origin-gated weapon also
+    overrides `appendHoverText` (via `OriginUtil.addOriginGatedTooltip`) so a player can tell
+    who's-weapon-is-this from the tooltip alone. `HARPY_JAVELIN` is also this project's first item
+    with a real custom 3D model (Blockbench-authored by the user, not a recolored flat icon like
+    every other item here) — see `assets/arachne/models/item/harpy_javelin.json`. `SIREN_CROWN` is
+    `SirenCrownItem` (below).
   - `item/SirenCrownItem.java` — Siren's exclusive armor: `+2` hearts via
     `getDefaultAttributeModifiers` (`HEAD` slot, same technique `HarpyJavelinItem` uses for
     `MAINHAND`) plus continuous Regeneration via `inventoryTick`, guarded by an actually-worn
@@ -309,9 +343,9 @@ also not a regression.
   - `effect/BleedMobEffect.java`, `effect/ModEffects.java` — Harpy's Bleed status effect and its
     registration. See the gotcha above on why this needed to reproduce Poison's real tick logic
     from scratch rather than just subclass something.
-  - `sound/ModSounds.java` — registers the `arachne:harpy_scream` sound event; the actual audio
-    lives in `assets/arachne/sounds/harpy_scream.ogg` + `assets/arachne/sounds.json` (see
-    CREDITS.md for its license).
+  - `sound/ModSounds.java` — registers the `arachne:harpy_scream` and `arachne:mermaid_song` sound
+    events; the actual audio lives in `assets/arachne/sounds/*.ogg` + `assets/arachne/sounds.json`
+    (see CREDITS.md for both files' licenses).
   - `power/ScreamConeAction.java` — the one custom Apoli `EntityActionType` in this project
     (`arachne:cone_knockback`), registered into `ApoliRegistries.ENTITY_ACTION` directly rather
     than expressed in JSON. See the gotcha above for why nothing data-driven could do this.
@@ -358,9 +392,10 @@ also not a regression.
     code beyond a single mixin.
   - `origins/siren.json` — the fourth origin, aquatic support/crowd-control (breathes/sees/mines
     underwater with no penalty, a 5-minute out-of-water grace period before suffocating, a
-    speed/land tradeoff, a buff-everyone/pacify-hostiles song, every sea creature friendly). Turned
-    out to be the *most* data-driven origin in this mod, despite looking like the most
-    custom-code-heavy one going in — see the gotchas above for why.
+    speed/land tradeoff, a real-audio buff-everyone/pacify-hostiles song, a Dolphin's Grace
+    on/off toggle for the secondary key, every sea creature friendly). Turned out to be the *most*
+    data-driven origin in this mod, despite looking like the most custom-code-heavy one going in —
+    see the gotchas above for why (including the toggle, which needed no new Java at all).
   - `origins/example_stub.json` — TEMPLATE.md's worked-example starting point; deliberately not
     wired into the origin picker.
   - `powers/arachne/*.json`, `powers/medusa/*.json`, `powers/harpy/*.json`, `powers/siren/*.json` —
@@ -373,6 +408,10 @@ also not a regression.
   - `recipes/trident.json` — a new global recipe for the vanilla trident (3 prismarine shards + 2
     sticks), craftable by anyone, not Siren-exclusive — same recipe-can't-see-the-player
     limitation documented under `util/OriginUtil.java` above.
+  - `recipes/venomfang.json`, `recipes/widowfang.json` — Fang's tier-2 upgrade is a plain
+    `minecraft:crafting_shaped`/shapeless recipe; tier-3 is a real `minecraft:smithing_transform`
+    (verified against vanilla's own `netherite_sword_smithing.json`, extracted straight from the
+    mapped jar — see the gotcha above), consuming the previous tier item as its `base` ingredient.
   - `tags/entity_types/enemies.json` — curated hostile-mob list, originally for Arachne's
     tracking-glow power, reused as-is by Medusa's Dreadful Presence/Stone Gaze Burst and Siren's
     Call (same mod/namespace, so cross-origin tag reuse is just a normal reference, not a hack).

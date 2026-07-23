@@ -6,7 +6,8 @@
 		"effect": {
 			"effect": "minecraft:water_breathing",
 			"amplifier": 0,
-			"duration": 140
+			"duration": 140,
+			"show_particles": false
 		}
 	},
 	"name": "Gills",

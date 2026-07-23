@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvent;
 public class ModSounds {
 
 	public static final SoundEvent HARPY_SCREAM = register("harpy_scream");
+	public static final SoundEvent MERMAID_SONG = register("mermaid_song");
 
 	private static SoundEvent register(String name) {
 		ResourceLocation id = OriginModStudy.id(name);

@@ -5,6 +5,7 @@ import com.example.originmodstudy.entity.ThrownJavelin;
 import com.example.originmodstudy.util.OriginUtil;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,10 +22,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 /**
  * A light, fast throwing spear. Anyone can craft and swing/throw it, but the Bleed-on-hit (both
@@ -137,5 +141,12 @@ public class HarpyJavelinItem extends TridentItem {
 
 	public static boolean isHarpyOrigin(LivingEntity entity) {
 		return OriginUtil.hasOrigin(entity, HARPY_ORIGIN_ID);
+	}
+
+	@Override
+	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, level, tooltip, flag);
+		OriginUtil.addOriginGatedTooltip(tooltip,
+				"Causes Bleed on hit and deals bonus damage thrown while flying — Harpy only.");
 	}
 }

@@ -1,0 +1,34 @@
+{
+	"type": "origins:active_self",
+	"key": {
+		"key": "key.origins.secondary_active",
+		"continuous": false
+	},
+	"cooldown": 20,
+	"entity_action": {
+		"type": "origins:if_else",
+		"condition": {
+			"type": "origins:status_effect",
+			"effect": "minecraft:dolphins_grace"
+		},
+		"if_action": {
+			"type": "origins:clear_effect",
+			"effect": "minecraft:dolphins_grace"
+		},
+		"else_action": {
+			"type": "origins:apply_effect",
+			"effect": {
+				"effect": "minecraft:dolphins_grace",
+				"amplifier": 1,
+				"duration": 999999,
+				"show_particles": false
+			}
+		}
+	},
+	"hud_render": {
+		"should_render": true,
+		"bar_index": 15
+	},
+	"name": "Dolphin's Grace",
+	"description": "Press your secondary key (unbound by default — set it in Controls) to toggle extra swim speed on or off."
+}

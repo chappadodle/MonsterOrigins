@@ -50,8 +50,20 @@ public class ModItems {
 	// A light, fast dagger — built on iron's tier but with a lower damage modifier (2, vs. the
 	// vanilla iron sword's 3) and a faster attack speed modifier (-1.8, vs. the vanilla sword
 	// default -2.4), trading raw damage for swing speed to feel like a dagger rather than a sword.
+	// First of three tiers — see FangItem's class doc for the full progression.
 	public static final Item FANG = register("fang",
-			new FangItem(Tiers.IRON, 2, -1.8F, new Item.Properties()));
+			new FangItem(Tiers.IRON, 2, -1.8F, false, false, new Item.Properties()));
+
+	// Second tier: diamond-tier (modifier 3 + diamond's 3.0 bonus = 6 attack damage, same -1.8
+	// speed as Fang), adds Bleed on top of Poison. Upgraded from Fang on a crafting table.
+	public static final Item VENOMFANG = register("venomfang",
+			new FangItem(Tiers.DIAMOND, 3, -1.8F, true, false, new Item.Properties()));
+
+	// Third and final tier: netherite-tier (modifier 3 + netherite's 4.0 bonus = 7 attack damage,
+	// same speed again), adds Wither on top of Poison and Bleed. Upgraded from Venomfang on a
+	// smithing table (smithing_transform), matching vanilla's own Diamond->Netherite convention.
+	public static final Item WIDOWFANG = register("widowfang",
+			new FangItem(Tiers.NETHERITE, 3, -1.8F, true, true, new Item.Properties()));
 
 	// Vanilla trident stats/behavior (throwable, riptide, etc.), reskinned, with petrify-on-hit.
 	public static final Item PETRIFYING_TRIDENT = register("petrifying_trident",
@@ -83,6 +95,8 @@ public class ModItems {
 		});
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
 			entries.accept(FANG);
+			entries.accept(VENOMFANG);
+			entries.accept(WIDOWFANG);
 			entries.accept(PETRIFYING_TRIDENT);
 			entries.accept(HARPY_JAVELIN);
 			entries.accept(SIREN_CROWN);
