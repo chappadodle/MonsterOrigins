@@ -347,6 +347,22 @@ than expected once real Origins source was checked — see the gotchas below for
   already enforced automatically by vanilla's own `addEffect`, so "except the Wither boss itself"
   needed no extra code at all once the undead over-blocking was fixed.
 
+- **A player skin is an account-level choice, not something a mod/datapack can apply — `skins/`
+  and `SKINS.md` are a deliberate downloads-only feature with zero code integration.** Built as
+  plain 64×64 slim-model PNGs via a small reusable UV-region helper (`box_faces()` in the
+  generation script, not checked into the repo — only the finished PNGs are) implementing
+  Minecraft's standard box-UV skin layout, verified by printing every computed region's
+  coordinates and cross-checking them against the well-known standard layout before painting
+  anything (front faces, overlay-layer offsets, the bottom-strip quadrant arrangement for the
+  left arm/leg added in 1.8) — this format has been unchanged since 1.8 and is implemented
+  identically across thousands of tools, high confidence without needing per-project
+  verification the way Origins/Apoli's own schema always does.
+- **Community skin sites (Planet Minecraft, minecraftskins.com, etc.) are real, populated
+  sources for exactly this kind of themed skin, but their content has no clear redistribution
+  license — link to the source, don't rehost the file.** Same reasoning already applied to the
+  mermaid song and the barn owl recording: only originally-authored assets are safe to bundle as
+  an actual repo download.
+
 ## Build / verify
 
 ```bash
@@ -512,6 +528,9 @@ also not a regression.
     build-time way to detect that from here.
   - `tags/items/meat.json` — additive (default tag-merge behavior, not an override) — just adds
     `arachne:golden_spider_eye` to Origins' existing meat list.
+- `skins/*.png`, `SKINS.md` — optional player skins, one per origin, linked from the main README.
+  Not part of the mod build at all (not under `src/`) — see the gotcha above for why this is a
+  downloads-only feature.
 
 ## Conventions & gotchas
 

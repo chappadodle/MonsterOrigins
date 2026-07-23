@@ -29,14 +29,14 @@ fragile fast assassin, tanky bruiser, aerial skirmisher, and aquatic support/cro
 - No fall damage from falls under 10 blocks.
 - Weakened while touching water — a spider out of its element.
 - Takes 50% more damage from fire — brittle, dry, and flammable.
-- Produces 6 string in your inventory every 20 minutes.
+- Produces 6 silk in your inventory every 20 minutes.
 - **Quickness**: noticeably faster base movement speed (+35%, well past Avian's own barely-there
   +20% tailwind) — spiders are quick for their size. A flat attribute bonus, not a potion effect.
 - **Golden Spider Eye**: a new food item, the carnivore-diet equivalent of a golden apple (which
   Arachne can't eat — apples aren't meat). Same crafting cost (8 gold ingots around the center
   item) and the same buff (Regeneration II for 5s, Absorption I for 2 minutes), just built around
   a spider eye instead of an apple.
-- **Silk**: a new crafting material (4 string → 1 silk), craftable by anyone but thematically
+- **Silk**: a new crafting material (3 string → 1 silk), craftable by anyone but thematically
   Arachne's own — no use yet, reserved for future recipes.
 
 ### Medusa
@@ -147,6 +147,9 @@ Drop these into your `mods/` folder (all for **1.20.1 Fabric**):
 3. [Origins Minus](https://modrinth.com/mod/origins-minus) (`2.4.0+1.20`)
 4. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21`)
 5. This mod's jar (build it with `./gradlew build`, output in `build/libs/`)
+
+Optionally, **[`SKINS.md`](SKINS.md)** has a mythology-inspired player skin for each origin —
+purely cosmetic, not required, and not installed as a mod (a skin is an account-level choice).
 
 ## Building / developing
 

@@ -1,14 +1,16 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "minecraft:crafting_shapeless",
 	"category": "misc",
-	"key": {
-		"S": {
+	"ingredients": [
+		{
+			"item": "minecraft:string"
+		},
+		{
+			"item": "minecraft:string"
+		},
+		{
 			"item": "minecraft:string"
 		}
-	},
-	"pattern": [
-		"SS",
-		"SS"
 	],
 	"result": {
 		"item": "arachne:silk"

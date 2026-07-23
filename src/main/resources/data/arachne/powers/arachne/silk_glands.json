@@ -3,8 +3,8 @@
 	"interval": 24000,
 	"entity_action": {
 		"type": "origins:execute_command",
-		"command": "give @s minecraft:string 6"
+		"command": "give @s arachne:silk 6"
 	},
 	"name": "Silk Glands",
-	"description": "Every 20 minutes, you naturally produce 6 string."
+	"description": "Every 20 minutes, you naturally produce 6 silk."
 }
