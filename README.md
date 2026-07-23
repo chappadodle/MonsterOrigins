@@ -7,15 +7,20 @@
 A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
 the **Arachne** origin — a humanoid spider:
 
-- Carnivore-only diet, can climb any surface, traverses/crafts cobwebs freely.
+- Carnivore-only diet, can climb any surface, traverses/crafts cobwebs freely. Immune to poison.
 - Dangerous creatures glow with an outline once spotted (tracking).
 - ~60% of normal height/width (via [Pehkui](https://modrinth.com/mod/pehkui)).
-- Attacks poison the target for 10 seconds (undead immune, 5s cooldown) and briefly web-trap them.
+- Attacks poison the target for 10 seconds (undead immune, 5s cooldown) and briefly web-trap them
+  (2s cooldown on the web).
 - Every arthropod (spider, cave spider, silverfish, endermite) is friendly — until you attack it.
 - Night vision. 6 hearts of health, a small amount of natural armor.
 - **Rappel** (double-tap space, same as Origins Minus's Weaver origin): pull yourself upward on a
   strand of web. Only works indoors, under a ceiling or overhang. Reuses Origins Minus's own
   `rappel` power directly rather than reimplementing it.
+- **Scuttle** (secondary key, unbound by default): a burst of Speed II for 5 seconds, at the cost
+  of burning through food much faster while it's active. 20 second cooldown.
+- **Latch On**: sneak + right-click a nearby player to climb onto them like prey. A perch (you ride
+  them), not free movement — sneak again to let go.
 
 It's also written as a **worked, documented example** of a data-driven pattern for adding more
 origins — see **[`TEMPLATE.md`](TEMPLATE.md)** if you want to add your own.

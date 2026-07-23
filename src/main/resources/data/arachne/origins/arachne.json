@@ -11,7 +11,8 @@
 		"arachne:arachne/on_hit_poison",
 		"origins_minus:rappel",
 		"arachne:arachne/poison_immunity",
-		"arachne:arachne/scuttle"
+		"arachne:arachne/scuttle",
+		"arachne:arachne/latch_on"
 	],
 	"icon": {
 		"item": "minecraft:spider_eye"

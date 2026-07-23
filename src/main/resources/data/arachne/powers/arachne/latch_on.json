@@ -1,0 +1,33 @@
+{
+	"type": "origins:active_self",
+	"key": {
+		"key": "key.use",
+		"continuous": false
+	},
+	"cooldown": 20,
+	"condition": {
+		"type": "origins:sneaking"
+	},
+	"entity_action": {
+		"type": "origins:raycast",
+		"block": true,
+		"entity": true,
+		"entity_distance": 4,
+		"bientity_condition": {
+			"type": "origins:target_condition",
+			"condition": {
+				"type": "origins:entity_type",
+				"entity_type": "minecraft:player"
+			}
+		},
+		"bientity_action": {
+			"type": "origins:mount"
+		}
+	},
+	"hud_render": {
+		"should_render": true,
+		"bar_index": 8
+	},
+	"name": "Latch On",
+	"description": "Sneak and right-click a nearby player to climb onto them, spider-style. Press sneak again to let go — this is a perch, not free movement around them, so it can feel a little stiff. Doesn't work through walls."
+}
