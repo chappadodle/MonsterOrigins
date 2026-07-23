@@ -30,6 +30,11 @@ public class ModItems {
 							.effect(new MobEffectInstance(MobEffects.ABSORPTION, 2400, 0), 1.0F)
 							.build())));
 
+	// Exists purely to carry a texture for the origin's icon in the origin-picker GUI (Origins'
+	// "icon" field only accepts a registered item ID, not a raw texture path). Not craftable, not
+	// added to any creative tab — see CLAUDE.md.
+	public static final Item ARACHNE_EYE = register("arachne_eye", new Item(new Item.Properties()));
+
 	private static Item register(String name, Item item) {
 		return Registry.register(BuiltInRegistries.ITEM, OriginModStudy.id(name), item);
 	}

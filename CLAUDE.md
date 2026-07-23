@@ -84,22 +84,44 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
 ## Layout
 
 - `src/main/java/com/example/originmodstudy/`
-  - `OriginModStudy.java` — main init. Registers nothing itself; exists for the mixin config
-    entrypoint since every power is data-driven or reused.
-  - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code power (requirement: friendly
-    arthropods).
+  - `OriginModStudy.java` — main init. Calls `ModItems.registerModItems()`; the mixin needs no
+    Java-side registration (declared in `arachne.mixins.json` instead).
+  - `item/ModItems.java` — the two real items this mod adds: `GOLDEN_SPIDER_EYE` (a craftable,
+    edible carnivore-diet food) and `ARACHNE_EYE` (icon-only, no recipe, not in any creative tab —
+    exists purely to give the origin a real picker icon instead of a borrowed vanilla item).
+  - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code *power* (requirement: friendly
+    arthropods) — distinct from the two items above, which are custom-code for a different reason
+    (real new content, not a power Origins/Apoli has no data-driven path for).
 - `src/main/resources/data/arachne/`
-  - `origins/arachne.json` — the origin: name, description, icon, and its power list.
+  - `origins/arachne.json` — the origin: name, description, icon (`arachne:arachne_eye`), and its
+    power list (16 entries as of this writing — a mix of references to base-Origins/Origins Minus
+    power IDs and this addon's own custom powers).
   - `origins/example_stub.json` — TEMPLATE.md's worked-example starting point; deliberately not
     wired into the origin picker.
-  - `powers/arachne/*.json` — the six custom powers (night vision, max health, armor, tracking
-    glow, scale, on-hit poison). Each has an inline `name`/`description` — Origins supports these
-    as plain strings directly on the power JSON, so no separate lang file entries were needed.
+  - `powers/arachne/*.json` — this addon's own custom powers. Each has an inline `name`/
+    `description` — Origins supports these as plain strings directly on the power JSON, so no
+    separate lang file entries were needed for powers (items are different, see below).
+  - `recipes/golden_spider_eye.json` — mirrors vanilla's real `golden_apple` recipe shape exactly
+    (8 gold ingots around the center item), just swapping the center for a spider eye.
   - `tags/entity_types/enemies.json` — curated hostile-mob list for the tracking-glow power.
   - `tags/entity_types/friendly_arthropods.json` — spider/cave_spider/silverfish/endermite (the
     vanilla arthropod grouping; bees deliberately excluded, they aren't in it).
-- `src/main/resources/data/origins/origin_layers/origin.json` — the merge file that actually adds
-  Arachne to the standard origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
+- `src/main/resources/assets/arachne/`
+  - `lang/en_us.json` — display names for the two real items. Items (unlike powers) always need a
+    translation key; there's no inline-string option for them.
+  - `textures/item/*.png` — both item textures are the *same* vanilla `spider_eye.png` (extracted
+    from Loom's mapped Minecraft jar) run through a Pillow luminance-remap script with a different
+    color gradient per item (gold for the food, violet for the icon) — not hand-drawn art.
+- `src/main/resources/data/origins/` — files here are **overriding/extending Origins' own
+  namespace**, not this addon's:
+  - `origin_layers/origin.json` — the merge file that actually adds Arachne to the standard
+    origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
+  - `powers/master_of_webs.json` — a full-content override (via `loading_priority`) of Origins'
+    own `master_of_webs` power, changing only the on-hit cobweb cooldown (120 → 40 ticks). If
+    Origins ever changes that power's structure upstream, this override goes stale silently — no
+    build-time way to detect that from here.
+  - `tags/items/meat.json` — additive (default tag-merge behavior, not an override) — just adds
+    `arachne:golden_spider_eye` to Origins' existing meat list.
 
 ## Conventions & gotchas
 
