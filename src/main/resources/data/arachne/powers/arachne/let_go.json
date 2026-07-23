@@ -1,19 +1,17 @@
 {
-	"type": "origins:action_over_time",
-	"interval": 1,
-	"hidden": true,
+	"type": "origins:active_self",
+	"key": {
+		"key": "key.sneak"
+	},
+	"cooldown": 1,
+	"hud_render": {
+		"should_render": false
+	},
 	"condition": {
-		"type": "origins:and",
-		"conditions": [
-			{
-				"type": "origins:sneaking"
-			},
-			{
-				"type": "origins:riding"
-			}
-		]
+		"type": "origins:riding"
 	},
 	"entity_action": {
 		"type": "origins:dismount"
-	}
+	},
+	"hidden": true
 }
