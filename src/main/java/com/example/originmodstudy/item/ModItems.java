@@ -9,6 +9,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Tiers;
 
 /**
  * Registers every item this mod adds. Fields are {@code static final} so they are
@@ -38,6 +39,16 @@ public class ModItems {
 	// Same purpose as ARACHNE_EYE above, for the Medusa origin's icon.
 	public static final Item MEDUSA_EYE = register("medusa_eye", new Item(new Item.Properties()));
 
+	// A light, fast dagger — built on iron's tier but with a lower damage modifier (2, vs. the
+	// vanilla iron sword's 3) and a faster attack speed modifier (-1.8, vs. the vanilla sword
+	// default -2.4), trading raw damage for swing speed to feel like a dagger rather than a sword.
+	public static final Item FANG = register("fang",
+			new FangItem(Tiers.IRON, 2, -1.8F, new Item.Properties()));
+
+	// Vanilla trident stats/behavior (throwable, riptide, etc.), reskinned, with petrify-on-hit.
+	public static final Item PETRIFYING_TRIDENT = register("petrifying_trident",
+			new PetrifyingTridentItem(new Item.Properties().durability(250)));
+
 	private static Item register(String name, Item item) {
 		return Registry.register(BuiltInRegistries.ITEM, OriginModStudy.id(name), item);
 	}
@@ -45,6 +56,10 @@ public class ModItems {
 	public static void registerModItems() {
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
 			entries.accept(GOLDEN_SPIDER_EYE);
+		});
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
+			entries.accept(FANG);
+			entries.accept(PETRIFYING_TRIDENT);
 		});
 	}
 }

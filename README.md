@@ -46,6 +46,17 @@ opposites, a fragile fast assassin versus a tanky dreadful bruiser:
 - **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature
   within 5 blocks (same effect as Petrifying Bite) for 3 seconds. 30 second cooldown.
 
+### Weapons
+
+Both origins get a themed craftable weapon — not origin-gated, anyone can wield either:
+
+- **Fang**: a light, fast dagger (built on iron's tier, less damage than an iron sword but a
+  faster swing). Poisons on every hit, undead excluded. Crafted from a spider eye, an iron ingot,
+  and a stick.
+- **Petrifying Trident**: a reskinned vanilla trident (same stats/behavior — throwable, riptide)
+  that briefly petrifies whatever it hits (a lighter dose than Medusa's own Petrifying Bite).
+  Crafted from stone and iron ingots.
+
 It's also written as a **worked, documented example** of a data-driven pattern for adding more
 origins — see **[`TEMPLATE.md`](TEMPLATE.md)**, and Medusa herself is the second real worked
 example of that pattern (the first was Arachne).

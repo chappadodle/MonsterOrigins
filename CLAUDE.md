@@ -118,9 +118,11 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
   - `OriginModStudy.java` — main init. Calls `ModItems.registerModItems()`; the mixin needs no
     Java-side registration (declared in `arachne.mixins.json` instead).
   - `item/ModItems.java` — the real items this mod adds: `GOLDEN_SPIDER_EYE` (a craftable, edible
-    carnivore-diet food), `ARACHNE_EYE`, and `MEDUSA_EYE` (the latter two icon-only, no recipe,
-    not in any creative tab — exist purely to give each origin a real picker icon instead of a
-    borrowed vanilla item).
+    carnivore-diet food), `ARACHNE_EYE`/`MEDUSA_EYE` (icon-only, no recipe, not in any creative
+    tab — exist purely to give each origin a real picker icon instead of a borrowed vanilla
+    item), and `FANG`/`PETRIFYING_TRIDENT` (craftable weapons, not origin-gated — any wielder
+    gets the poison/petrify on-hit effect, verified against `hurtEnemy` in Loom's mapped
+    Minecraft jar the same way every mixin/item method in this project gets checked before use).
   - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code *power* (requirement: friendly
     arthropods) — distinct from the two items above, which are custom-code for a different reason
     (real new content, not a power Origins/Apoli has no data-driven path for).
