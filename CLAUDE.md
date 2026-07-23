@@ -123,9 +123,18 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
   - `item/ModItems.java` — the real items this mod adds: `GOLDEN_SPIDER_EYE` (a craftable, edible
     carnivore-diet food), `ARACHNE_EYE`/`MEDUSA_EYE` (icon-only, no recipe, not in any creative
     tab — exist purely to give each origin a real picker icon instead of a borrowed vanilla
-    item), and `FANG`/`PETRIFYING_TRIDENT` (craftable weapons, not origin-gated — any wielder
-    gets the poison/petrify on-hit effect, verified against `hurtEnemy` in Loom's mapped
-    Minecraft jar the same way every mixin/item method in this project gets checked before use).
+    item), and `FANG`/`PETRIFYING_TRIDENT` (craftable weapons — anyone can craft/swing either,
+    but the poison/petrify on-hit effect only triggers if the wielder has the matching origin,
+    checked via `OriginUtil` in `hurtEnemy`; see `util/OriginUtil.java` below for why that's a
+    hit-time check, not a recipe restriction).
+  - `util/OriginUtil.java` — `hasOrigin(LivingEntity, ResourceLocation)`, the same
+    `ModComponents.ORIGIN`/`OriginLayers` lookup `ArthropodPassiveTargetMixin` uses, pulled out so
+    the two origin-gated weapons don't duplicate it. **Vanilla's `CraftingRecipe#matches` has no
+    access to which player is crafting** (confirmed via `javap` on `Recipe`/`CraftingRecipe` in
+    Loom's mapped jar) — a true recipe-level origin restriction would need a custom recipe type
+    plus a way to identify the crafting player, real complexity for a "study" project. Gating the
+    weapon's *effect* at hit-time instead is simpler, more reliable, and arguably the more correct
+    place to enforce "whose weapon this is" for a melee weapon regardless.
   - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code *power* (requirement: friendly
     arthropods) — distinct from the two items above, which are custom-code for a different reason
     (real new content, not a power Origins/Apoli has no data-driven path for).

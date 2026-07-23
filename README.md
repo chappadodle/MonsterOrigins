@@ -46,13 +46,16 @@ opposites, a fragile fast assassin versus a tanky dreadful bruiser:
 
 ### Weapons
 
-Both origins get a themed craftable weapon — not origin-gated, anyone can wield either:
+Both origins get a themed craftable weapon. Anyone can craft or swing either one, but the bonus
+on-hit effect only triggers for the matching origin — they're each origin's own signature weapon,
+not generically useful loot:
 
 - **Fang**: a light, fast dagger (built on iron's tier, less damage than an iron sword but a
-  faster swing). Poisons on every hit, undead excluded. Crafted from a spider eye, an iron ingot,
-  and a stick.
+  faster swing). Poisons on every hit, undead excluded — Arachne only. Crafted from a spider eye,
+  an iron ingot, and a stick.
 - **Petrifying Trident**: a reskinned vanilla trident (same stats/behavior — throwable, riptide)
-  that briefly petrifies whatever it hits (a lighter dose than Medusa's own Petrifying Bite).
+  that briefly petrifies whatever it hits (a lighter dose than Medusa's own Petrifying Bite) —
+  Medusa only.
   Crafted from stone and iron ingots.
 
 It's also written as a **worked, documented example** of a data-driven pattern for adding more

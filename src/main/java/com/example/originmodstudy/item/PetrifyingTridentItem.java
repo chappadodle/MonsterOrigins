@@ -1,5 +1,7 @@
 package com.example.originmodstudy.item;
 
+import com.example.originmodstudy.util.OriginUtil;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,10 +10,13 @@ import net.minecraft.world.item.TridentItem;
 
 /**
  * A reskinned trident that briefly petrifies whatever it hits — a lighter dose (shorter
- * duration, lower amplifiers) than Medusa's own Petrifying Bite origin power, since any
- * wielder gets this on-hit effect, origin or not.
+ * duration, lower amplifiers) than Medusa's own Petrifying Bite origin power — but only if the
+ * wielder has the Medusa origin; it's her weapon. See FangItem for why this gating happens at
+ * hit-time rather than on the crafting recipe.
  */
 public class PetrifyingTridentItem extends TridentItem {
+	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("arachne", "medusa");
+
 	public PetrifyingTridentItem(Properties properties) {
 		super(properties);
 	}
@@ -19,9 +24,11 @@ public class PetrifyingTridentItem extends TridentItem {
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		boolean result = super.hurtEnemy(stack, target, attacker);
-		target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
-		target.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 0));
-		target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0));
+		if (OriginUtil.hasOrigin(attacker, MEDUSA_ORIGIN_ID)) {
+			target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
+			target.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, 0));
+			target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0));
+		}
 		return result;
 	}
 }
