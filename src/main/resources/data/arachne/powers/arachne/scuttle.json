@@ -6,13 +6,13 @@
 			"key": "key.origins.secondary_active",
 			"continuous": false
 		},
-		"cooldown": 400,
+		"cooldown": 300,
 		"entity_action": {
 			"type": "origins:apply_effect",
 			"effect": {
 				"effect": "minecraft:speed",
-				"amplifier": 1,
-				"duration": 100,
+				"amplifier": 3,
+				"duration": 80,
 				"show_particles": true,
 				"show_icon": true
 			}
@@ -36,5 +36,5 @@
 		}
 	},
 	"name": "Scuttle",
-	"description": "Press your secondary key (unbound by default — set it in Controls) for a burst of Speed II lasting 5 seconds, at the cost of burning through food much faster while it's active. 20 second cooldown."
+	"description": "Press your secondary key (unbound by default — set it in Controls) for a burst of Speed IV lasting 4 seconds, at the cost of burning through food much faster while it's active. 15 second cooldown."
 }

@@ -17,8 +17,8 @@ the **Arachne** origin — a humanoid spider:
 - **Rappel** (double-tap space, same as Origins Minus's Weaver origin): pull yourself upward on a
   strand of web. Only works indoors, under a ceiling or overhang. Reuses Origins Minus's own
   `rappel` power directly rather than reimplementing it.
-- **Scuttle** (secondary key, unbound by default): a burst of Speed II for 5 seconds, at the cost
-  of burning through food much faster while it's active. 20 second cooldown.
+- **Scuttle** (secondary key, unbound by default): a burst of Speed IV for 4 seconds, at the cost
+  of burning through food much faster while it's active. 15 second cooldown.
 - **Latch On**: sneak + right-click a nearby player to climb onto them like prey. A perch (you ride
   them), not free movement — sneak again to let go.
 - Can't use a shield.
