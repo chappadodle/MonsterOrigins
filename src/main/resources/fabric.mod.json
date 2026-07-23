@@ -1,18 +1,18 @@
 {
 	"schemaVersion": 1,
-	"id": "arachne",
+	"id": "monster_origins",
 	"version": "${version}",
 	"name": "Monster Origins",
-	"description": "An Origins addon adding four mythological-monster origins, Arachne, Medusa, Harpy, and Siren, built as a worked, documented example of the data-driven pattern for adding more origins later. See TEMPLATE.md.",
+	"description": "An Origins addon adding four mythological-monster origins: Arachne, Medusa, Harpy, and Siren.",
 	"authors": [
 		"You"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/"
+		"homepage": "https://github.com/chappadodle/Monster-Origins",
+		"sources": "https://github.com/chappadodle/Monster-Origins"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/arachne/icon.png",
+	"icon": "assets/monster_origins/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -23,7 +23,7 @@
 		]
 	},
 	"mixins": [
-		"arachne.mixins.json"
+		"monster_origins.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.3",

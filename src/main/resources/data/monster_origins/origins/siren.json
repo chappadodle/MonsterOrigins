@@ -1,0 +1,20 @@
+{
+	"powers": [
+		"origins:carnivore",
+		"origins:aqua_affinity",
+		"monster_origins:siren/water_breathing",
+		"monster_origins:siren/dehydration",
+		"monster_origins:siren/swim_speed",
+		"monster_origins:siren/land_slowness",
+		"monster_origins:siren/scale",
+		"monster_origins:siren/sirens_call",
+		"monster_origins:siren/dolphins_grace_toggle"
+	],
+	"icon": {
+		"item": "monster_origins:siren_eye"
+	},
+	"order": 14,
+	"impact": 2,
+	"name": "Siren",
+	"description": "A seductive singer of the deep. At home in the water, breathes, sees, swims, and mines there with no trouble at all, but can't stay ashore for long, and every sea creature answers to her call."
+}

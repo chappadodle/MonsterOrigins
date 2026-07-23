@@ -27,7 +27,7 @@ import java.util.List;
  * vanilla's own Diamond-to-Netherite upgrade convention rather than a plain crafting recipe).
  */
 public class FangItem extends SwordItem {
-	private static final ResourceLocation ARACHNE_ORIGIN_ID = new ResourceLocation("arachne", "arachne");
+	private static final ResourceLocation ARACHNE_ORIGIN_ID = new ResourceLocation("monster_origins", "arachne");
 
 	private final boolean bleedOnHit;
 	private final boolean witherOnHit;

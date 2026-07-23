@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key": {
+		"D": {
+			"item": "minecraft:diamond"
+		},
+		"H": {
+			"item": "minecraft:heart_of_the_sea"
+		}
+	},
+	"pattern": [
+		"DHD",
+		"D D"
+	],
+	"result": {
+		"item": "monster_origins:siren_crown"
+	}
+}

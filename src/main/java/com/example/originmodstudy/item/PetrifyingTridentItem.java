@@ -20,7 +20,7 @@ import java.util.List;
  * hit-time rather than on the crafting recipe.
  */
 public class PetrifyingTridentItem extends TridentItem {
-	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("arachne", "medusa");
+	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("monster_origins", "medusa");
 
 	public PetrifyingTridentItem(Properties properties) {
 		super(properties);

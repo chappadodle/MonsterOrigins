@@ -94,7 +94,7 @@ data-driven approach.
 
 ## Phase 2 — Reading the data: how Arachne's powers actually work
 
-Open `src/main/resources/data/arachne/origins/arachne.json`. Its `"powers"` array has 9 entries,
+Open `src/main/resources/data/monster_origins/origins/arachne.json`. Its `"powers"` array has 9 entries,
 and they fall into two groups:
 
 **Three are references to Origins' own built-in powers** — `origins:carnivore`,
@@ -109,7 +109,7 @@ them by ID. Zero new files needed for three of the eight original requirements.
   `max_health.json`'s `-8.0` (20 HP → 12 HP, i.e. 6 hearts) against the real Shulk origin's own
   armor power (`+8.0` armor) that this pattern was modeled on — same power *type*, different
   numbers, different power.
-- `tracking_glow.json` — makes anything in the `arachne:enemies` tag (a curated list of hostile
+- `tracking_glow.json` — makes anything in the `monster_origins:enemies` tag (a curated list of hostile
   mobs, in `tags/entity_types/enemies.json`) glow once you can see it, using the built-in
   `origins:entity_glow` power type with a `can_see` condition.
 - `scale.json` — the 50%-size requirement. There's no built-in Origins↔Pehkui integration, so
@@ -177,5 +177,5 @@ spiders/cave spiders/silverfish/endermite ignore you until you hit one, then fig
 That's what `TEMPLATE.md` is for — it's the same pattern this tutorial just walked through,
 written as a standalone reference with a decision checklist ("does an existing power already do
 this? can I configure an existing power type? does it need a command integration? only then: does
-it need real code?"), plus `data/arachne/origins/example_stub.json` as a literal copy-paste
+it need real code?"), plus `data/monster_origins/origins/example_stub.json` as a literal copy-paste
 starting point.

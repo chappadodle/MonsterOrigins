@@ -32,7 +32,7 @@ than expected once real Origins source was checked — see the gotchas below for
   point `JAVA_HOME`/`org.gradle.java.home` at a JDK 21+ before running Gradle.
 - **Almost everything is data**, not Java. Arachne's own powers are 3 references to base Origins
   power IDs + 6 small custom power JSON files + one origin file + two entity-type tags — see
-  `src/main/resources/data/arachne/`. Only one requirement (arthropods staying passive until
+  `src/main/resources/data/monster_origins/`. Only one requirement (arthropods staying passive until
   attacked) needed real code, because Origins has no data-driven way to modify mob AI targeting
   (tracked upstream as `apace100/origins-fabric#144`, still open).
 - **Compile-time-only dependencies for the one custom-code power:**
@@ -43,8 +43,8 @@ than expected once real Origins source was checked — see the gotchas below for
   their own Maven repos (Ladysnake's maven for Cardinal Components, JitPack for Calio — see the
   repo comments for exactly why each one was needed and how those coordinates were found).
 - **Powers under `powers/<origin_id>/` need the subfolder in their ID.** A file at
-  `data/arachne/powers/arachne/foo.json` is referenced as `arachne:arachne/foo`, not
-  `arachne:foo` — Origins resolves power IDs as a literal file path relative to the `powers`
+  `data/monster_origins/powers/arachne/foo.json` is referenced as `monster_origins:arachne/foo`, not
+  `monster_origins:foo` — Origins resolves power IDs as a literal file path relative to the `powers`
   folder. Got this wrong once already (all six custom powers silently failed to apply until
   fixed); see TEMPLATE.md §1.
 - **`origins:execute_command` runs Pehkui's `/scale` command with a subtlety that broke it
@@ -310,16 +310,24 @@ than expected once real Origins source was checked — see the gotchas below for
   worth checking against this real limit (not just "must be a small number") whenever a new
   key-bound/cooldown power gets a `hud_render` block.
 
-- **The mod's display name (`Monster Origins`) and its technical mod ID (`arachne`) are
-  deliberately different, and that's a real decision, not an oversight.** `fabric.mod.json`'s
-  `"id"` field is baked into every single resource/data path and every item/origin/power
-  identifier in this project (`data/arachne/...`, `arachne:fang`, `arachne:medusa`, etc.) — a full
-  rename would mean moving every folder and rewriting every namespaced string across hundreds of
-  files, *and* it would break any existing world that already has this mod's items in an inventory
-  or an origin selected (Minecraft saves reference the full namespaced ID; a renamed namespace
-  makes old references show up as missing). The user explicitly chose a display-name-only rename
-  for exactly this reason — if a full namespace rename is ever wanted later, treat it as a
-  deliberate, separate, disruptive migration, not a quick find-and-replace.
+- **The mod's technical ID went through two separate rename decisions, not one — worth knowing
+  the history if old references turn up anywhere (a stray old-world save, an old link, etc).**
+  First pass: display name only (`fabric.mod.json`'s `"name"` became "Monster Origins" while
+  `"id"` stayed `arachne`), specifically to avoid breaking existing test worlds — the ID is baked
+  into every single resource/data path and every item/origin/power identifier, so a full rename
+  meant moving every folder and rewriting every namespaced string across the whole project. Second
+  pass, once the user decided to actually cut an official release: did the full rename anyway
+  (`arachne` → `monster_origins`, `id` field, both top-level `data/`/`assets/` folders via `git mv`
+  to preserve history, every hardcoded `new ResourceLocation("arachne", ...)` in Java, the mixins
+  config filename, and — easy to miss — every **lang key** too, since translation keys are
+  namespace-prefixed the same as item IDs (`item.arachne.fang` → `item.monster_origins.fang`);
+  missing that would have silently shown every item/effect/subtitle name as its raw untranslated
+  key, the exact bug already documented above for Bleed's missing lang entry. Accepted
+  consequence, explicitly: any world with this mod's items already in an inventory or an origin
+  already selected now shows those as missing, since Minecraft saves reference the full
+  namespaced ID. `settings.gradle`'s `rootProject.name` (its own comment literally says "should
+  match your modid") drives the actual built jar's filename — it was still `originsmodstudy`
+  after the ID rename until caught separately; the built jar is now `monster_origins-<version>.jar`.
 
 - **A custom `MobEffect` needs its own icon texture and lang key, same as a custom item —
   neither is optional or auto-generated, and both were missing for Bleed (and Charmed) until
@@ -395,7 +403,7 @@ also not a regression.
     overrides `appendHoverText` (via `OriginUtil.addOriginGatedTooltip`) so a player can tell
     who's-weapon-is-this from the tooltip alone. `HARPY_JAVELIN` is also this project's first item
     with a real custom 3D model (Blockbench-authored by the user, not a recolored flat icon like
-    every other item here) — see `assets/arachne/models/item/harpy_javelin.json`. `SIREN_CROWN` is
+    every other item here) — see `assets/monster_origins/models/item/harpy_javelin.json`. `SIREN_CROWN` is
     `SirenCrownItem` (below).
   - `item/SirenCrownItem.java` — Siren's exclusive armor: `+2` hearts via
     `getDefaultAttributeModifiers` (`HEAD` slot, same technique `HarpyJavelinItem` uses for
@@ -413,11 +421,11 @@ also not a regression.
   - `effect/BleedMobEffect.java`, `effect/ModEffects.java` — Harpy's Bleed status effect and its
     registration. See the gotcha above on why this needed to reproduce Poison's real tick logic
     from scratch rather than just subclass something.
-  - `sound/ModSounds.java` — registers the `arachne:harpy_scream` and `arachne:mermaid_song` sound
-    events; the actual audio lives in `assets/arachne/sounds/*.ogg` + `assets/arachne/sounds.json`
+  - `sound/ModSounds.java` — registers the `monster_origins:harpy_scream` and `monster_origins:mermaid_song` sound
+    events; the actual audio lives in `assets/monster_origins/sounds/*.ogg` + `assets/monster_origins/sounds.json`
     (see CREDITS.md for both files' licenses).
   - `power/ScreamConeAction.java` — the one custom Apoli `EntityActionType` in this project
-    (`arachne:cone_knockback`), registered into `ApoliRegistries.ENTITY_ACTION` directly rather
+    (`monster_origins:cone_knockback`), registered into `ApoliRegistries.ENTITY_ACTION` directly rather
     than expressed in JSON. See the gotcha above for why nothing data-driven could do this.
   - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code *power* implemented as a mixin
     specifically (requirement: friendly arthropods) — distinct from the items/effect/action above,
@@ -448,8 +456,8 @@ also not a regression.
     `EntityRendererRegistry.register` doesn't exist on a dedicated server's classpath.
   - `ThrownHarpyJavelinRenderer.java` — renders `ThrownJavelin` via vanilla's `ThrownItemRenderer`
     (the same base class snowballs/eggs/ender pearls use), instead of writing a renderer by hand.
-- `src/main/resources/data/arachne/`
-  - `origins/arachne.json` — the origin: name, description, icon (`arachne:arachne_eye`), and its
+- `src/main/resources/data/monster_origins/`
+  - `origins/arachne.json` — the origin: name, description, icon (`monster_origins:arachne_eye`), and its
     power list (16 entries as of this writing — a mix of references to base-Origins/Origins Minus
     power IDs and this addon's own custom powers).
   - `origins/medusa.json` — the second origin, tanky/petrify-focused (12 hearts, +6 armor,
@@ -492,7 +500,7 @@ also not a regression.
     this mixin technique intercepts — see the Guardian gotcha above).
   - `tags/items/raw_meat.json` — the raw-meat items (plus rotten flesh) Harpy's Hardy Stomach power
     checks against.
-- `src/main/resources/assets/arachne/`
+- `src/main/resources/assets/monster_origins/`
   - `lang/en_us.json` — display names for every real item. Items (unlike powers) always need a
     translation key; there's no inline-string option for them.
   - `textures/item/*.png` — every item texture except the Harpy Javelin is a *vanilla* texture
@@ -511,7 +519,7 @@ also not a regression.
     Origins ever changes that power's structure upstream, this override goes stale silently — no
     build-time way to detect that from here.
   - `tags/items/meat.json` — additive (default tag-merge behavior, not an override) — just adds
-    `arachne:golden_spider_eye` to Origins' existing meat list.
+    `monster_origins:golden_spider_eye` to Origins' existing meat list.
 ## Conventions & gotchas
 
 - Only commit when asked. Build artifacts (`build/`, `.gradle/`, `run/`) are gitignored.

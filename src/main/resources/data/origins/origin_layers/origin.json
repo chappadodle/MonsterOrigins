@@ -1,9 +1,9 @@
 {
 	"replace": false,
 	"origins": [
-		"arachne:arachne",
-		"arachne:medusa",
-		"arachne:harpy",
-		"arachne:siren"
+		"monster_origins:arachne",
+		"monster_origins:medusa",
+		"monster_origins:harpy",
+		"monster_origins:siren"
 	]
 }

@@ -1,0 +1,29 @@
+{
+	"type": "origins:action_over_time",
+	"interval": 20,
+	"entity_action": {
+		"type": "origins:area_of_effect",
+		"radius": 8,
+		"shape": "sphere",
+		"bientity_condition": {
+			"type": "origins:target_condition",
+			"condition": {
+				"type": "origins:in_tag",
+				"tag": "monster_origins:enemies"
+			}
+		},
+		"bientity_action": {
+			"type": "origins:target_action",
+			"action": {
+				"type": "origins:apply_effect",
+				"effect": {
+					"effect": "minecraft:weakness",
+					"amplifier": 0,
+					"duration": 40
+				}
+			}
+		}
+	},
+	"name": "Dreadful Presence",
+	"description": "Hostile creatures within 8 blocks are weakened by dread as long as you're nearby."
+}

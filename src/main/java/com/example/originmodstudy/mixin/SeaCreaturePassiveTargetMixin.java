@@ -37,11 +37,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TargetGoal.class)
 public abstract class SeaCreaturePassiveTargetMixin {
 	private static final ResourceLocation FRIENDLY_SEA_CREATURES_TAG_ID =
-		new ResourceLocation("arachne", "friendly_sea_creatures");
+		new ResourceLocation("monster_origins", "friendly_sea_creatures");
 	private static final TagKey<EntityType<?>> FRIENDLY_SEA_CREATURES =
 		TagKey.create(Registries.ENTITY_TYPE, FRIENDLY_SEA_CREATURES_TAG_ID);
 	private static final ResourceLocation ORIGIN_LAYER_ID = new ResourceLocation("origins", "origin");
-	private static final ResourceLocation SIREN_ORIGIN_ID = new ResourceLocation("arachne", "siren");
+	private static final ResourceLocation SIREN_ORIGIN_ID = new ResourceLocation("monster_origins", "siren");
 
 	@Shadow
 	@Final

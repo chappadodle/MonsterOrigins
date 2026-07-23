@@ -14,14 +14,14 @@ src/main/resources/data/<your_mod_id>/
   tags/entity_types/<tag_name>.json          — any custom mob-grouping tags your powers reference
 ```
 
-Arachne's own files under `data/arachne/` are the reference implementation of this layout —
+Arachne's own files under `data/monster_origins/` are the reference implementation of this layout —
 `origins/arachne.json` and `powers/arachne/*.json` are the ones to read alongside this doc.
 
 A power file is referenced from the origin's `"powers"` array as `<namespace>:<path>`, where
 `<path>` is the file's path *relative to the `powers` folder, extension dropped* — not just the
 filename. Because this repo nests each origin's powers under their own subfolder (so a second
 origin's power files never collide by name with Arachne's), that path includes the subfolder:
-`arachne:arachne/on_hit_poison` for `data/arachne/powers/arachne/on_hit_poison.json` (a real bug
+`monster_origins:arachne/on_hit_poison` for `data/monster_origins/powers/arachne/on_hit_poison.json` (a real bug
 in an earlier version of this file referenced these without the subfolder segment — the power
 silently failed to resolve, so it just never applied; see `arachne.json`'s `"powers"` array for
 the corrected form). You are **not**
@@ -52,7 +52,7 @@ at this exact path and Origins concatenates all of their `"origins"` arrays toge
 See `data/origins/origin_layers/origin.json` in this repo for the real one wiring in Arachne.
 
 An origin you *don't* want selectable yet (a work-in-progress stub, for instance) simply isn't
-listed in any `origin_layers` file — see `data/arachne/origins/example_stub.json`, which exists
+listed in any `origin_layers` file — see `data/monster_origins/origins/example_stub.json`, which exists
 as a copy-paste starting point but is deliberately not merged into the picker.
 
 ## 3. The decision checklist
@@ -70,7 +70,7 @@ For each ability your new origin needs, work through these in order:
    a small JSON file, no Java.
 3. **Does it need a command-driven integration with another mod (like Pehkui)?** Use
    `origins:action_on_callback` with an `origins:execute_command` entity action — see
-   `data/arachne/powers/arachne/scale.json`.
+   `data/monster_origins/powers/arachne/scale.json`.
 4. **Only if 1–3 don't cover it: does it need real code?** Some things genuinely have no
    data-pack-only path — Arachne's own build hit exactly one: mob AI targeting has no generic
    Origins power to modify it (tracked as an

@@ -54,7 +54,7 @@ import java.util.List;
  * the {@code origins:master_of_webs} override in CLAUDE.md.
  */
 public class HarpyJavelinItem extends TridentItem {
-	private static final ResourceLocation HARPY_ORIGIN_ID = new ResourceLocation("arachne", "harpy");
+	private static final ResourceLocation HARPY_ORIGIN_ID = new ResourceLocation("monster_origins", "harpy");
 	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
 	public HarpyJavelinItem(Properties properties) {

@@ -1,0 +1,20 @@
+{
+	"powers": [
+		"origins:carnivore",
+		"monster_origins:medusa/petrifying_bite",
+		"monster_origins:medusa/stone_cursed_immunity",
+		"monster_origins:medusa/stone_scales",
+		"monster_origins:medusa/vigor",
+		"monster_origins:medusa/unshakeable_footing",
+		"monster_origins:medusa/nocturnal_menace",
+		"monster_origins:medusa/dreadful_presence",
+		"monster_origins:medusa/stone_gaze_burst"
+	],
+	"icon": {
+		"item": "monster_origins:medusa_eye"
+	},
+	"order": 11,
+	"impact": 3,
+	"name": "Medusa",
+	"description": "A gorgon whose gaze turns the living to stone. Tanky and dreadful, not fast or subtle. The opposite of Arachne."
+}

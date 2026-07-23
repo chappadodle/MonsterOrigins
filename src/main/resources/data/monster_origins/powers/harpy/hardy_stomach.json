@@ -1,0 +1,20 @@
+{
+	"type": "origins:modify_food",
+	"item_condition": {
+		"type": "origins:ingredient",
+		"ingredient": {
+			"tag": "monster_origins:raw_meat"
+		}
+	},
+	"prevent_effects": true,
+	"entity_action": {
+		"type": "origins:apply_effect",
+		"effect": {
+			"effect": "minecraft:regeneration",
+			"amplifier": 0,
+			"duration": 40
+		}
+	},
+	"name": "Hardy Stomach",
+	"description": "Raw meat and rotten flesh are perfectly safe to eat. No Hunger, just a brief burst of Regeneration."
+}

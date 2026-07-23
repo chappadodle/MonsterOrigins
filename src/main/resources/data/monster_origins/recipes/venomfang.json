@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "equipment",
+	"ingredients": [
+		{
+			"item": "monster_origins:fang"
+		},
+		{
+			"item": "minecraft:diamond"
+		},
+		{
+			"item": "monster_origins:golden_spider_eye"
+		}
+	],
+	"result": {
+		"item": "monster_origins:venomfang"
+	}
+}

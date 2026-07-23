@@ -1,0 +1,29 @@
+{
+	"powers": [
+		"origins:carnivore",
+		"origins:climbing",
+		"origins:master_of_webs",
+		"origins:no_shield",
+		"monster_origins:arachne/night_vision",
+		"monster_origins:arachne/max_health",
+		"monster_origins:arachne/armor",
+		"monster_origins:arachne/tracking_glow",
+		"monster_origins:arachne/scale",
+		"monster_origins:arachne/on_hit_poison",
+		"origins_minus:rappel",
+		"monster_origins:arachne/poison_immunity",
+		"monster_origins:arachne/scuttle",
+		"monster_origins:arachne/water_weakness",
+		"monster_origins:arachne/silk_glands",
+		"monster_origins:arachne/sure_footed",
+		"monster_origins:arachne/quickness",
+		"monster_origins:arachne/fire_vulnerability"
+	],
+	"icon": {
+		"item": "monster_origins:arachne_eye"
+	},
+	"order": 10,
+	"impact": 2,
+	"name": "Arachne",
+	"description": "A humanoid spider. Carnivorous, venomous, and at home in darkness and webs, but fragile outside its element."
+}

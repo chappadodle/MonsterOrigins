@@ -1,0 +1,14 @@
+{
+	"harpy_scream": {
+		"sounds": [
+			"monster_origins:harpy_scream"
+		],
+		"subtitle": "subtitle.arachne.harpy_scream"
+	},
+	"mermaid_song": {
+		"sounds": [
+			"monster_origins:mermaid_song"
+		],
+		"subtitle": "subtitle.arachne.mermaid_song"
+	}
+}

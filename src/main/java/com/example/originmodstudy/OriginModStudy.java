@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OriginModStudy implements ModInitializer {
-	public static final String MOD_ID = "arachne";
+	public static final String MOD_ID = "monster_origins";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	@Override

@@ -1,0 +1,18 @@
+{
+	"item.monster_origins.golden_spider_eye": "Golden Spider Eye",
+	"item.monster_origins.arachne_eye": "Arachne's Eye",
+	"item.monster_origins.medusa_eye": "Medusa's Eye",
+	"item.monster_origins.harpy_eye": "Harpy's Eye",
+	"item.monster_origins.fang": "Fang",
+	"item.monster_origins.venomfang": "Venomfang",
+	"item.monster_origins.widowfang": "Widowfang",
+	"item.monster_origins.petrifying_trident": "Petrifying Trident",
+	"item.monster_origins.harpy_javelin": "Harpy Javelin",
+	"item.monster_origins.silk": "Silk",
+	"item.monster_origins.siren_eye": "Siren's Eye",
+	"item.monster_origins.siren_crown": "Siren's Crown",
+	"subtitle.monster_origins.harpy_scream": "Harpy screeches",
+	"subtitle.monster_origins.mermaid_song": "Siren sings",
+	"effect.monster_origins.bleed": "Bleed",
+	"effect.monster_origins.charmed": "Charmed"
+}

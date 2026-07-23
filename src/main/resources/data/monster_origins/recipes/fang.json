@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key": {
+		"E": {
+			"item": "minecraft:spider_eye"
+		},
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"#": {
+			"item": "minecraft:stick"
+		}
+	},
+	"pattern": [
+		"E",
+		"I",
+		"#"
+	],
+	"result": {
+		"item": "monster_origins:fang"
+	}
+}

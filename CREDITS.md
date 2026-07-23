@@ -4,7 +4,7 @@ Third-party assets used in this mod, and their licenses.
 
 ## Audio
 
-- **Harpy's Scream** (`assets/arachne/sounds/harpy_scream.ogg`) — a barn owl screech recording.
+- **Harpy's Scream** (`assets/monster_origins/sounds/harpy_scream.ogg`) — a barn owl screech recording.
   - Source: [xeno-canto recording #345927](https://www.xeno-canto.org/345927) by Luis Gracia.
   - License: [Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
   - Used as-is (background noise removed by the original uploader). Per CC BY-SA, any
@@ -12,7 +12,7 @@ Third-party assets used in this mod, and their licenses.
     under a compatible license — this mod's own code is CC0, but this specific audio file remains
     CC BY-SA 4.0.
 
-- **Siren's Call** (`assets/arachne/sounds/mermaid_song.ogg`) — a royalty-free stock singing
+- **Siren's Call** (`assets/monster_origins/sounds/mermaid_song.ogg`) — a royalty-free stock singing
   sound effect, provided by the user (`mermaid_song_01.ogg`). Exact source/creator not specified;
   update this entry with the original source link if it becomes available.
 

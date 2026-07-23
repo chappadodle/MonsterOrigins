@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:smithing_transform",
+	"template": {
+		"item": "monster_origins:golden_spider_eye"
+	},
+	"base": {
+		"item": "monster_origins:venomfang"
+	},
+	"addition": {
+		"item": "minecraft:netherite_ingot"
+	},
+	"result": {
+		"item": "monster_origins:widowfang"
+	}
+}

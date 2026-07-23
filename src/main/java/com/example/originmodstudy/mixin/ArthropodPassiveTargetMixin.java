@@ -38,11 +38,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TargetGoal.class)
 public abstract class ArthropodPassiveTargetMixin {
 	private static final ResourceLocation FRIENDLY_ARTHROPODS_TAG_ID =
-		new ResourceLocation("arachne", "friendly_arthropods");
+		new ResourceLocation("monster_origins", "friendly_arthropods");
 	private static final TagKey<EntityType<?>> FRIENDLY_ARTHROPODS =
 		TagKey.create(Registries.ENTITY_TYPE, FRIENDLY_ARTHROPODS_TAG_ID);
 	private static final ResourceLocation ORIGIN_LAYER_ID = new ResourceLocation("origins", "origin");
-	private static final ResourceLocation ARACHNE_ORIGIN_ID = new ResourceLocation("arachne", "arachne");
+	private static final ResourceLocation ARACHNE_ORIGIN_ID = new ResourceLocation("monster_origins", "arachne");
 
 	@Shadow
 	@Final

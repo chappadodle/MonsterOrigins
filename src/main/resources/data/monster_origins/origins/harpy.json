@@ -1,0 +1,22 @@
+{
+	"powers": [
+		"origins:carnivore",
+		"origins:no_shield",
+		"monster_origins:harpy/vigor",
+		"monster_origins:harpy/glide",
+		"monster_origins:harpy/flight",
+		"monster_origins:harpy/gust",
+		"monster_origins:harpy/talons",
+		"monster_origins:harpy/scale",
+		"monster_origins:harpy/scream",
+		"monster_origins:harpy/hardy_stomach",
+		"monster_origins:harpy/fire_vulnerability"
+	],
+	"icon": {
+		"item": "monster_origins:harpy_eye"
+	},
+	"order": 12,
+	"impact": 2,
+	"name": "Harpy",
+	"description": "A storm-wind bird-woman, screeching and swift. Fragile and hollow-boned, but the sky is hers alone."
+}

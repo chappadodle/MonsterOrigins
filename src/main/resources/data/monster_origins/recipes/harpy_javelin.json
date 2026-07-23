@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key": {
+		"I": {
+			"item": "minecraft:iron_ingot"
+		},
+		"#": {
+			"item": "minecraft:stick"
+		},
+		"F": {
+			"item": "minecraft:feather"
+		}
+	},
+	"pattern": [
+		"I",
+		"#",
+		"F"
+	],
+	"result": {
+		"item": "monster_origins:harpy_javelin"
+	}
+}
