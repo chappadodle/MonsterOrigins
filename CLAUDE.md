@@ -5,12 +5,15 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 **Origin Mod Study** — an **experimental** Minecraft **1.20.1 / Fabric** addon for the
-[Origins](https://modrinth.com/mod/origins) mod (a learning/hobby project). Adds two origins,
-**Arachne** (a humanoid spider) and **Medusa** (a gorgon), as worked, documented examples of a
-data-driven pattern for adding more origins later — see **TEMPLATE.md** for that pattern and its
-decision checklist. The two are deliberately built as opposites (fragile/fast/poison vs.
-tanky/slow/petrify) so the pattern gets exercised against two different design directions, not
-just two reskins of the same kit.
+[Origins](https://modrinth.com/mod/origins) mod (a learning/hobby project). Adds three origins,
+**Arachne** (a humanoid spider), **Medusa** (a gorgon), and **Harpy** (a storm-wind bird-woman),
+as worked, documented examples of a data-driven pattern for adding more origins later — see
+**TEMPLATE.md** for that pattern and its decision checklist. Each plays differently on purpose
+(fragile/fast/poison, tanky/slow/petrify, aerial/fragile/knockback) so the pattern gets exercised
+against genuinely different design directions, not reskins of the same kit. Harpy is also the
+first origin needing real custom code *beyond* a single mixin — a new status effect and a custom
+Apoli action type, both because nothing data-driven could express what was asked for; see the
+gotchas below for exactly why, verified rather than assumed in both cases.
 
 ## Critical environment facts (read before building)
 
@@ -91,6 +94,43 @@ just two reskins of the same kit.
   tag" *and* "actor can see target") needs restructuring, not a combinator; Medusa's Dreadful
   Presence power dropped the `can_see` requirement rather than fight this, since a modest radius +
   tag filter delivers the same "nearby hostiles" flavor without it.
+- **Vanilla Poison/Wither/Regeneration are not implemented via `MobEffect` subclassing — they're
+  hardcoded by identity-check inside the shared base class.** Confirmed via `javap` on the actual
+  compiled classes: `MobEffects.POISON` etc. are constructed as plain `new MobEffect(...)`
+  (there's exactly one anonymous `MobEffect` subclass in the whole vanilla package, and it's Bad
+  Omen's raid-triggering logic, not Poison's). The real tick-damage logic — `if (this ==
+  MobEffects.POISON) { ... damage 1, capped so it can't kill ... }` — lives directly inside
+  `MobEffect.applyEffectTick()`/`isDurationEffectTick()`, comparing by reference against the
+  literal vanilla singleton. **This means a brand-new custom effect gets none of that behavior for
+  free, even if constructed identically** — `BleedMobEffect` (`effect/BleedMobEffect.java`)
+  exists specifically to reproduce Poison's exact real formula (interval `25 >> amplifier`, 1
+  damage via `damageSources().magic()`, capped at 1 HP) as actual subclass overrides. The same
+  hardcoding pattern applies to Poison's undead immunity (`LivingEntity#canBeAffected` only
+  special-cases the literal vanilla Poison/Regeneration objects) — a new effect doesn't inherit
+  that either; enforce it at the application site instead (see `talons.json`'s `target_condition`
+  excluding the undead entity group), the same pattern Arachne's own on-hit poison already uses.
+- **Some things genuinely have no data-driven path in Origins/Apoli, and it's worth actually
+  checking rather than assuming a workaround exists.** Harpy's Scream needed "knock back only
+  what's in front of the caster." `origins:relative_rotation` looked like the answer but (read its
+  actual Java source, not just the doc's natural-language description) compares two entities' own
+  independent facing directions to each other, not "is the target positioned in front of the
+  actor's position" — the wrong computation entirely. `area_of_effect`'s `shape` field is only
+  `cube`/`star`/`sphere`, no cone. `add_velocity` only takes a fixed vector, no "radiate outward
+  from caster" mode. All three needed checking against real source/docs before concluding none of
+  them fit — see `power/ScreamConeAction.java` for the resulting custom Apoli
+  `EntityActionType` registration (a dot-product cone check + per-target outward knockback), the
+  correct escalation once the data-driven options are actually exhausted, not just assumed absent.
+- **Registering into Apoli's own registries (not just Origins') needs Apoli itself as a compile
+  dependency, and its POM pulls in more than you'd expect.** `ApoliRegistries`/`ActionFactory`
+  (used by `ScreamConeAction`) live in Apoli's own package, so `com.github.apace100:apoli` had to
+  be added as `modCompileOnly` — every prior custom-code piece in this project only ever needed
+  Origins' classes. Apoli's published POM transitively pulls in Cloth Config, Mod Menu, and
+  Reach Entity Attributes (its optional config-screen/attack-range integrations), none of which
+  this project has any other reason to depend on or host a Maven repo for. Excluding those three
+  modules directly on the dependency declaration (`exclude group: ..., module: ...`) resolved it
+  cleanly — simpler and more robust than chasing each transitive dependency's own Maven host one
+  repository at a time, and the compile still succeeds because `ActionFactory`/`ApoliRegistries`
+  don't actually reference those excluded modules' types in their own public signatures.
 
 ## Build / verify
 
@@ -118,15 +158,16 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
 ## Layout
 
 - `src/main/java/com/example/originmodstudy/`
-  - `OriginModStudy.java` — main init. Calls `ModItems.registerModItems()`; the mixin needs no
-    Java-side registration (declared in `arachne.mixins.json` instead).
+  - `OriginModStudy.java` — main init. Calls every registrar (`ModItems`, `ModEffects`,
+    `ModSounds`, `ScreamConeAction`); the mixin needs no Java-side registration (declared in
+    `arachne.mixins.json` instead).
   - `item/ModItems.java` — the real items this mod adds: `GOLDEN_SPIDER_EYE` (a craftable, edible
-    carnivore-diet food), `ARACHNE_EYE`/`MEDUSA_EYE` (icon-only, no recipe, not in any creative
-    tab — exist purely to give each origin a real picker icon instead of a borrowed vanilla
-    item), and `FANG`/`PETRIFYING_TRIDENT` (craftable weapons — anyone can craft/swing either,
-    but the poison/petrify on-hit effect only triggers if the wielder has the matching origin,
-    checked via `OriginUtil` in `hurtEnemy`; see `util/OriginUtil.java` below for why that's a
-    hit-time check, not a recipe restriction).
+    carnivore-diet food), `ARACHNE_EYE`/`MEDUSA_EYE`/`HARPY_EYE` (icon-only, no recipe, not in any
+    creative tab — exist purely to give each origin a real picker icon instead of a borrowed
+    vanilla item), and `FANG`/`PETRIFYING_TRIDENT` (craftable weapons — anyone can craft/swing
+    either, but the poison/petrify on-hit effect only triggers if the wielder has the matching
+    origin, checked via `OriginUtil` in `hurtEnemy`; see `util/OriginUtil.java` below for why
+    that's a hit-time check, not a recipe restriction).
   - `util/OriginUtil.java` — `hasOrigin(LivingEntity, ResourceLocation)`, the same
     `ModComponents.ORIGIN`/`OriginLayers` lookup `ArthropodPassiveTargetMixin` uses, pulled out so
     the two origin-gated weapons don't duplicate it. **Vanilla's `CraftingRecipe#matches` has no
@@ -135,9 +176,19 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
     plus a way to identify the crafting player, real complexity for a "study" project. Gating the
     weapon's *effect* at hit-time instead is simpler, more reliable, and arguably the more correct
     place to enforce "whose weapon this is" for a melee weapon regardless.
-  - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code *power* (requirement: friendly
-    arthropods) — distinct from the two items above, which are custom-code for a different reason
-    (real new content, not a power Origins/Apoli has no data-driven path for).
+  - `effect/BleedMobEffect.java`, `effect/ModEffects.java` — Harpy's Bleed status effect and its
+    registration. See the gotcha above on why this needed to reproduce Poison's real tick logic
+    from scratch rather than just subclass something.
+  - `sound/ModSounds.java` — registers the `arachne:harpy_scream` sound event; the actual audio
+    lives in `assets/arachne/sounds/harpy_scream.ogg` + `assets/arachne/sounds.json` (see
+    CREDITS.md for its license).
+  - `power/ScreamConeAction.java` — the one custom Apoli `EntityActionType` in this project
+    (`arachne:cone_knockback`), registered into `ApoliRegistries.ENTITY_ACTION` directly rather
+    than expressed in JSON. See the gotcha above for why nothing data-driven could do this.
+  - `mixin/ArthropodPassiveTargetMixin.java` — the one custom-code *power* implemented as a mixin
+    specifically (requirement: friendly arthropods) — distinct from the items/effect/action above,
+    each of which is custom code for a different reason (real new content, or a registry Apoli
+    itself is designed for addons to extend into).
 - `src/main/resources/data/arachne/`
   - `origins/arachne.json` — the origin: name, description, icon (`arachne:arachne_eye`), and its
     power list (16 entries as of this writing — a mix of references to base-Origins/Origins Minus
@@ -146,13 +197,17 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
     on-hit and AOE petrify, immune to her own petrify effects, weakened by direct sunlight).
     The real second worked example of the per-origin pattern — `example_stub.json` is still the
     minimal empty-file starting point, but Medusa is what a filled-in one actually looks like.
+  - `origins/harpy.json` — the third origin, true flight + fragile + aerial skirmisher (8 hearts,
+    permanent elytra-less flight, a flight-speed boost power, bare-fist bonus damage + the custom
+    Bleed effect, a directional knockback scream). The one origin in this mod needing real custom
+    code beyond a single mixin.
   - `origins/example_stub.json` — TEMPLATE.md's worked-example starting point; deliberately not
     wired into the origin picker.
-  - `powers/arachne/*.json`, `powers/medusa/*.json` — each addon origin's own custom powers, one
-    subfolder per origin (the convention TEMPLATE.md documents, to keep same-named powers across
-    different origins from colliding). Each power has an inline `name`/`description` — Origins
-    supports these as plain strings directly on the power JSON, so no separate lang file entries
-    were needed for powers (items are different, see below).
+  - `powers/arachne/*.json`, `powers/medusa/*.json`, `powers/harpy/*.json` — each addon origin's
+    own custom powers, one subfolder per origin (the convention TEMPLATE.md documents, to keep
+    same-named powers across different origins from colliding). Each power has an inline
+    `name`/`description` — Origins supports these as plain strings directly on the power JSON, so
+    no separate lang file entries were needed for powers (items are different, see below).
   - `recipes/golden_spider_eye.json` — mirrors vanilla's real `golden_apple` recipe shape exactly
     (8 gold ingots around the center item), just swapping the center for a spider eye.
   - `tags/entity_types/enemies.json` — curated hostile-mob list, originally for Arachne's
@@ -163,14 +218,17 @@ jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
 - `src/main/resources/assets/arachne/`
   - `lang/en_us.json` — display names for the two real items. Items (unlike powers) always need a
     translation key; there's no inline-string option for them.
-  - `textures/item/*.png` — every item texture is a *vanilla* texture (`spider_eye.png` for the
-    food and Arachne's icon, `ender_eye.png` for Medusa's icon — extracted from Loom's mapped
-    Minecraft jar) run through a Pillow luminance-remap script with a different color gradient per
-    item (gold, violet, stone-green) — not hand-drawn art.
+  - `textures/item/*.png` — every item texture is a *vanilla* texture (`spider_eye.png`,
+    `ender_eye.png`, `feather.png`, `iron_sword.png`, `trident.png` — extracted from Loom's mapped
+    Minecraft jar as needed) run through a Pillow luminance-remap script with a different color
+    gradient per item (gold, violet, stone-green, storm-grey, cave-spider teal/red) — not
+    hand-drawn art.
+  - `sounds/harpy_scream.ogg`, `sounds.json` — Harpy's Scream audio (see CREDITS.md for license);
+    the one non-recolored, non-code-generated asset in this project.
 - `src/main/resources/data/origins/` — files here are **overriding/extending Origins' own
   namespace**, not this addon's:
-  - `origin_layers/origin.json` — the merge file that actually adds Arachne and Medusa to the
-    standard origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
+  - `origin_layers/origin.json` — the merge file that actually adds Arachne, Medusa, and Harpy to
+    the standard origin-picker GUI (see TEMPLATE.md §2 for why this path/format).
   - `powers/master_of_webs.json` — a full-content override (via `loading_priority`) of Origins'
     own `master_of_webs` power, changing only the on-hit cobweb cooldown (120 → 40 ticks). If
     Origins ever changes that power's structure upstream, this override goes stale silently — no

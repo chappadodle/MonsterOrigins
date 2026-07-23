@@ -5,8 +5,9 @@
 > rough edges.
 
 A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
-two origins, **Arachne** (a humanoid spider) and **Medusa** (a gorgon) — deliberately built as
-opposites, a fragile fast assassin versus a tanky dreadful bruiser:
+three origins — **Arachne** (a humanoid spider), **Medusa** (a gorgon), and **Harpy** (a
+storm-wind bird-woman) — each built around a different playstyle: fragile fast assassin, tanky
+bruiser, and aerial skirmisher.
 
 ### Arachne
 
@@ -44,6 +45,23 @@ opposites, a fragile fast assassin versus a tanky dreadful bruiser:
 - **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature
   within 5 blocks (same effect as Petrifying Bite) for 3 seconds. 30 second cooldown.
 
+### Harpy
+
+- Carnivore-only diet. 8 hearts of health — light, hollow bones. Can't use a shield.
+- **Glide**: drift down slowly when falling; hold sneak to drop out of the glide and fall
+  normally.
+- **Wings**: true flight, always — no elytra item needed.
+- **Sudden Gust** (primary key, unbound by default): a flight speed boost on a 5 second cooldown
+  — effectively unlimited flight.
+- **Talons**: bare-handed strikes deal 2.5 extra hearts of damage and inflict **Bleed** for 3
+  seconds (undead immune) — a brand new status effect added by this mod, mechanically identical
+  to Poison (same tick-damage behavior, verified against the game's actual source) but with its
+  own name/color, so Harpy's claws don't read as "poisonous."
+- **Scream** (secondary key, unbound by default): a shrieking blast that knocks back whatever's
+  in front of you within 8 blocks — behind you is completely unaffected. 20 second cooldown. Uses
+  a real barn owl screech recording (CC BY-SA 4.0, credited in [`CREDITS.md`](CREDITS.md)).
+- 85% of normal height/width (via Pehkui).
+
 ### Weapons
 
 Both origins get a themed craftable weapon. Anyone can craft or swing either one, but the bonus
@@ -59,8 +77,10 @@ not generically useful loot:
   Crafted from stone and iron ingots.
 
 It's also written as a **worked, documented example** of a data-driven pattern for adding more
-origins — see **[`TEMPLATE.md`](TEMPLATE.md)**, and Medusa herself is the second real worked
-example of that pattern (the first was Arachne).
+origins — see **[`TEMPLATE.md`](TEMPLATE.md)**. Medusa is the second worked example (the first
+was Arachne); Harpy is the third, and the first origin in this mod that genuinely needs custom
+Java beyond a single mixin — a new status effect (Bleed) and a custom Apoli action type (Scream's
+forward-cone knockback), since neither has any data-driven path. See `CLAUDE.md` for exactly why.
 
 ## Requirements (to play)
 
@@ -89,3 +109,5 @@ Needs **JDK 21+** (the Gradle toolchain requires it; the mod itself targets Java
   [Origins Minus](https://github.com/sisby-folk/origins-minus) by their respective authors — this
   mod is an addon for their work, not affiliated with them.
 - This mod's own code is available under CC0 (the Fabric template's license).
+- Harpy's Scream sound is a real recording used under CC BY-SA 4.0 — see
+  [`CREDITS.md`](CREDITS.md) for full attribution.

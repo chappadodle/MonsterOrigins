@@ -1,0 +1,20 @@
+{
+	"powers": [
+		"origins:carnivore",
+		"origins:no_shield",
+		"arachne:harpy/vigor",
+		"arachne:harpy/glide",
+		"arachne:harpy/flight",
+		"arachne:harpy/gust",
+		"arachne:harpy/talons",
+		"arachne:harpy/scale",
+		"arachne:harpy/scream"
+	],
+	"icon": {
+		"item": "arachne:harpy_eye"
+	},
+	"order": 12,
+	"impact": 2,
+	"name": "Harpy",
+	"description": "A storm-wind bird-woman, screeching and swift. Fragile and hollow-boned, but the sky is hers alone."
+}

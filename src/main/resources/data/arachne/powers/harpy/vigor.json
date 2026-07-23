@@ -1,0 +1,11 @@
+{
+	"type": "origins:attribute",
+	"modifier": {
+		"name": "Harpy hollow bones",
+		"attribute": "minecraft:generic.max_health",
+		"value": -4.0,
+		"operation": "addition"
+	},
+	"name": "Hollow-Boned",
+	"description": "You have 8 hearts of health instead of 10 — light bones built for flight, not fights."
+}

@@ -1,0 +1,16 @@
+{
+	"type": "origins:launch",
+	"cooldown": 100,
+	"speed": 2,
+	"sound": "minecraft:entity.parrot.fly",
+	"key": {
+		"key": "key.origins.primary_active",
+		"continuous": true
+	},
+	"hud_render": {
+		"should_render": true,
+		"bar_index": 4
+	},
+	"name": "Sudden Gust",
+	"description": "While flying, hold your primary key (unbound by default — set it in Controls) for a burst of speed. 5 second cooldown — effectively unlimited flight."
+}

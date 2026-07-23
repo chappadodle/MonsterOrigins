@@ -39,6 +39,9 @@ public class ModItems {
 	// Same purpose as ARACHNE_EYE above, for the Medusa origin's icon.
 	public static final Item MEDUSA_EYE = register("medusa_eye", new Item(new Item.Properties()));
 
+	// Same purpose as ARACHNE_EYE above, for the Harpy origin's icon.
+	public static final Item HARPY_EYE = register("harpy_eye", new Item(new Item.Properties()));
+
 	// A light, fast dagger — built on iron's tier but with a lower damage modifier (2, vs. the
 	// vanilla iron sword's 3) and a faster attack speed modifier (-1.8, vs. the vanilla sword
 	// default -2.4), trading raw damage for swing speed to feel like a dagger rather than a sword.

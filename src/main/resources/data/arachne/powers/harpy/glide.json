@@ -1,0 +1,11 @@
+{
+	"type": "origins:modify_falling",
+	"velocity": 0.02,
+	"take_fall_damage": false,
+	"condition": {
+		"type": "origins:sneaking",
+		"inverted": true
+	},
+	"name": "Glide",
+	"description": "You drift down slowly when falling. Hold sneak to drop out of the glide and fall normally."
+}
