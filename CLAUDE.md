@@ -75,7 +75,15 @@ than expected once real Origins source was checked — see the gotchas below for
   Apoli's internals from source.
 - **Dependency versions are pinned to what's actually installed** in this machine's PrismLauncher
   test instances ("SOLO origin" and "1.20.1"), not just "whatever's newest" — see
-  `gradle.properties` for the full list and reasoning.
+  `gradle.properties` for the full list and reasoning. Re-checked against Modrinth's API on
+  2026-07-27 (player-facing concern: the README's version list read like a strict exact pin): all
+  four (Fabric API, Origins, Origins Minus, Pehkui) were already the newest release covering
+  1.20.1 at that date, so nothing needed bumping. Separately, `fabric.mod.json`'s own `depends`
+  block was already minimum-version/wildcard (`>=`/`*`), not exact-pinned, so Fabric Loader already
+  accepts newer releases than whatever's compiled against here — only the README's wording needed
+  to say so. If a genuinely newer release exists next time this is checked, re-verify the same way
+  (Modrinth's `GET /v2/project/<slug>/version?game_versions=["1.20.1"]&loaders=["fabric"]`, newest
+  entry first) before bumping `gradle.properties`.
 - **The mixin's core trick needs no custom persistent state.** Vanilla `LivingEntity` already
   tracks `getLastHurtByMob()` on every entity; checking that against the potential target inside
   `TargetGoal#canAttack` gives "friendly until this specific mob is hit by this specific player,

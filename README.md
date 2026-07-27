@@ -135,12 +135,14 @@ forward cone knockback), since neither has any data driven path. See `CLAUDE.md`
 
 ## Requirements (to play)
 
-Drop these into your `mods/` folder (all for **1.20.1 Fabric**):
+Drop these into your `mods/` folder (all for **1.20.1 Fabric**). Each version below is a
+**minimum**, not an exact pin: any newer release of the same mod for 1.20.1 works too, matching
+what this mod's own `fabric.mod.json` actually declares.
 
-1. [Fabric API](https://modrinth.com/mod/fabric-api) (`0.92.x+1.20.1`)
-2. [Origins](https://modrinth.com/mod/origins) (`1.10.2+mc.1.20.1`)
-3. [Origins Minus](https://modrinth.com/mod/origins-minus) (`2.4.0+1.20`)
-4. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21`)
+1. [Fabric API](https://modrinth.com/mod/fabric-api) (`0.92.11+1.20.1` or newer)
+2. [Origins](https://modrinth.com/mod/origins) (`1.10.2+mc.1.20.1` or newer)
+3. [Origins Minus](https://modrinth.com/mod/origins-minus) (`2.4.0+1.20` or newer)
+4. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21` or newer)
 5. This mod's jar (build it with `./gradlew build`, output in `build/libs/`)
 
 ## Building / developing
