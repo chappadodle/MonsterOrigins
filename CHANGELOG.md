@@ -38,6 +38,25 @@ section instead of an origin's.
   flat and untiered.
 - Fang, Venomfang, and Widowfang durability is now an explicit override (500, 1500, and 3500 uses)
   instead of inheriting each tool tier's raw durability value.
+- Corrected the tiered Poison escalation above to match the original design more closely, after a
+  fresh comparison against the source design document. Fang now escalates through Tier 1, 2, and 3
+  across three hits instead of staying capped at Tier 1 forever; Venomfang now applies Tier 2 on
+  the very first hit and escalates to Tier 3 on a second hit instead of climbing from Tier 1 to
+  Tier 2 across two hits; Widowfang now applies Tier 3 instantly on the very first hit, every time,
+  instead of needing three hits to reach it. All three still share one underlying hit tracking
+  sequence per target, exactly as before, so switching weapons mid fight still climbs the same
+  count.
+- Poison duration now scales with the tier actually applied: 200, 240, and 280 ticks (10, 12, and
+  14 seconds) for Tier 1, 2, and 3, instead of a flat 60 ticks for every tier regardless of which
+  one landed.
+- Tier 2 and Tier 3 Poison from Fang, Venomfang, and Widowfang now pierce undead immunity; only
+  Tier 1 keeps vanilla Poison's own real immunity to the undead. Bleed keeps its own, separate,
+  unconditional undead exclusion, unaffected by this change.
+- Added a half heart lock: any target currently affected by Arachne's tiered Poison that drops to
+  half a heart (1 HP) or below now gets continuous Slowness and Blindness until it heals back above
+  that threshold or dies. Since vanilla Poison already caps its own damage and can never actually
+  finish a target off, this gives Arachne players a real window to close in and finish the job
+  themselves.
 - Added the **Silk Net Shooter**: a new throwable weapon crafted from 3 Silk, 20 uses. Anyone can
   craft and throw it, but the net's trap effect (a temporary cobweb plus a heavy 3 second
   Slowness) only triggers if the thrower has chosen Arachne, matching every other origin weapon in
