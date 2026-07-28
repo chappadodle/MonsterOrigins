@@ -73,10 +73,10 @@ section instead of an origin's.
 
 ### Mermaid
 
-- Mermaid's Crown now has a real durability of 1000 uses, instead of being unbreakable, matching
-  the explicit durability override convention every other weapon and armor piece in this mod uses.
-  Its Regeneration also now only applies while the wearer is actually in water or rain, instead of
-  unconditionally every 40 ticks regardless of surroundings.
+- Mermaid's Crown durability is now an explicit 1000 uses (previously the implicit diamond helmet
+  default of 363), matching the explicit override convention every other weapon and armor piece in
+  this mod uses. Its Regeneration also now only applies while the wearer is actually in water or
+  rain, instead of unconditionally every 40 ticks regardless of surroundings.
 - Dolphin's Grace toggle now applies amplifier 2 (was amplifier 1) and no longer shows its
   potion icon in the effects list, matching the already suppressed particles.
 
