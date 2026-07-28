@@ -86,6 +86,13 @@ public class ModItems {
 	// this mod, see OriginUtil), just thematically Arachne's own material.
 	public static final Item SILK = register("silk", new Item(new Item.Properties()));
 
+	// Arachne's Silk Net Shooter: fires a ThrownSilkNet that traps its target in a temporary
+	// cobweb plus a short heavy Slowness. 20 uses modeled as durability (not a consumable stack),
+	// matching every other weapon's explicit-override convention in this mod — see SilkNetShooterItem
+	// and the task report for why durability was chosen over stack count.
+	public static final Item SILK_NET_SHOOTER = register("silk_net_shooter",
+			new SilkNetShooterItem(new Item.Properties().durability(20)));
+
 	// Mermaid's exclusive crown: +2 hearts and continuous Regeneration while worn (see
 	// MermaidCrownItem). Diamond-tier defense values, since it's partly crafted from diamonds.
 	public static final Item MERMAID_CROWN = register("mermaid_crown",
@@ -105,6 +112,7 @@ public class ModItems {
 			entries.accept(WIDOWFANG);
 			entries.accept(PETRIFYING_TRIDENT);
 			entries.accept(HARPY_JAVELIN);
+			entries.accept(SILK_NET_SHOOTER);
 			entries.accept(MERMAID_CROWN);
 		});
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {

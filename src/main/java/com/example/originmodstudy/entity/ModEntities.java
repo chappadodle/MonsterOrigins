@@ -13,6 +13,9 @@ import net.minecraft.world.entity.MobCategory;
  * Registers every entity type this mod adds. {@code THROWN_HARPY_JAVELIN}'s size/tracking-range/
  * update-rate mirror {@code EntityType.TRIDENT}'s own real registration parameters exactly (read
  * from its decompiled static initializer), since a thrown javelin behaves the same way.
+ * {@code THROWN_SILK_NET}'s parameters instead mirror {@code EntityType.SNOWBALL}'s own real
+ * registration (also read from its decompiled static initializer), since it's a lighter thrown
+ * projectile with no reason to share the javelin's larger trident-derived sizing.
  */
 public class ModEntities {
 	public static final EntityType<ThrownJavelin> THROWN_HARPY_JAVELIN = register("thrown_harpy_javelin",
@@ -20,6 +23,13 @@ public class ModEntities {
 					.dimensions(EntityDimensions.scalable(0.5F, 0.5F))
 					.trackRangeChunks(4)
 					.trackedUpdateRate(20)
+					.build());
+
+	public static final EntityType<ThrownSilkNet> THROWN_SILK_NET = register("thrown_silk_net",
+			FabricEntityTypeBuilder.<ThrownSilkNet>create(MobCategory.MISC, ThrownSilkNet::new)
+					.dimensions(EntityDimensions.scalable(0.25F, 0.25F))
+					.trackRangeChunks(4)
+					.trackedUpdateRate(10)
 					.build());
 
 	private static <T extends Entity> EntityType<T> register(String name, EntityType<T> type) {
