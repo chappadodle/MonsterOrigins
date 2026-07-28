@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,9 +77,19 @@ public class ThrownSilkNet extends ThrowableItemProjectile {
 		super(ModEntities.THROWN_SILK_NET, owner, level);
 	}
 
+	/**
+	 * In-flight render item only ({@code ThrownItemRenderer} draws {@code new
+	 * ItemStack(getDefaultItem())}, see {@code ThrownSilkNetRenderer} and the class doc above) —
+	 * deliberately vanilla {@code Items.COBWEB}, not {@link ModItems#SILK_NET_SHOOTER}. Returning
+	 * the shooter item here made the net's flight visual look like the launcher itself was flying
+	 * at the target; a flying cobweb reads correctly as a net/web in the air and also matches this
+	 * weapon's own on-impact effect (a temporary cobweb at the target's feet), so the projectile
+	 * and its payload are visually consistent. No new texture/model needed since it's a real
+	 * vanilla item with its own existing icon.
+	 */
 	@Override
 	protected Item getDefaultItem() {
-		return ModItems.SILK_NET_SHOOTER;
+		return Items.COBWEB;
 	}
 
 	@Override
