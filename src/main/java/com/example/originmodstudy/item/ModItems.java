@@ -92,7 +92,7 @@ public class ModItems {
 	// matching every other weapon's explicit-override convention in this mod — see SilkNetShooterItem
 	// and the task report for why durability was chosen over stack count.
 	public static final Item SILK_NET_SHOOTER = register("silk_net_shooter",
-			new SilkNetShooterItem(new Item.Properties().durability(20)));
+			new SilkNetShooterItem(new Item.Properties().durability(100)));
 
 	// Mermaid's exclusive crown: +2 hearts and Regeneration while worn and in water or rain (see
 	// MermaidCrownItem). Diamond-tier defense values, since it's partly crafted from diamonds.

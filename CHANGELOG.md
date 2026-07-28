@@ -63,6 +63,7 @@ section instead of an origin's.
   this mod. The net still flies and hits normally for anyone else, it just does nothing further.
   The cobweb reuses the same auto disappearing block Origins already places for the Master of Webs
   power, so it clears itself without any extra code on this end.
+- Silk Net Shooter durability increased from 20 to 100 uses.
 
 ### Harpy
 
