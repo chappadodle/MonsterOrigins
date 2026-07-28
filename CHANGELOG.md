@@ -25,6 +25,12 @@ section instead of an origin's.
 ### Arachne
 
 - Added **Practiced Landing** power: falls over 10 blocks deal 52% of normal damage, matching Feather Falling IV's damage reduction formula. Works in combination with Sure Footed (which still grants zero damage on falls under 10 blocks).
+- Arachne now climbs 1.65x faster than everyone else. This raises the upward climb rate on ladders,
+  vines, and any surface her climbing power lets her cling to, and it raises the sideways movement
+  and downward slide rates on those surfaces by the same amount. Vanilla gives climbing a fixed
+  speed with no attribute to adjust, so this is done in code (`ArachneClimbSpeedMixin`) and applies
+  only to players who have chosen Arachne. Climbing on powder snow is deliberately left at the
+  normal speed.
 
 ### Harpy
 

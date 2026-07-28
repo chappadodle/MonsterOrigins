@@ -4,6 +4,7 @@
 	"package": "com.example.originmodstudy.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
+		"ArachneClimbSpeedMixin",
 		"ArthropodPassiveTargetMixin",
 		"ThrownTridentMixin",
 		"ThrownTridentAccessor",
