@@ -57,6 +57,14 @@ section instead of an origin's.
 - Hardy Stomach now grants a brief burst of Saturation instead of Regeneration when eating raw
   meat or rotten flesh, so the power reads as "this food fills you up safely" rather than
   granting a small heal on top of removing the Hunger penalty.
+- Added the **Talon Gauntlets**: a new worn claw weapon family with three tiers, Iron, Diamond,
+  and Netherite (1000, 2000, and 3500 durability). Anyone can craft and swing one, but for a Harpy
+  wielder each tier adds 2, 3, or 4 hearts of its own damage plus the exact same bare fist bonus
+  damage Talons already grants unarmed, and causes Bleed on hit, tiered the same way Fang's poison
+  is: Iron always applies Bleed I, Diamond climbs from Bleed I to Bleed II on a second hit within 8
+  seconds, and Netherite climbs all the way to Bleed III across three hits in that window. Crafted
+  from 4 iron ingots, then upgraded with 4 diamonds, then upgraded again on a smithing table with a
+  netherite ingot, matching Fang's own Diamond to Netherite convention.
 
 ### Mermaid
 

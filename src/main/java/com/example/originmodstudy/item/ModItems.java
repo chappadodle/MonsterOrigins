@@ -98,6 +98,22 @@ public class ModItems {
 	public static final Item MERMAID_CROWN = register("mermaid_crown",
 			new MermaidCrownItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties()));
 
+	// Talon Gauntlets: the upgrade path for Harpy's own bare-fist Talons power, a worn claw weapon
+	// rather than a gripped one. Three tiers share HarpyTalonGauntletItem, same one-class-three-tiers
+	// convention as FangItem. attackDamageModifier is chosen so each tier's own SwordItem-tier
+	// ATTACK_DAMAGE math (modifier + tier bonus) lands on exactly 2/3/4 hearts (4.0/6.0/8.0) per the
+	// source doc's "Iron Talon adds 2 hearts, Diamond 3, Netherite 4" spec, before the bare fist
+	// bonus is folded in on top (see HarpyTalonGauntletItem's own class doc). Durability is an
+	// explicit override (1000/2000/3500), matching the doc's own requested values, not each tier's
+	// raw durability. Attack speed (-1.0) is faster than Fang's -1.8, since claws should feel
+	// quicker than a dagger.
+	public static final Item IRON_TALON_GAUNTLET = register("iron_talon_gauntlet",
+			new HarpyTalonGauntletItem(Tiers.IRON, 2, -1.0F, 1, new Item.Properties().durability(1000)));
+	public static final Item DIAMOND_TALON_GAUNTLET = register("diamond_talon_gauntlet",
+			new HarpyTalonGauntletItem(Tiers.DIAMOND, 3, -1.0F, 2, new Item.Properties().durability(2000)));
+	public static final Item NETHERITE_TALON_GAUNTLET = register("netherite_talon_gauntlet",
+			new HarpyTalonGauntletItem(Tiers.NETHERITE, 4, -1.0F, 3, new Item.Properties().durability(3500)));
+
 	private static Item register(String name, Item item) {
 		return Registry.register(BuiltInRegistries.ITEM, OriginModStudy.id(name), item);
 	}
@@ -114,6 +130,9 @@ public class ModItems {
 			entries.accept(HARPY_JAVELIN);
 			entries.accept(SILK_NET_SHOOTER);
 			entries.accept(MERMAID_CROWN);
+			entries.accept(IRON_TALON_GAUNTLET);
+			entries.accept(DIAMOND_TALON_GAUNTLET);
+			entries.accept(NETHERITE_TALON_GAUNTLET);
 		});
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
 			entries.accept(SILK);
