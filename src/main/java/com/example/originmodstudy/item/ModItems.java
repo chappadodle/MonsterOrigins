@@ -93,10 +93,11 @@ public class ModItems {
 	public static final Item SILK_NET_SHOOTER = register("silk_net_shooter",
 			new SilkNetShooterItem(new Item.Properties().durability(20)));
 
-	// Mermaid's exclusive crown: +2 hearts and continuous Regeneration while worn (see
+	// Mermaid's exclusive crown: +2 hearts and Regeneration while worn and in water or rain (see
 	// MermaidCrownItem). Diamond-tier defense values, since it's partly crafted from diamonds.
+	// 1000 durability, same explicit-override convention every other weapon/armor piece uses.
 	public static final Item MERMAID_CROWN = register("mermaid_crown",
-			new MermaidCrownItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties()));
+			new MermaidCrownItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties().durability(1000)));
 
 	// Talon Gauntlets: the upgrade path for Harpy's own bare-fist Talons power, a worn claw weapon
 	// rather than a gripped one. Three tiers share HarpyTalonGauntletItem, same one-class-three-tiers

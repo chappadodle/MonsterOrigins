@@ -19,9 +19,10 @@
 			"type": "origins:apply_effect",
 			"effect": {
 				"effect": "minecraft:dolphins_grace",
-				"amplifier": 1,
+				"amplifier": 2,
 				"duration": 999999,
-				"show_particles": false
+				"show_particles": false,
+				"show_icon": false
 			}
 		}
 	},

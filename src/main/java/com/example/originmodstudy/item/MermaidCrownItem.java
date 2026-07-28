@@ -20,12 +20,15 @@ import java.util.UUID;
 /**
  * Mermaid's exclusive crown: +2 hearts while worn (a real attribute modifier, same
  * {@code getDefaultAttributeModifiers} technique {@code HarpyJavelinItem} uses for its own stats,
- * just the HEAD slot instead of MAINHAND) plus continuous Regeneration while actually equipped —
- * for that part, {@code inventoryTick} (confirmed via {@code javap}: {@code inventoryTick
- * (ItemStack, Level, Entity, int, boolean)}) is the standard vanilla per-tick hook for "this stack
- * exists somewhere in a living entity's inventory," so it's guarded by an explicit
- * "is this stack actually the one in my head slot right now" check rather than firing for a
- * crown just sitting in a chest or the player's general inventory.
+ * just the HEAD slot instead of MAINHAND) plus Regeneration while actually equipped and the
+ * wearer is in water or rain — for that part, {@code inventoryTick} (confirmed via {@code javap}:
+ * {@code inventoryTick(ItemStack, Level, Entity, int, boolean)}) is the standard vanilla per-tick
+ * hook for "this stack exists somewhere in a living entity's inventory," so it's guarded by an
+ * explicit "is this stack actually the one in my head slot right now" check rather than firing
+ * for a crown just sitting in a chest or the player's general inventory. The water/rain gate uses
+ * {@code Entity#isInWaterOrRain()} (confirmed via {@code javap} on the real compiled class —
+ * {@code Entity} also declares {@code isInWater()}/{@code isInWaterRainOrBubble()}, but
+ * {@code isInWaterOrRain()} is the one matching "in water or rain").
  */
 public class MermaidCrownItem extends ArmorItem {
 	private static final UUID CROWN_HEALTH_MODIFIER_ID = UUID.fromString("6b4f6a3a-6e7e-4b8a-9f7a-3c1f0a9e2d41");
@@ -55,6 +58,9 @@ public class MermaidCrownItem extends ArmorItem {
 			return;
 		}
 		if (livingEntity.getItemBySlot(EquipmentSlot.HEAD) != stack) {
+			return;
+		}
+		if (!livingEntity.isInWaterOrRain()) {
 			return;
 		}
 		if (level.getGameTime() % 40 == 0) {
