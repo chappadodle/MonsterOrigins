@@ -50,20 +50,26 @@ public class ModItems {
 	// A light, fast dagger — built on iron's tier but with a lower damage modifier (2, vs. the
 	// vanilla iron sword's 3) and a faster attack speed modifier (-1.8, vs. the vanilla sword
 	// default -2.4), trading raw damage for swing speed to feel like a dagger rather than a sword.
-	// First of three tiers — see FangItem's class doc for the full progression.
+	// First of three tiers — see FangItem's class doc for the full progression. Poison caps at
+	// tier 1 (maxPoisonTier 1); durability is an explicit override (500), not Iron's raw 250,
+	// same technique HARPY_JAVELIN/PETRIFYING_TRIDENT use for their own explicit overrides.
 	public static final Item FANG = register("fang",
-			new FangItem(Tiers.IRON, 2, -1.8F, false, false, new Item.Properties()));
+			new FangItem(Tiers.IRON, 2, -1.8F, 1, false, false, new Item.Properties().durability(500)));
 
 	// Second tier: diamond-tier (modifier 3 + diamond's 3.0 bonus = 6 attack damage, same -1.8
-	// speed as Fang), adds Bleed on top of Poison. Upgraded from Fang on a crafting table.
+	// speed as Fang), poison escalates to tier 2 (Poison II) on a second qualifying hit, adds
+	// Bleed on top. Upgraded from Fang on a crafting table. Durability overridden to 1500 (not
+	// Diamond's raw 1561).
 	public static final Item VENOMFANG = register("venomfang",
-			new FangItem(Tiers.DIAMOND, 3, -1.8F, true, false, new Item.Properties()));
+			new FangItem(Tiers.DIAMOND, 3, -1.8F, 2, true, false, new Item.Properties().durability(1500)));
 
 	// Third and final tier: netherite-tier (modifier 3 + netherite's 4.0 bonus = 7 attack damage,
-	// same speed again), adds Wither on top of Poison and Bleed. Upgraded from Venomfang on a
+	// same speed again), poison escalates all the way to tier 3 (Poison III) across three hits,
+	// adds Wither (flat, untiered) on top of Poison and Bleed. Upgraded from Venomfang on a
 	// smithing table (smithing_transform), matching vanilla's own Diamond->Netherite convention.
+	// Durability overridden to 3500 (not Netherite's raw 2031).
 	public static final Item WIDOWFANG = register("widowfang",
-			new FangItem(Tiers.NETHERITE, 3, -1.8F, true, true, new Item.Properties()));
+			new FangItem(Tiers.NETHERITE, 3, -1.8F, 3, true, true, new Item.Properties().durability(3500)));
 
 	// Vanilla trident stats/behavior (throwable, riptide, etc.), reskinned, with petrify-on-hit.
 	public static final Item PETRIFYING_TRIDENT = register("petrifying_trident",

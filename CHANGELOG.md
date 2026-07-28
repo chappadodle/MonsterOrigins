@@ -31,6 +31,13 @@ section instead of an origin's.
   speed with no attribute to adjust, so this is done in code (`ArachneClimbSpeedMixin`) and applies
   only to players who have chosen Arachne. Climbing on powder snow is deliberately left at the
   normal speed.
+- Fang, Venomfang, and Widowfang now apply tiered Poison instead of a single flat tier: repeat
+  qualifying hits on the same target within 8 seconds climb the amplifier up to each weapon's own
+  cap (Fang stays at Poison I, Venomfang climbs to Poison II, Widowfang climbs to Poison III), then
+  reset to Poison I once that window lapses without a follow up hit. Wither on Widowfang remains
+  flat and untiered.
+- Fang, Venomfang, and Widowfang durability is now an explicit override (500, 1500, and 3500 uses)
+  instead of inheriting each tool tier's raw durability value.
 
 ### Harpy
 
