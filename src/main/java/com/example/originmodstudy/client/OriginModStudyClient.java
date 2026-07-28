@@ -10,5 +10,6 @@ public class OriginModStudyClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.THROWN_HARPY_JAVELIN, ThrownHarpyJavelinRenderer::new);
 		EntityRendererRegistry.register(ModEntities.THROWN_SILK_NET, ThrownSilkNetRenderer::new);
+		MermaidAirSupplyHud.register();
 	}
 }

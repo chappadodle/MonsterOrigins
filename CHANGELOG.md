@@ -100,5 +100,39 @@ section instead of an origin's.
   rain, instead of unconditionally every 40 ticks regardless of surroundings.
 - Dolphin's Grace toggle now applies amplifier 2 (was amplifier 1) and no longer shows its
   potion icon in the effects list, matching the already suppressed particles.
+- Swift Current now gives 3x normal swimming speed (was 1.5x). Derived from scratch rather
+  than doubling the old JSON value directly: the `additionalentityattributes:water_speed`
+  attribute this power modifies is computed from the current, already slowed land speed every
+  tick (confirmed via decompile in earlier work), so Landlegs' own 0.8x walking penalty bleeds
+  through into the water number. Solving for the `multiply_base` value that lands on exactly 3x
+  base walking speed after that 0.8x bleed through gives 2.75 (`0.8 * (1 + 2.75) = 3.0`), not the
+  naively doubled 1.75. Investigated the separate "feels like gliding on ice" complaint too:
+  decompiling vanilla's own `LivingEntity.travel()` and Additional Entity Attributes' mixin shows
+  the water speed attribute only affects how hard the player accelerates each tick, never the
+  fixed 0.8 (0.9 while sprinting) per tick momentum retention vanilla hardcodes for everyone in
+  water. That retention constant is what actually produces the sliding, hard to turn feeling, and
+  it cannot be changed by any power or attribute, only by a mixin overriding the vanilla method
+  outright, a real code change bigger than a data tuning task should make on its own. Flagging
+  this back rather than shipping a data change that would not actually fix the complaint it is
+  meant to fix.
+- Added a bubble style HUD bar showing how much of the 5 minute out of water grace period is left
+  before dehydration damage begins, visible only while playing Mermaid and only once any of that
+  time has passed. Checked first whether Origins or Apoli already has a bar for this (the same way
+  `merling.json` was checked before Mermaid's other aquatic powers were built) and confirmed they
+  only let a power reskin existing bars, not add a new one driven by a custom timer. Also confirmed
+  the countdown itself is not something client code can read directly: the power that runs the out
+  of water damage keeps its own timer as a private value that is never sent to the client, unlike
+  every other stateful power type checked in the same source. Rather than add new server to client
+  syncing just for this bar, the client instead keeps its own count of how long the player has been
+  out of water and rain, using the same 5 minute delay and the same 1 second grace window before a
+  brief return to water resets it, driven from the same "in water or rain" check other Mermaid
+  gameplay code already uses. This tracks the real timer under normal play since both sides are
+  watching the same thing, and simply resets to safe on rejoin or origin change rather than ever
+  showing a stale reading.
+- Confirmed, unchanged: Landbound's out of water damage already treats rain as equivalent to
+  standing in water (its own condition already includes `origins:in_rain` alongside the water
+  check) and a bucket of water placed on the ground already refills the grace period, since the
+  power only checks fluid height at the player's position, which a placed water source satisfies
+  the same way a natural one does. No changes needed here.
 
 ### Medusa
