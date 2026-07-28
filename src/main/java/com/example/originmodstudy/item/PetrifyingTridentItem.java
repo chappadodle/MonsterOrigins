@@ -40,6 +40,6 @@ public class PetrifyingTridentItem extends TridentItem {
 	@Override
 	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, level, tooltip, flag);
-		OriginUtil.addOriginGatedTooltip(tooltip, "Petrifies on hit — Medusa only.");
+		OriginUtil.addOriginGatedTooltip(tooltip, "Petrifies on hit. Medusa only.");
 	}
 }

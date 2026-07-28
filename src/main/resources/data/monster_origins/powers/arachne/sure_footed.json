@@ -7,6 +7,6 @@
 		"comparison": "<",
 		"compare_to": 10.0
 	},
-	"name": "Sure-Footed",
+	"name": "Sure Footed",
 	"description": "Falls of less than 10 blocks deal no fall damage. A spider's grip and balance."
 }

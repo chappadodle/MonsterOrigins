@@ -6,5 +6,5 @@
 	"order": 100,
 	"impact": 0,
 	"name": "Example Stub",
-	"description": "A worked-example origin template. See TEMPLATE.md at the repo root. Not wired into the origin picker (data/origins/origin_layers/origin.json) on purpose, so it never shows up in-game. Copy this file's structure to start a real new origin, then add its id there."
+	"description": "A working example origin template. See TEMPLATE.md at the repo root. Not wired into the origin picker (data/origins/origin_layers/origin.json) on purpose, so it never shows up in-game. Copy this file's structure to start a real new origin, then add its id there."
 }

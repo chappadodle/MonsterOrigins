@@ -40,5 +40,5 @@
 		}
 	},
 	"name": "Talons",
-	"description": "Bare-handed strikes deal 2.5 extra hearts of damage and cause Bleed for 10 seconds (undead immune). Ticks like Poison, but unlike Poison it can kill."
+	"description": "Unarmed strikes deal 2.5 extra hearts of damage and cause Bleed for 10 seconds (undead immune). Ticks like Poison, but unlike Poison it can kill."
 }

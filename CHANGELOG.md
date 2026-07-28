@@ -16,6 +16,12 @@ section instead of an origin's.
 
 ### Cleanup
 
+- Removed all hyphens and em dashes from item names, power names, and descriptions by rewriting
+  affected phrases naturally (e.g., "storm-wind" → "swift, stormy", "Hollow-Boned" → "Hollow Boned",
+  "Bare-handed" → "Unarmed", "firework-rocket-style" → "like a firework rocket", "sure-footed" →
+  "sure footed", "scale-like" → "scaly", and changed em dashes in tooltips to periods for
+  consistency with established project style).
+
 ### Arachne
 
 ### Harpy
