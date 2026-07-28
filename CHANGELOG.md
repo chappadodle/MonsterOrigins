@@ -47,6 +47,17 @@ section instead of an origin's.
 
 ### Harpy
 
+- Fixed the Harpy Javelin flying and landing looking like a plain vanilla trident. `ThrownTrident`
+  (the class `ThrownJavelin` extends) never syncs its carried item to the client except through
+  world save/load NBT, so a thrown javelin's client side copy kept a hardcoded vanilla trident
+  stack for its whole flight and after sticking in the ground. `ThrownJavelin#getItem()` now
+  always returns a fresh Harpy Javelin stack for rendering, matching the same fix already applied
+  to the Silk Net Shooter's in flight render. Server side hit and pickup logic, which reads the
+  real carried item directly, is unaffected.
+- Hardy Stomach now grants a brief burst of Saturation instead of Regeneration when eating raw
+  meat or rotten flesh, so the power reads as "this food fills you up safely" rather than
+  granting a small heal on top of removing the Hunger penalty.
+
 ### Mermaid
 
 ### Medusa

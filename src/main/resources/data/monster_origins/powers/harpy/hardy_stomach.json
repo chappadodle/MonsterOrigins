@@ -10,11 +10,11 @@
 	"entity_action": {
 		"type": "origins:apply_effect",
 		"effect": {
-			"effect": "minecraft:regeneration",
+			"effect": "minecraft:saturation",
 			"amplifier": 0,
 			"duration": 40
 		}
 	},
 	"name": "Hardy Stomach",
-	"description": "Raw meat and rotten flesh are perfectly safe to eat. No Hunger, just a brief burst of Regeneration."
+	"description": "Raw meat and rotten flesh are perfectly safe to eat. No Hunger, just a brief burst of Saturation instead."
 }
