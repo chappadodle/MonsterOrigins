@@ -24,6 +24,20 @@ public class ModEffects {
 	public static final MobEffect CHARMED = register("charmed",
 			new MobEffect(MobEffectCategory.NEUTRAL, 0x8ED1E0) {});
 
+	// Medusa's Petrifying Bite / Stone Gaze Burst powers (see data/monster_origins/powers/medusa/)
+	// apply this for the movement/attack-speed "turned to stone" component; Blindness + Darkness
+	// stay as separate vanilla effects stacked alongside it in each power's own effect list. Color
+	// is a warm stone gray, distinct from vanilla Slowness/Mining Fatigue's cooler blue-gray tones.
+	public static final MobEffect PETRIFY = register("petrify",
+			new PetrifyMobEffect(MobEffectCategory.HARMFUL, 0x8C8470));
+
+	// Stone Gaze Burst's one-shot-cooldown gate (Task 16, not this task): applied alongside
+	// PETRIFY with a much longer duration than Petrify's own. A pure marker, same as CHARMED above
+	// — no tick behavior of its own, checked only via an inverted origins:status_effect condition
+	// on the power itself to block re-triggering while still present.
+	public static final MobEffect STONE_GAZE_COOLDOWN = register("stone_gaze_cooldown",
+			new MobEffect(MobEffectCategory.NEUTRAL, 0x9696A0) {});
+
 	private static MobEffect register(String name, MobEffect effect) {
 		return Registry.register(BuiltInRegistries.MOB_EFFECT, OriginModStudy.id(name), effect);
 	}

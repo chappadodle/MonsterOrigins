@@ -14,5 +14,7 @@
 	"subtitle.monster_origins.harpy_scream": "Harpy screeches",
 	"subtitle.monster_origins.mermaid_song": "Mermaid sings",
 	"effect.monster_origins.bleed": "Bleed",
-	"effect.monster_origins.charmed": "Charmed"
+	"effect.monster_origins.charmed": "Charmed",
+	"effect.monster_origins.petrify": "Petrify",
+	"effect.monster_origins.stone_gaze_cooldown": "Stone Gaze Cooldown"
 }
