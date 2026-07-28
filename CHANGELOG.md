@@ -65,6 +65,11 @@ section instead of an origin's.
   seconds, and Netherite climbs all the way to Bleed III across three hits in that window. Crafted
   from 4 iron ingots, then upgraded with 4 diamonds, then upgraded again on a smithing table with a
   netherite ingot, matching Fang's own Diamond to Netherite convention.
+- Added the **Storm Javelin**: throwing the Harpy Javelin from above Y=120, or right after a fall
+  of 30 or more blocks (captured the instant it leaves the thrower's hand), now calls down a real
+  lightning bolt at the impact point and deals bonus damage in a 10 block radius around it on
+  landing, the same technique vanilla's own Channeling enchantment uses to spawn lightning. Gated
+  behind a 1 minute cooldown per player so it can't be spammed.
 
 ### Mermaid
 

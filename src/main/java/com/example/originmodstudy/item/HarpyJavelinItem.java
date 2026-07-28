@@ -52,6 +52,13 @@ import java.util.List;
  * extension point for a different thrown-entity type; if vanilla's trident-throwing logic ever
  * changes, this will silently drift out of sync with it, same known risk already documented for
  * the {@code origins:master_of_webs} override in CLAUDE.md.
+ *
+ * <p>{@code releaseUsing} also captures the thrower's current Y level and current
+ * {@code fallDistance} at the exact moment of the throw, stashing both on the spawned
+ * {@link ThrownJavelin} instance for the Storm Javelin ability: {@code ThrownTridentMixin} reads
+ * them back on impact to decide whether to call down lightning. This is a different moment from
+ * the airborne throw bonus above (which reads {@code isFallFlying()} at impact time, not throw
+ * time) — the two are kept deliberately separate, not merged into one condition.
  */
 public class HarpyJavelinItem extends TridentItem {
 	private static final ResourceLocation HARPY_ORIGIN_ID = new ResourceLocation("monster_origins", "harpy");
@@ -99,6 +106,8 @@ public class HarpyJavelinItem extends TridentItem {
 			stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(livingEntity.getUsedItemHand()));
 			if (riptide == 0) {
 				ThrownJavelin thrownJavelin = new ThrownJavelin(level, player, stack);
+				thrownJavelin.stormThrowY = player.getY();
+				thrownJavelin.stormFallDistance = player.fallDistance;
 				thrownJavelin.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F + riptide * 0.5F, 1.0F);
 				if (player.getAbilities().instabuild) {
 					thrownJavelin.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
@@ -147,6 +156,7 @@ public class HarpyJavelinItem extends TridentItem {
 	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, level, tooltip, flag);
 		OriginUtil.addOriginGatedTooltip(tooltip, "Causes Bleed, bonus damage thrown while flying");
+		OriginUtil.addOriginGatedTooltip(tooltip, "Thrown from high up or after a big fall calls down lightning");
 		OriginUtil.addOriginGatedTooltip(tooltip, "Harpy only");
 	}
 }

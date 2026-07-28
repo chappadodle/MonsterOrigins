@@ -41,8 +41,22 @@ import net.minecraft.world.level.Level;
  * purposes only; the real {@code tridentItem} field (server-side hit/pickup logic) is left
  * completely untouched, same pattern as the Silk Net Shooter's own in-flight render fix (see
  * {@code entity/ThrownSilkNet.java}).
+ *
+ * <p><b>Storm Javelin throw-time data (plain fields, not synced):</b> {@code stormThrowY}/
+ * {@code stormFallDistance} are set by {@link com.example.originmodstudy.item.HarpyJavelinItem
+ * #releaseUsing} at the exact moment of the throw and read back by {@code ThrownTridentMixin} on
+ * impact to decide whether to call down lightning + AOE damage. They deliberately don't go
+ * through {@code SynchedEntityData} — the lightning strike and AOE damage are server-authoritative
+ * only, and no client-side rendering depends on this data, so a plain field is sufficient (same
+ * reasoning already applied to loyalty/foil not being replicated above).
  */
 public class ThrownJavelin extends ThrownTrident implements ItemSupplier {
+	/** The thrower's Y level at the moment of the throw. See the class doc above. */
+	public double stormThrowY;
+
+	/** The thrower's {@code fallDistance} at the moment of the throw. See the class doc above. */
+	public float stormFallDistance;
+
 	public ThrownJavelin(EntityType<? extends ThrownJavelin> entityType, Level level) {
 		super(entityType, level);
 	}
