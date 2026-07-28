@@ -38,10 +38,12 @@ section instead of an origin's.
   flat and untiered.
 - Fang, Venomfang, and Widowfang durability is now an explicit override (500, 1500, and 3500 uses)
   instead of inheriting each tool tier's raw durability value.
-- Added the **Silk Net Shooter**: a new throwable weapon crafted from 3 Silk, 20 uses. Fires a net
-  that traps whatever it hits in a temporary cobweb plus a heavy 3 second Slowness, and reuses the
-  same auto disappearing cobweb Origins already places for the Master of Webs power, so it clears
-  itself without any extra code on this end.
+- Added the **Silk Net Shooter**: a new throwable weapon crafted from 3 Silk, 20 uses. Anyone can
+  craft and throw it, but the net's trap effect (a temporary cobweb plus a heavy 3 second
+  Slowness) only triggers if the thrower has chosen Arachne, matching every other origin weapon in
+  this mod. The net still flies and hits normally for anyone else, it just does nothing further.
+  The cobweb reuses the same auto disappearing block Origins already places for the Master of Webs
+  power, so it clears itself without any extra code on this end.
 
 ### Harpy
 
