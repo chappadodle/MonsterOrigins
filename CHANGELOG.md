@@ -24,6 +24,8 @@ section instead of an origin's.
 
 ### Arachne
 
+- Added **Practiced Landing** power: falls over 10 blocks deal 52% of normal damage, matching Feather Falling IV's damage reduction formula. Works in combination with Sure Footed (which still grants zero damage on falls under 10 blocks).
+
 ### Harpy
 
 ### Mermaid
