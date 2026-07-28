@@ -90,6 +90,7 @@ section instead of an origin's.
   lightning bolt at the impact point and deals bonus damage in a 10 block radius around it on
   landing, the same technique vanilla's own Channeling enchantment uses to spawn lightning. Gated
   behind a 1 minute cooldown per player so it can't be spammed.
+- Replaced the Harpy Javelin's item model with a new, more detailed 3D model.
 
 ### Mermaid
 
