@@ -10,20 +10,42 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Task 6 correction, half heart lock: a target currently marked by {@link ArachnePoisonLock} (has
- * been hit by Arachne's own tiered Poison at least once) that drops to half a heart (1.0 HP) or
- * below gets Slowness and Blindness, continuously, until it either heals back above that threshold
- * or dies. There is no data-driven Origins/Apoli power for "apply an effect based on a health
+ * Task 6 correction, half heart lock: a target <em>currently</em> affected by Arachne's own
+ * tiered Poison that drops to half a heart (1.0 HP) or below gets Slowness and Blindness,
+ * continuously, until it either heals back above that threshold, the Poison itself runs out, or
+ * it dies. There is no data-driven Origins/Apoli power for "apply an effect based on a health
  * threshold with an auto-removal condition tied to healing back above it," so this is real code,
  * the same kind of genuine data-driven gap {@code ArthropodPassiveTargetMixin} fills for mob AI
  * targeting.
  *
+ * <p>Gated on two separate checks, both required: {@link ArachnePoisonLock#isCandidate} (has this
+ * entity ever been hit by Arachne's own tiered Poison, as opposed to some other Poison source
+ * entirely, e.g. a stray potion or a cave spider) <em>and</em> {@code self.hasEffect(MobEffects
+ * .POISON)} (does it currently, actually have a live Poison instance right now). Fix round 1
+ * correction: the first version of this mixin only checked the first of those two — a permanent,
+ * never-cleared "was ever poisoned by us" marker — which meant a target that took one poisoned
+ * hit, had the Poison fully expire, and then dropped to low HP hours later from a completely
+ * unrelated cause (fall damage, fire, anything) would still get locked, since nothing re-checked
+ * whether Poison was actually still active. Requiring {@code hasEffect(MobEffects.POISON)} too
+ * closes that gap: the lock now only ever fires while a live Poison instance is actually present,
+ * matching the requirement's own present-tense wording ("a target <em>affected by</em> Arachne's
+ * tiered Poison"), not "was ever affected, at any point in the past." The candidate marker is kept
+ * rather than dropped, since {@code hasEffect(MobEffects.POISON)} alone can't distinguish Arachne's
+ * own tiered Poison from Poison applied by something else entirely (a lingering potion, a cave
+ * spider bite) — both checks together are what actually scopes this to "Arachne's tiered Poison,"
+ * as opposed to either "any entity ever poisoned by us, regardless of current state" (the bug) or
+ * "any entity poisoned right now, regardless of source" (over broad in the other direction).
+ * {@code hasEffect(net.minecraft.world.effect.MobEffect)} confirmed present on {@code LivingEntity}
+ * via {@code javap} against this project's own mapped Minecraft jar before this fix, same
+ * verification convention as the mixin's own {@code tick()} target below.
+ *
  * <p>{@code LivingEntity#tick()} (confirmed present via {@code javap} against this project's own
  * mapped Minecraft jar before writing this mixin) already runs for every living entity every
- * tick — this just adds one cheap {@code hasAttached} check to that existing per entity work,
- * rather than a separate {@code ServerTickEvents} callback scanning the whole entity list itself.
- * Nothing further happens unless that check passes, i.e. this specific entity has actually been
- * poisoned by Arachne's Fang line at some point.
+ * tick — this just adds two cheap checks (one attachment lookup, one effect map lookup) to that
+ * existing per entity work, rather than a separate {@code ServerTickEvents} callback scanning the
+ * whole entity list itself. Nothing further happens unless both checks pass, i.e. this specific
+ * entity has actually been poisoned by Arachne's Fang line at some point <em>and</em> still
+ * currently has a live Poison effect on it right now.
  *
  * <p>The lock effects are deliberately reapplied with a short duration every tick they're needed,
  * rather than tracked with a separate "currently locked" flag plus an explicit
@@ -57,6 +79,12 @@ public abstract class ArachnePoisonLockMixin {
 			return;
 		}
 		if (!ArachnePoisonLock.isCandidate(self)) {
+			return;
+		}
+		if (!self.hasEffect(MobEffects.POISON)) {
+			// Fix round 1: the candidate marker alone isn't enough — it's permanent and never
+			// cleared, so without this check the lock would fire on any later low HP moment
+			// (fall damage, fire, anything) long after the actual Poison had already expired.
 			return;
 		}
 		if (!self.isAlive() || self.getHealth() > LOCK_HEALTH_THRESHOLD) {
