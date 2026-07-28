@@ -1,6 +1,7 @@
 package com.example.originmodstudy.entity;
 
 import com.example.originmodstudy.item.ModItems;
+import com.example.originmodstudy.util.OriginUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +40,13 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
  * replaceable). See {@code SilkNetShooterItem} for the crafting/use side and the task report for
  * the verification that {@code origins:temporary_cobweb}'s auto-revert is a property of the block
  * itself, not something that needs to be reproduced here.
+ *
+ * <p>Anyone can craft and throw the Silk Net Shooter, but same as every other origin-gated
+ * weapon in this mod (Fang tiers, Petrifying Trident, Harpy Javelin — see {@code OriginUtil}), the
+ * actual on-hit effect only triggers if the thrower has the Arachne origin. This is checked here
+ * against the projectile's own owner (the thrower), not in the item's {@code use()} — same
+ * hit-time-gating placement every other origin-gated weapon in this project uses. A non-Arachne
+ * thrower's net still flies and hits normally, it just does nothing on impact.
  */
 public class ThrownSilkNet extends ThrowableItemProjectile {
 	/** 3 seconds, matching the temporary cobweb block's own real scheduled-tick revert delay. */
@@ -58,6 +66,7 @@ public class ThrownSilkNet extends ThrowableItemProjectile {
 	private static final int SLOWNESS_AMPLIFIER = 6;
 
 	private static final ResourceLocation TEMPORARY_COBWEB_ID = new ResourceLocation("origins", "temporary_cobweb");
+	private static final ResourceLocation ARACHNE_ORIGIN_ID = new ResourceLocation("monster_origins", "arachne");
 
 	public ThrownSilkNet(EntityType<? extends ThrownSilkNet> entityType, Level level) {
 		super(entityType, level);
@@ -76,6 +85,13 @@ public class ThrownSilkNet extends ThrowableItemProjectile {
 	protected void onHitEntity(EntityHitResult result) {
 		super.onHitEntity(result);
 		if (this.level().isClientSide) {
+			return;
+		}
+		Entity owner = this.getOwner();
+		if (!(owner instanceof LivingEntity livingOwner) || !OriginUtil.hasOrigin(livingOwner, ARACHNE_ORIGIN_ID)) {
+			// Anyone can throw the net, but the cobweb/Slowness payload is Arachne's own weapon
+			// effect, same as every other origin-gated weapon in this mod. A non-Arachne thrower's
+			// net still flies and connects, it just does nothing further on impact.
 			return;
 		}
 		Entity target = result.getEntity();
