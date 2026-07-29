@@ -6,6 +6,13 @@ section instead of an origin's.
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-07-29
+
+### Mermaid
+
+- Swift Current's description no longer states the exact swim speed multiplier, just that it's
+  much higher than normal. Same power, same numbers, wording only.
+
 ## [1.1.1] - 2026-07-29
 
 ### Harpy

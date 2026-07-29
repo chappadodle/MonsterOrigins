@@ -78,7 +78,7 @@ control.
   at full (Aqua Affinity) speed while submerged.
 - **Landbound**: can stay out of water (rain counts as wet too) for 5 minutes at a time before
   starting to suffocate. A HUD bar shows how much of that time is left, once any of it has passed.
-- **Swift Current**: 7.41x normal swimming speed, and turns/steers as responsively as walking on
+- **Swift Current**: much higher swimming speed, and turns/steers as responsively as walking on
   land does, not the sluggish drift vanilla swimming normally has.
 - **Landlegs**: 0.8x normal walking speed. She belongs in the water, not on land.
 - **Mermaid's Call** (primary key, unbound by default): a real singing sound effect. Everyone
