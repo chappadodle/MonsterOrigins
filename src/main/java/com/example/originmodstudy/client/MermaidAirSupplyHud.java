@@ -33,9 +33,9 @@ import net.minecraft.world.entity.player.Player;
  * <p>Instead of that, this mirrors {@code dehydration.json}'s own condition and timing
  * (onset_delay 6000 ticks, the 20-tick reset-grace window {@code DamageOverTimePower.resetDamage}
  * really uses) with an independent counter driven by the local player's own wet/dry state via
- * {@code Entity#isInWaterOrRain()} — the same vanilla method {@code MermaidCrownItem} already
- * uses for its regen gate, confirmed via {@code javap} in that task. Since both this counter and
- * the server's real one observe the exact same input (the local player's own water/rain contact)
+ * {@code Entity#isInWaterOrRain()} (confirmed via {@code javap} while building this HUD). Since
+ * both this counter and the server's real one observe the exact same input (the local player's
+ * own water/rain contact)
  * every tick, they track each other under normal play; the only place they can visibly differ is
  * the same 20-tick grace window either side is already willing to tolerate, and a resync (the
  * player rejoining, or switching origin) simply resets this counter to zero, erring toward

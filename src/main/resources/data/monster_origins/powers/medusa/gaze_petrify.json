@@ -1,0 +1,59 @@
+{
+	"type": "origins:action_over_time",
+	"interval": 20,
+	"entity_action": {
+		"type": "origins:area_of_effect",
+		"radius": 6,
+		"shape": "sphere",
+		"bientity_condition": {
+			"type": "origins:target_condition",
+			"condition": {
+				"type": "origins:and",
+				"conditions": [
+					{
+						"type": "origins:or",
+						"conditions": [
+							{
+								"type": "origins:in_tag",
+								"tag": "monster_origins:enemies"
+							},
+							{
+								"type": "origins:entity_type",
+								"entity_type": "minecraft:iron_golem"
+							}
+						]
+					},
+					{
+						"type": "origins:inverted",
+						"condition": {
+							"type": "origins:status_effect",
+							"effect": "monster_origins:stone_gaze_cooldown"
+						}
+					}
+				]
+			}
+		},
+		"bientity_action": {
+			"type": "origins:target_action",
+			"action": {
+				"type": "origins:apply_effect",
+				"effects": [
+					{
+						"effect": "monster_origins:petrify",
+						"amplifier": 0,
+						"duration": 60
+					},
+					{
+						"effect": "monster_origins:stone_gaze_cooldown",
+						"amplifier": 0,
+						"duration": 160,
+						"show_particles": false,
+						"show_icon": false
+					}
+				]
+			}
+		}
+	},
+	"name": "Stone Gaze",
+	"description": "Hostile creatures (and iron golems) that come near are turned briefly to stone: 3 seconds of Petrify, once every 8 seconds per creature."
+}

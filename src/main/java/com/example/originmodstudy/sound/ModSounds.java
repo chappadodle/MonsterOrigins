@@ -8,13 +8,14 @@ import net.minecraft.sounds.SoundEvent;
 
 /**
  * Registers every sound event this mod adds. The actual audio file and its resource-pack-side
- * name mapping live in {@code assets/arachne/sounds.json} and
- * {@code assets/arachne/sounds/harpy_scream.ogg} — see CREDITS.md for that file's license.
+ * name mapping live in {@code assets/monster_origins/sounds.json} — see CREDITS.md for licenses.
  */
 public class ModSounds {
 
-	public static final SoundEvent HARPY_SCREAM = register("harpy_scream");
 	public static final SoundEvent MERMAID_SONG = register("mermaid_song");
+
+	// Stone Gaze Burst's rock-solid impact sound (Task 16) — see CREDITS.md.
+	public static final SoundEvent BOULDER_DROP = register("boulder_drop");
 
 	private static SoundEvent register(String name) {
 		ResourceLocation id = OriginModStudy.id(name);

@@ -53,11 +53,11 @@ import java.util.List;
  * changes, this will silently drift out of sync with it, same known risk already documented for
  * the {@code origins:master_of_webs} override in CLAUDE.md.
  *
- * <p>{@code releaseUsing} also captures the thrower's current Y level and current
- * {@code fallDistance} at the exact moment of the throw, stashing both on the spawned
- * {@link ThrownJavelin} instance for the Storm Javelin ability: {@code ThrownTridentMixin} reads
- * them back on impact to decide whether to call down lightning. This is a different moment from
- * the airborne throw bonus above (which reads {@code isFallFlying()} at impact time, not throw
+ * <p>The Storm Javelin lightning ability has no throw-time requirement at all anymore — earlier
+ * versions gated it on the thrower's fall distance and/or absolute Y level at the moment of the
+ * throw, both dropped per the user's own successive simplifications. {@code ThrownTridentMixin}
+ * now triggers it on any thrown hit, purely gated by its own 30-second per-player cooldown. This
+ * is unrelated to the airborne throw bonus above (which reads {@code isFallFlying()} at impact
  * time) — the two are kept deliberately separate, not merged into one condition.
  */
 public class HarpyJavelinItem extends TridentItem {
@@ -106,8 +106,6 @@ public class HarpyJavelinItem extends TridentItem {
 			stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(livingEntity.getUsedItemHand()));
 			if (riptide == 0) {
 				ThrownJavelin thrownJavelin = new ThrownJavelin(level, player, stack);
-				thrownJavelin.stormThrowY = player.getY();
-				thrownJavelin.stormFallDistance = player.fallDistance;
 				thrownJavelin.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F + riptide * 0.5F, 1.0F);
 				if (player.getAbilities().instabuild) {
 					thrownJavelin.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
@@ -152,11 +150,42 @@ public class HarpyJavelinItem extends TridentItem {
 		return OriginUtil.hasOrigin(entity, HARPY_ORIGIN_ID);
 	}
 
+	/** Fixing-doc round 2: "way more damage based on how fast you're going while flying," base 7
+	 * up to 14 — shared between the melee mixin ({@code HarpyJavelinSpeedDamageMixin}) and the
+	 * thrown one ({@code ThrownTridentMixin}'s own airborne-bonus handler), replacing what used to
+	 * be a flat +3 whenever simply airborne at all. Scales linearly from 0 (not moving/not flying)
+	 * up to {@link #MAX_AIRBORNE_BONUS_DAMAGE} at {@link #MAX_BOOSTED_HORIZONTAL_SPEED} (the same
+	 * reference ceiling {@code HarpyFlightSpeedMixin} clamps flight speed to, so "full bonus" lines
+	 * up with "flying about as fast as this mod ever lets you go").
+	 *
+	 * <p>Both constants live here, on a plain non-mixin class, rather than on
+	 * {@code HarpyFlightSpeedMixin} itself: an earlier attempt declared {@code
+	 * MAX_BOOSTED_HORIZONTAL_SPEED} as a {@code public static} field directly inside that mixin
+	 * class so this class could reference it — Sponge Mixin's pre-processor rejects any
+	 * <em>non-private</em> static field declared in a mixin (it would have to attach a public
+	 * static field onto {@code LivingEntity} itself), which crashed the whole mixin transform of
+	 * {@code LivingEntity} at game launch (real crash, caught by the user's own playtest, not
+	 * something this headless environment could have caught by reasoning alone). Fixed by moving
+	 * the constant to this ordinary class instead; the mixin now reads it from here as a plain
+	 * {@code private static final} copy, which Mixin has no objection to. */
+	public static final float MAX_AIRBORNE_BONUS_DAMAGE = 7.0F;
+	public static final double MAX_BOOSTED_HORIZONTAL_SPEED = 3.0;
+
+	public static float airborneBonusDamage(LivingEntity owner) {
+		if (!owner.isFallFlying()) {
+			return 0.0F;
+		}
+		Vec3 velocity = owner.getDeltaMovement();
+		double horizontalSpeed = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
+		double fraction = Math.min(horizontalSpeed / MAX_BOOSTED_HORIZONTAL_SPEED, 1.0);
+		return (float) (fraction * MAX_AIRBORNE_BONUS_DAMAGE);
+	}
+
 	@Override
 	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, level, tooltip, flag);
-		OriginUtil.addOriginGatedTooltip(tooltip, "Causes Bleed, bonus damage thrown while flying");
-		OriginUtil.addOriginGatedTooltip(tooltip, "Thrown from high up or after a big fall calls down lightning");
+		OriginUtil.addOriginGatedTooltip(tooltip, "Causes Bleed; the faster you're flying, the more bonus damage (up to +7)");
+		OriginUtil.addOriginGatedTooltip(tooltip, "A thrown hit calls down lightning (30 second cooldown)");
 		OriginUtil.addOriginGatedTooltip(tooltip, "Harpy only");
 	}
 }

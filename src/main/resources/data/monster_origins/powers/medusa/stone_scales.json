@@ -3,7 +3,7 @@
 	"modifier": {
 		"name": "Medusa stone scales",
 		"attribute": "minecraft:generic.armor",
-		"value": 6.0,
+		"value": 8.0,
 		"operation": "addition"
 	},
 	"name": "Stone Scales",

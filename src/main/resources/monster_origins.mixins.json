@@ -9,11 +9,22 @@
 		"ArthropodPassiveTargetMixin",
 		"ThrownTridentMixin",
 		"ThrownTridentAccessor",
-		"HarpyTalonBonusDamageMixin",
 		"SeaCreaturePassiveTargetMixin",
-		"CharmedPassiveTargetMixin"
+		"CharmedPassiveTargetMixin",
+		"MermaidTridentBonusDamageMixin",
+		"VillagerNoTradeMixin",
+		"SerpentAegisBlockMixin",
+		"SerpentAegisDurabilityMixin",
+		"SerpentAegisAllyProtectionMixin",
+		"HarpyFlightSpeedMixin",
+		"MermaidWaterTurningMixin",
+		"MermaidSprintSwimMixin",
+		"HarpyJavelinSpeedDamageMixin"
 	],
-	"client": [],
+	"client": [
+		"MermaidTridentReachMixin",
+		"TridentStyleFlatIconMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}

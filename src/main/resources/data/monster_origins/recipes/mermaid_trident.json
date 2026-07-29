@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key": {
+		"X": { "item": "minecraft:prismarine_shard" },
+		"O": { "item": "minecraft:fire_coral_block" },
+		"D": { "item": "minecraft:diamond" }
+	},
+	"pattern": [
+		"XXX",
+		" O ",
+		" D "
+	],
+	"result": {
+		"item": "monster_origins:mermaid_trident"
+	}
+}

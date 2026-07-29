@@ -3,8 +3,9 @@ package com.example.originmodstudy;
 import com.example.originmodstudy.effect.ModEffects;
 import com.example.originmodstudy.entity.ModEntities;
 import com.example.originmodstudy.item.ModItems;
-import com.example.originmodstudy.power.ScreamConeAction;
+import com.example.originmodstudy.loot.MermaidLootEvents;
 import com.example.originmodstudy.sound.ModSounds;
+import com.example.originmodstudy.util.MedusaFearHooks;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -19,13 +20,13 @@ public class OriginModStudy implements ModInitializer {
 		// Most of this mod's kit is entirely data-driven (data/arachne/origins, data/arachne/powers)
 		// and registered automatically by Origins/Apoli's own data loaders. Real game content still
 		// needs Java registration like vanilla would: items, the custom Bleed status effect (Harpy's
-		// Talons), the bundled Scream sound event, and the one custom Apoli action type (Scream's
-		// forward-cone knockback, which nothing data-driven can express).
+		// Talons), and the bundled sound events.
 		ModEntities.registerModEntities();
 		ModItems.registerModItems();
 		ModEffects.registerModEffects();
 		ModSounds.registerModSounds();
-		ScreamConeAction.register();
+		MermaidLootEvents.register();
+		MedusaFearHooks.register();
 
 		LOGGER.info("Arachne origin loaded");
 	}

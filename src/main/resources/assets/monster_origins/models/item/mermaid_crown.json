@@ -1,6 +1,0 @@
-{
-	"parent": "minecraft:item/generated",
-	"textures": {
-		"layer0": "monster_origins:item/mermaid_crown"
-	}
-}

@@ -1,16 +1,18 @@
 {
-	"type": "minecraft:crafting_shapeless",
+	"type": "minecraft:crafting_shaped",
 	"category": "equipment",
-	"ingredients": [
-		{
-			"item": "monster_origins:silk"
+	"key": {
+		"#": {
+			"item": "minecraft:stick"
 		},
-		{
-			"item": "monster_origins:silk"
-		},
-		{
+		"X": {
 			"item": "monster_origins:silk"
 		}
+	},
+	"pattern": [
+		"  #",
+		" #X",
+		"# X"
 	],
 	"result": {
 		"item": "monster_origins:silk_net_shooter"

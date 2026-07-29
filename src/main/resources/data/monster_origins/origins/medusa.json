@@ -7,8 +7,9 @@
 		"monster_origins:medusa/vigor",
 		"monster_origins:medusa/unshakeable_footing",
 		"monster_origins:medusa/nocturnal_menace",
-		"monster_origins:medusa/dreadful_presence",
-		"monster_origins:medusa/stone_gaze_burst"
+		"monster_origins:medusa/stone_gaze_burst",
+		"monster_origins:medusa/gaze_petrify",
+		"monster_origins:medusa/scale_shedding"
 	],
 	"icon": {
 		"item": "monster_origins:medusa_eye"

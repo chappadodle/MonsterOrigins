@@ -8,7 +8,8 @@
 		"monster_origins:mermaid/land_slowness",
 		"monster_origins:mermaid/scale",
 		"monster_origins:mermaid/mermaids_call",
-		"monster_origins:mermaid/dolphins_grace_toggle"
+		"monster_origins:mermaid/riptide_dash",
+		"monster_origins:mermaid/fire_vulnerability"
 	],
 	"icon": {
 		"item": "monster_origins:mermaid_eye"

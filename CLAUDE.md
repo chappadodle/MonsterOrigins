@@ -372,6 +372,554 @@ than expected once real Origins source was checked — see the gotchas below for
   `monster_origins:mermaid`) — so, same as the mod ID rename, any world with this origin already
   selected will show it as missing now.
 
+- **`texture_size` is a Blockbench-project-file convention, not a real vanilla model JSON field —
+  vanilla always reads UV coordinates in a fixed 16-unit space, full stop.** Confirmed two ways
+  before touching the Living Coral Trident's supplied model: `javap` on `FaceBakery` shows its UV
+  interpolation hardcodes `16.0f` literals, never a variable texture size; and grepping every
+  `.class` file in the entire client+server jar plus every vanilla model file bundled in it for the
+  literal string `"texture_size"` returns zero matches anywhere. The file the user supplied
+  (`~/Downloads/Mermaid trident.json`) was a raw Blockbench project save (`"format_version"`,
+  `"groups"` — Blockbench-only keys), not an actual exported vanilla model, so its UV numbers were
+  authored against Blockbench's own internal `texture_size:[32,32]` editing canvas. Shipped fix:
+  every face's UV rectangle rescaled by `16 / texture_size[0]` (a plain unit conversion, not a
+  guess) and the field itself dropped, since keeping a value vanilla silently ignores would only
+  mislead a future reader. Whether the rescaled UVs land pixel-correct on the real supplied texture
+  is a separate question this environment can't render an answer to — flagged for the user's own
+  in-game check, same as every other visual asset in this project.
+- **Vanilla 1.20.1 has no reach attribute at all — that was only added in Minecraft 1.21 — and
+  Origins' own `extra_reach.json` power (checked via `gh api` before assuming a mixin was needed)
+  depends entirely on the third-party Reach Entity Attributes mod's two attributes for its bonus.**
+  That mod isn't in this project's dependency list (in fact `build.gradle` already deliberately
+  excludes it as a transitive Apoli dependency) or the user's installed mod list. The Living Coral
+  Trident's requested "+1 block reach" instead mixes into `MultiPlayerGameMode.getPickRange()`
+  directly — decompiled to confirm it's a plain hardcoded `return isCreative() ? 5.0F : 4.5F`, the
+  real client-side raycast range `GameRenderer#pick` uses to build the player's hit result every
+  frame, driving both block and entity interaction. (Separately confirmed
+  `ServerGamePacketListenerImpl.MAX_INTERACTION_DISTANCE`, a loose 6-block server-side sanity bound
+  used in `handleUseItemOn`/`handleInteract`, is not the real per-gamemode reach limit and doesn't
+  need touching — extending the client-side value is what actually changes the player's felt
+  reach.) A mixin on vanilla's own constant was judged more proportionate than asking the player to
+  install an entirely new mod for one weapon's minor stat, consistent with this project's existing
+  bias (see the cobweb/climb-speed mixins above) toward a mixin over a new dependency whenever
+  vanilla hardcodes the behavior being changed.
+
+- **`@ModifyArg` handler parameters declare which argument(s) of the *invoked* call to modify —
+  they are not a local-capture mechanism for the *enclosing* method's own parameters, unlike
+  `@Inject`.** Learned the hard way: `MermaidTridentBonusDamageMixin`/`ThrownTridentMixin`'s Barbed
+  Tip handlers originally appended an extra parameter (the melee target / `EntityHitResult`) to an
+  `@ModifyArg` handler, assuming it worked like the enclosing-method parameter capture `@Inject`
+  handlers already use successfully elsewhere in this file (e.g. `harpyJavelin$applyBleedOnThrow`).
+  It doesn't — Mixin instead read the extra parameter as declaring the *invoked* method's expected
+  signature, producing `InvalidInjectionException: ... targets a method with an invalid signature
+  ..., expected (F, Entity)` against the real `Entity.hurt(DamageSource, float)`, which crashed the
+  entire mixin transform of the target class (`Player`/`ThrownTrident`) at game launch, before any
+  menu loads — confirmed from the user's own crash log, not caught at compile time, since Mixin's
+  own annotation processor doesn't validate this. Fixed by adding a plain `@Inject` at
+  `@At("HEAD")` that captures the enclosing method's own real parameter into a new mixin-added
+  field, letting the `@ModifyArg` handler go back to its original, valid single-argument shape and
+  read that field instead. MixinExtras (bundled by Fabric Loader itself per this project's own
+  launch log) offers a `@Local` sugar annotation that could do this more directly, but its
+  availability on this project's own compile classpath wasn't confirmed, and this environment has
+  no display to verify a mixin fix by actually launching the game — the field-plus-HEAD-inject
+  approach was chosen specifically because it only reuses a pattern already proven working
+  elsewhere in this exact file, not because it's the only possible fix.
+
+- **Vanilla's own `ThrownItemRenderer` (used for snowballs/eggs/ender pearls) billboards the item
+  to face the camera and renders it with a fixed `ItemDisplayContext.GROUND` transform — it never
+  applies the entity's own flight-direction rotation, unlike vanilla's real
+  `ThrownTridentRenderer`.** Both are correct for what they're built for (a snowball has no "pointy
+  end" that needs to face anywhere in particular), but the Harpy Javelin and Living Coral Trident
+  originally reused `ThrownItemRenderer` anyway (to get the "render the item's own model instead of
+  a hardcoded vanilla model" fix — see the entry below), which is why both always rendered
+  "vertical" in flight and stuck in the ground, regardless of real throw direction — a genuine
+  rendering bug, not a texture/model problem, confirmed by decompiling both renderer classes
+  directly rather than assumed. Fixed with a new shared `client/DirectionalThrownItemRenderer.java`
+  that extends `EntityRenderer<T>` directly and reproduces `ThrownTridentRenderer`'s exact pose
+  transform (`Axis.YP.rotationDegrees(lerp(partialTick, yRotO, getYRot()) - 90)` then
+  `Axis.ZP.rotationDegrees(lerp(partialTick, xRotO, getXRot()) + 90)`) before rendering the item's
+  own baked model via `ItemRenderer.renderStatic` with `ItemDisplayContext.NONE` (raw model space,
+  since the custom rotation already does the pointing job `GROUND`'s fixed transform would
+  otherwise do). Both `ThrownJavelin` and `ThrownMermaidTrident` get this rotation data for free —
+  it's computed every tick by the inherited `ThrownTrident`/`AbstractArrow` movement logic, the
+  renderer just wasn't reading it.
+- **Reusing vanilla's exact rotation offsets for a differently-authored model, and reusing
+  vanilla's exact interpolation call, are two separate risks — real playtesting caught both.**
+  After shipping `DirectionalThrownItemRenderer` above, the user reported the javelin/trident
+  landing blade-up (shaft planted, not the blade) and a brief rapid spin right at impact. (1)
+  Vanilla's `ThrownTridentRenderer` offsets (`yaw - 90`, `pitch + 90`) were tuned for vanilla's own
+  baked `TridentModel`'s own local-space convention — nothing guarantees a completely
+  separately-authored item model's own modeled tip happens to align with those same numbers, and it
+  didn't; fixed with an extra 180° on the pitch term (`pitch - 90` instead of `+ 90`), the term
+  that governs which end faces the direction of travel. Flagged as a best-effort correction based
+  on the reported symptom, not something this headless environment can verify visually — if a
+  future case needs the *other* direction, try the yaw term instead, or an added standalone
+  `Axis.XP.rotationDegrees(180.0F)`. (2) Vanilla's own renderer interpolates `yRot`/`xRot` with
+  plain `Mth.lerp`, confirmed by decompiling it again — this blends the two angle numbers directly,
+  not the shortest angular path, so an angle jump across the 0°/360° wrap (plausible right at an
+  impact bounce) makes it spin the long way around for that frame. `Mth.rotLerp` (confirmed present
+  via `javap` on `Mth`) is vanilla's own angle-aware interpolation, already used elsewhere in
+  vanilla for exactly this reason — just not by `ThrownTridentRenderer` itself, a real, minor
+  pre-existing vanilla imperfection easy to miss on the small stock trident model but obvious on
+  these mods' larger, more detailed ones. Lesson: decompiling vanilla and reproducing its technique
+  exactly is the right first move, but "vanilla does it this way" doesn't mean vanilla's way is
+  bug-free or tuned for a different asset — both still needed real gameplay feedback to catch.
+- **`TextureAtlas.LOCATION_BLOCKS` is deprecated in this Minecraft version — use
+  `InventoryMenu.BLOCK_ATLAS` instead, the real non-deprecated constant for the same resource
+  location.** Caught via `-Xlint:deprecation` (not the default compiler output) while adding the
+  `DirectionalThrownItemRenderer` above, which needs some placeholder texture location purely to
+  satisfy `EntityRenderer`'s abstract `getTextureLocation` (never actually sampled, since the real
+  texture comes through the rendered item model).
+
+- **A vanilla block/item element's rotation angle is restricted to exactly {0, ±22.5, ±45} —
+  confirmed directly from `BlockElement$Deserializer.getAngle`'s own real validation logic (a plain
+  `if (angle != 0 && abs(angle) != 22.5 && abs(angle) != 45) throw JsonParseException`), not just
+  the commonly-cited wiki rule.** A genuine `90°` single-axis rotation (e.g. a piece meant to face
+  sideways) isn't approximable by snapping to the nearest allowed angle without visible distortion —
+  the correct, lossless fix for an axis-aligned box is to recompute its `from`/`to` directly via the
+  actual rotation formula (for -90° around Y: `(dx, dz) → (-dz, dx)` relative to the rotation
+  origin, applied to both corners, then take per-axis min/max) and remap its face names to match
+  (a -90° Y rotation turns north→east, east→south, south→west, west→north; up/down unaffected),
+  rather than leaving a `rotation` block in place at all. Smaller stray angles (a handful of
+  degrees off, not a full 90°) are a much safer case for a plain nearest-allowed-angle snap, since
+  the visual difference is proportionally tiny.
+- **A dict `.get(key, default)` fallback chain silently returns the wrong thing when an earlier key
+  *exists* but holds a legitimately falsy value (here, a real `0`) — this cost a full round of
+  wrong guidance to the user.** An early pass at auditing the Living Coral Trident model's rotation
+  angles used `rot.get('angle', rot.get('z', rot.get('x', rot.get('y'))))` to pull "the" angle out
+  of Blockbench's multi-axis rotation objects — for an element rotated only on `y` (e.g. a real
+  genuine `y: -90`, with `x: 0, z: 0` also present in the object), this evaluated `rot.get('z', ...)`
+  first, found the `z` *key* present (value `0`), and returned that `0` as "the angle," completely
+  hiding the real, invalid `-90` on `y`. `.get()`'s default only ever fires when the key is
+  *missing*, never when its value is falsy — checked each axis's actual value directly
+  (`rot.get(ax, 0) != 0`) instead once this was caught. Worth remembering for any future ad hoc
+  JSON-auditing script in this project: prefer explicit per-key value checks over a `.get()`
+  fallback chain whenever a legitimate value of `0`/`False`/`""` is possible on an earlier key.
+
+- **`origins:and`/`origins:inverted` combine freely with `origins:status_effect` and
+  `origins:in_tag` inside a `bientity_condition`'s `target_condition` wrapper — the "no
+  `meta_bientity_condition_types` combinator" gotcha above only blocks combining *bientity*
+  conditions directly, not the plain entity conditions wrapped inside `target_condition`.** Used
+  for the new passive Stone Gaze power's one-shot-per-target gate (hostile tag AND not already on
+  cooldown) without needing to restructure around the missing bientity combinator the way Medusa's
+  Dreadful Presence originally had to.
+- **Origins/Apoli has a real, dedicated `origins:toggle` power type (checked via `gh api` before
+  building Innocent Form) — but this project deliberately did *not* switch to it, staying with the
+  already-proven `origins:active_self` + `origins:if_else` + status-effect-as-toggle-state pattern
+  instead.** `origins:toggle` provides a genuine on/off state queryable via
+  `origins:power_active`, which would have been the more "textbook" mechanism — but wiring up the
+  actual `/scale` command side-effect on each transition still needs a *separate* action-triggering
+  power referencing it (via the `origins:toggle` entity action type), a second unverified mechanism
+  on top of the first. The existing marker-effect pattern (already proven for Dolphin's Grace)
+  achieves the identical result — a queryable on/off state other powers can gate on via
+  `origins:status_effect` — with zero new mechanisms to verify. Reused, not reinvented.
+- **`LivingEntity.blockedByShield(LivingEntity attacker)` is vanilla's real, minimal hook for "a
+  raised shield just blocked a melee hit"** — confirmed via `javap`/decompile: called on the
+  defender with the attacker as its only parameter, and by default just applies a small knockback
+  to the attacker. A TAIL `@Inject` here, checking `defender.getUseItem() instanceof
+  SerpentAegisItem`, is the shield-equivalent of every other on-hit mixin in this project — and
+  confirms the Serpent Aegis needed no custom block-detection path at all, just extending vanilla
+  `ShieldItem` directly and injecting into the one real hook vanilla already calls when a block
+  actually lands.
+- **Iron golems have no existing AI goal this mod could gate/redirect for "attack this specific
+  player" — confirmed by decompiling `IronGolem.registerGoals()` directly: both its
+  `NearestAttackableTargetGoal`s are typed to `Mob.class`, and `Player` isn't a `Mob` subclass at
+  all.** Vanilla's real "golems attack players who anger the village" behavior lives in the
+  separate village-reputation/anger system, not a target goal this project could intercept the
+  same way the `*PassiveTargetMixin` family intercepts `TargetGoal#canAttack`. Innocent Form's
+  "iron golems see through the disguise" instead directly calls the already-public
+  `Mob#setTarget(LivingEntity)` from a plain periodic Fabric `ServerTickEvents.END_SERVER_TICK`
+  scan — simpler and more reliable than fighting to inject into a targeting system that doesn't
+  actually reach players in the first place.
+- **A full villager "flee and stay away" reaction needs 1.20.1's Brain/Sensor/MemoryModuleType
+  system, not a simple AI goal — judged disproportionate scope for this project and not
+  attempted.** Villager fear/panic behavior is driven by that Brain system, not the
+  goal-based AI this project's other mob-behavior mixins already intercept successfully (iron
+  golems, arthropods, sea creatures). Innocent Form's villager reaction settles for an immediate,
+  repeatable knockback-away + vanilla's own `SoundEvents.VILLAGER_NO` on proximity (from the same
+  periodic tick scan as the iron golem check above), plus an outright `mobInteract` cancellation
+  (`VillagerNoTradeMixin`) so trading is blocked regardless — a proportionate-scope call matching
+  this project's own precedent (see `util/OriginUtil.java`'s reasoning for a similar tradeoff).
+
+- **A per-tick multiplicative velocity boost with nothing to cancel it back down compounds
+  geometrically, not linearly — a real bug caught by reasoning through the math, not by observing
+  it happen, since this environment has no display to playtest a runaway-acceleration bug with.**
+  Building the "+50% flying speed" fixing-doc request, a first draft injected at the tail of
+  `LivingEntity.travel()` and unconditionally multiplied the fall-flying entity's velocity by 1.5
+  every tick. Vanilla's own fall-flying physics (decompiled directly, see the next entry) only
+  reach a stable cruising speed because their own internal drag (a fixed 1-2% per tick) and their
+  own direction-seeking pull are balanced by construction; bolting a flat >1.0 multiplier onto the
+  *output* of that already-balanced system every tick, with no counteracting term, has nothing
+  stopping it from compounding tick over tick (1.5x, 2.25x, 3.375x, ...) into an unbounded runaway.
+  Fixed by clamping the boosted horizontal speed to a fixed ceiling every tick instead of letting
+  the multiply apply freely — this guarantees the result can never exceed that ceiling regardless
+  of how long a flight lasts, self-correcting even after the ceiling is hit (since `min(speed *
+  1.5, ceiling)` only reapplies the multiplier meaningfully while under three-quarters of the
+  ceiling). A flat per-tick multiplier on a physics quantity is a real hazard worth checking for
+  arithmetically before shipping, any time neither side of the interaction can be observed running
+  in this headless environment.
+- **`LivingEntity.travel(Vec3)` is one large method with mutually exclusive water/lava/fall-flying
+  branches, and `LivingEntity.getWaterSlowDown()` (a plain, protected, non-final method returning a
+  flat `0.8f`) is the real per-tick horizontal momentum-retention constant applied to anyone in
+  water — confirmed by decompiling both directly (a locally fetched CFR jar, same technique as
+  every other "need a real method body, not just a signature" gotcha in this file).** This is the
+  actual mechanism behind an already-documented finding above (Mermaid's swim speed "feels like
+  sliding on ice" no matter how high `swim_speed.json`'s own attribute value goes) — that data
+  value only ever affects a separate `water_speed` attribute, never this hardcoded retention
+  constant. Being a plain non-final method (unlike the fall-flying branch's own tangle of local
+  variables reassigned across mutually exclusive branches, judged too fragile to target directly —
+  see `HarpyFlightSpeedMixin`'s own doc), it's a clean, low-risk `@Inject`-at-`RETURN` target:
+  overridden to `0.98f` for Mermaid-origin players specifically, leaving vanilla's real 0.8 for
+  everyone else. Deliberately leaves the *vertical* retention alone — a separate literal `0.8f`
+  hardcoded directly in the same `multiply(...)` call, not read from this method at all, and the
+  reported complaint (sliding, hard to turn) is specifically about horizontal steering.
+- **A toggle that "does nothing" can mean the effect it toggles was never wired to anything, not
+  that the toggle logic itself is broken — worth checking what actually reads the toggled effect
+  before touching the toggle power at all.** Harpy's old Slow Falling toggle correctly applied and
+  cleared vanilla's own `minecraft:slow_falling` on each press (confirmed the JSON was structurally
+  fine), but `glide.json` (the actual passive drift-down-slowly power) never had any `condition`
+  checking that effect — it only ever checked sneaking. Toggling `slow_falling` therefore had zero
+  observable effect on anything, since nothing in this mod's own powers ever looked at it. Fixed by
+  introducing a dedicated marker effect (`HARPY_GLIDE_DISABLED`) that both the toggle power and
+  `glide.json`'s own `condition` reference directly, rather than continuing to rely on an
+  intermediary vanilla effect nothing here actually reads. As a side effect, this also fixed a
+  separate-seeming complaint ("climbing is easier than descending"): `glide.json`'s permanent
+  downward velocity cap had been unconditionally fighting descent the whole time, regardless of the
+  toggle, precisely because the toggle was never actually connected to it — gating Glide behind the
+  toggle made turning it off remove the cap entirely, resolving both complaints from one fix.
+- **A brand-new no-cooldown toggle power for "disable/re-enable flight" needed the exact same
+  marker-effect-as-toggle-state pattern as the fixed Glide toggle above, applied to
+  `origins:elytra_flight` instead of `origins:modify_falling`** — confirmed `elytra_flight`
+  supports a top-level `condition` via `.allowCondition()` (checked via `gh api` against
+  `apace100/apoli`'s `ElytraFlightPower.java`) before gating it, the same verification step every
+  conditional power type in this project gets. This replaced Sudden Gust (a burst-speed power that
+  became redundant once flight became permanent) on the same primary key, rather than keeping both
+  bound to one key.
+- **Sharing one speed-to-damage formula between a thrown hit and a melee hit needs the formula
+  itself pulled into the item class, not duplicated in each mixin** — `HarpyJavelinItem
+  .airborneBonusDamage(LivingEntity)` is called from both `ThrownTridentMixin` (thrown, already
+  existed for the old flat +3) and the new `HarpyJavelinSpeedDamageMixin` (melee, brand new — no
+  melee airborne bonus existed before this). It reuses `HarpyJavelinItem
+  .MAX_BOOSTED_HORIZONTAL_SPEED` as the same reference ceiling flight itself is capped at, so "full
+  bonus damage" and "flying about as fast as this mod ever lets you go" line up by construction
+  rather than as two independently-tuned numbers that could drift apart.
+- **A mixin class cannot declare a non-private static field — Sponge Mixin's pre-processor rejects
+  it outright, and this is a launch-time crash, not a compile error.** `MAX_BOOSTED_HORIZONTAL_SPEED`
+  was first added directly to `HarpyFlightSpeedMixin` as `public static final` specifically so
+  `HarpyJavelinItem`/`HarpyJavelinSpeedDamageMixin` could reference the same number — this compiled
+  fine (javac has no opinion on this) but crashed the whole mixin transform of `LivingEntity` the
+  moment the game actually launched: `InvalidMixinException: ... contains non-private static field
+  MAX_BOOSTED_HORIZONTAL_SPEED`, caught by the user's own real playtest, not by anything in this
+  headless environment. The reason: a mixin's fields get merged directly into the target class's
+  own bytecode, and Mixin only allows that for `private` members — a `public`/package-private one
+  would have to become a genuinely new public symbol on `LivingEntity` itself, which the
+  pre-processor's `validateField` check refuses. `private static final` fields (e.g. this same
+  mixin's own `HARPY_ORIGIN_ID`) are completely fine and already used throughout this project's
+  other mixins — the fix here was simply moving the shared constant onto `HarpyJavelinItem` (a
+  plain class, where `public static` is unremarkable) and having the mixin read it from there as
+  its own `private static final` copy instead of declaring the canonical version itself. Worth
+  checking for on every future mixin that wants to expose a constant to outside classes: the
+  constant's canonical home has to be a non-mixin class, full stop.
+- **`assets/minecraft/models/item/trident.json` really is a plain `"parent":
+  "minecraft:item/generated"` — but that's only the GUI/dropped-item fallback, not the whole
+  story, and treating it as "vanilla trident has no true 3D rendering" was a real, corrected
+  mistake this round.** `trident.json` genuinely is flat (confirmed twice, from two different
+  jars). But real vanilla ships a *second* model, `trident_in_hand.json`
+  (`"parent": "builtin/entity"`, same special-dispatch mechanism the shield uses), and
+  `BlockEntityWithoutLevelRenderer.renderByItem` has its own `itemStack.is(Items.TRIDENT)` branch
+  (decompiled directly, found by accident while researching the *shield's* rendering, not
+  something the first pass ever went looking for) that renders a real `TridentModel` baked from
+  `ModelLayers.TRIDENT` — this is the actual code path a held/thrown trident renders through, and
+  it's genuinely 3D. The first pass at this round's Javelin/Coral Trident texture fix only ever
+  looked at `trident.json`, concluded "vanilla trident is just a flat icon," and used that
+  (incorrect) conclusion to justify replacing both weapons' hand-authored 3D models with flat
+  `item/generated` ones — which visibly broke their "looks 3D when equipped" appearance, caught by
+  the user's own real playtest, not by anything checked here first. **Corrected**: the Harpy
+  Javelin now has its own `client/HarpyJavelinRenderer.java` (a `BuiltinItemRendererRegistry
+  .DynamicItemRenderer`, registered in `OriginModStudyClient`) reproducing vanilla's real
+  `Items.TRIDENT` branch — bakes `ModelLayers.TRIDENT` into a `TridentModel`, renders it with the
+  Javelin's own texture instead of vanilla's `textures/entity/trident.png`. `TridentModel
+  .createLayer()` bakes at 32x32 (confirmed via decompile), which is exactly why the user's
+  replacement texture was 32x32, not this mod's usual 16x16 icon size — they painted it directly
+  onto vanilla's real UV layout via a Blockbench plugin that reads `.minecraft`'s own files, the
+  same technique already used for the Serpent Aegis's shield texture. Because `ItemRenderer
+  .renderStatic` dispatches to this registered renderer the same way regardless of caller,
+  `DirectionalThrownItemRenderer` (used for the Javelin's mid-flight/stuck-in-target visual) picks
+  this real geometry up automatically, with no separate thrown-specific renderer needed. The
+  Living Coral Trident got the identical treatment right after (`client/MermaidTridentRenderer
+  .java` — a second, separate `DynamicItemRenderer` class, not reused across both items, since
+  each needs its own lazily-baked `TridentModel` instance and its own texture constant; not to be
+  confused with the pre-existing `ThrownMermaidTridentRenderer`, which is the unrelated thrown-
+  entity renderer), once the user made a matching 32x32 texture for it too. The lesson generalizes:
+  a vanilla item "looking 3D when held" is
+  not proof by itself that its item model has real geometry — some vanilla items achieve that via
+  the exact same flat-icon-plus-diagonal-shading illusion Fang/Venomfang/Widowfang use (still true
+  for e.g. swords), but others (shield, trident, and apparently others) have a completely separate
+  `builtin/entity` + hardcoded-Java-branch path backing their held appearance, and the two look
+  identical from a screenshot — only decompiling `BlockEntityWithoutLevelRenderer` itself
+  distinguishes them, checking the flat model file alone is not sufficient.
+- **A vanilla `ShieldItem` subclass never gets vanilla's real 3D shield rendering for free — it
+  needs its own `BuiltinItemRendererRegistry` hookup, confirmed by decompiling
+  `BlockEntityWithoutLevelRenderer.renderByItem` directly rather than assumed.** Its shield branch
+  is gated on `itemStack.is(Items.SHIELD)`, an exact identity check against the single vanilla
+  item, same as the pre-existing (never-implemented) research this project had flagged for this —
+  `instanceof ShieldItem` is never checked anywhere in that method. The real rendering, once
+  reached, is straightforward: push pose, `poseStack.scale(1, -1, -1)`, build a foil-aware vertex
+  consumer via `shieldModel.renderType(textureLocation)` (a plain `RenderType.entitySolid`, per
+  `ShieldModel`'s own constructor `super(RenderType::entitySolid)` — no atlas/`Material` involved
+  unless you're also juggling vanilla's banner-pattern system, which the Serpent Aegis never
+  needs), then render `shieldModel.handle()` followed by `shieldModel.plate()`. `ShieldModel` is
+  baked from the already-registered `ModelLayers.SHIELD` layer (`plate`: 12x22x1 box at
+  texOffs(0,0); `handle`: 2x6x6 box at texOffs(26,0); baked at 64x64) — reusing it via
+  `Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.SHIELD)` needs no new
+  `EntityModelLayerRegistry` registration at all, since we're baking an *existing* vanilla layer
+  definition, not defining a new one. `SerpentAegisRenderer.java` (a Fabric API
+  `BuiltinItemRendererRegistry.DynamicItemRenderer`, registered in `OriginModStudyClient`)
+  reproduces this exact sequence with the Aegis's own 64x64 texture in place of vanilla's
+  `shield_base`/`shield_base_nopattern`, skipping the banner-pattern branch entirely (dead code for
+  an item that never carries dye/pattern NBT). The item model itself just needs
+  `"parent": "builtin/entity"` (copied from vanilla's real `shield.json`/`shield_blocking.json`,
+  including their exact `display` transform blocks and the `blocking: 1` predicate override) — its
+  own `"textures"` block is irrelevant to the actual rendered surface (only supplies a `particle`
+  sprite for break/hit particles, same inert placeholder vanilla itself uses,
+  `block/dark_oak_planks`); the real texture is hardcoded directly in the Java renderer instead,
+  completely bypassing the model JSON's texture declarations.
+- **Vanilla's real shield-durability-on-block loss is a THIRD occurrence of the same "exact item
+  identity, not `instanceof`" anti-pattern already found twice for 3D rendering.** Decompiled
+  `Player.hurtCurrentlyUsedShield(float)` directly to find why the Serpent Aegis never lost
+  durability blocking a hit ("indestructible," reported by real playtest): `LivingEntity`'s own
+  base version of this method is a complete no-op; `Player`'s override starts with
+  `if (!this.useItem.is(Items.SHIELD)) return;` before any of the real logic (the `f >= 3.0f`
+  threshold, `hurtAndBreak`, the item-used stat, breaking the shield outright at zero durability).
+  A plain `ShieldItem` subclass never satisfies that check. Fixed with a HEAD `@Inject` on the same
+  method (`SerpentAegisDurabilityMixin`) reproducing the real logic for `SerpentAegisItem`
+  specifically — composes safely alongside the original vanilla body, which still runs afterward
+  and continues to no-op for our item either way, so nothing needs cancelling.
+- **A registered `BuiltinItemRendererRegistry` model's own `display` transform block still applies
+  before the custom renderer runs, for every `ItemDisplayContext` including the one this project's
+  `DirectionalThrownItemRenderer` was using for thrown/stuck items — and that caused a real,
+  reported regression.** `ItemRenderer.renderStatic` applies `bakedModel.getTransforms()
+  .getTransform(itemDisplayContext).apply(...)` to the pose stack *before* dispatching to any
+  custom renderer, vanilla's own or ours, unconditionally. `DirectionalThrownItemRenderer` used
+  `ItemDisplayContext.GROUND` (deliberately, per an earlier fix, for the *old* oversized custom
+  models' own `display.ground` scale override). Once the Harpy Javelin/Coral Trident/Petrifying
+  Trident switched to real vanilla Trident geometry (copied verbatim from `trident_in_hand.json`,
+  including its own `"ground": {"scale": 0.25}` entry), `GROUND` started applying a *second*,
+  redundant 0.25 shrink on top of geometry that's already correctly, vanilla-scaled — reported as
+  "ridiculously small" once stuck in a block. Real vanilla's own `ThrownTridentRenderer` never
+  goes through `ItemDisplayContext` at all for this (it calls `TridentModel.renderToBuffer`
+  directly, true scale, no transform layered on top) — switched to `ItemDisplayContext.NONE`
+  (identity transform) to match. The lesson: a shared renderer class's own tuned constants
+  (display context choice, translation offsets) can silently stop being correct once the
+  *content* being rendered through it changes shape/scale, even though the renderer class itself
+  didn't change — worth re-checking, not just trusting the old tuning, whenever the underlying
+  model swaps to a fundamentally different kind of geometry.
+- **A real vanilla trident/spyglass has a third, separate "charging a throw" pose
+  (`trident_throwing.json`/`item/trident_throwing`), swapped in via the item model's own
+  `"overrides": [{"predicate": {"throwing": 1}, ...}]` — easy to miss entirely, since it only
+  shows up while actively charging a throw, not in any of the other, more obvious poses.** Missing
+  it doesn't crash or error; it just leaves the weapon in its normal *holding* pose the whole time
+  a throw is being charged, which reads as "held backwards" once combined with vanilla's own
+  generic arm-pull-back charging animation (tuned to work *with* the dedicated throwing pose, not
+  against the normal one). The Harpy Javelin, Living Coral Trident, and Petrifying Trident all
+  needed their own `_throwing.json` copy of this override once they switched to real Trident
+  geometry, mirroring vanilla's real values verbatim (only the `thirdperson_righthand`/
+  `thirdperson_lefthand` rotation/translation actually differ from the normal holding pose;
+  first-person is identical either way, which is exactly why the bug was only ever visible in
+  third person).
+- **Reused vanilla's own reference `elytra_flight`/`slow_falling` no-condition JSON verbatim
+  (`apace100/origins-fabric`'s own `powers/elytra.json`, confirmed via `gh api`) after a
+  conditional toggle mechanism for both flight and Glide turned out to leave both completely
+  non-functional in a real playtest, for a reason never fully root-caused.** Every JSON file
+  involved was schema-valid and pattern-identical to two other already-proven-working toggles in
+  this same codebase (Innocent Form, Dolphin's Grace); `.allowCondition()` support on both
+  `elytra_flight` and `modify_falling` was directly confirmed against Apoli's own source. Static
+  analysis alone couldn't find the actual defect. Per the user's own explicit call ("forget about
+  the power to disable... let's have the elytra always equipped"), the whole toggle mechanism
+  (two power files, two marker effects, two key bindings) was removed rather than debugged
+  further — Harpy's flight and Glide are unconditional again, matching how base Origins' own
+  `elytra.json` power is actually written (no condition field at all). Worth remembering: not
+  every bug is worth chasing to a root cause before removing the feature that introduced it,
+  especially when the simpler prior design already worked.
+- **`LivingEntity.zza`/`xxa` are plain public vanilla fields holding the entity's current forward/
+  strafe movement input impulse (-1 to 1), already synced server-side for a real player every tick
+  (the server needs it for its own authoritative movement simulation) — no custom networking
+  needed to read "is this player holding backward" from a server-side mixin.** Used to make Harpy
+  flight actually decelerate when holding S, rather than just capping the boosted top speed lower:
+  `HarpyFlightSpeedMixin` now `@Shadow`s `zza` and checks `zza < 0.0F` (holding backward) to apply
+  a gentle per-tick deceleration instead of the usual forward boost. Directly addresses the user's
+  own diagnosis of why a slower flight speed was even requested in the first place — vanilla's
+  elytra physics have no drag mechanism strong enough to ever slow back down once this mod's own
+  boost has built up speed, so a hard speed cap alone can only ever raise or lower the ceiling,
+  never give the player a real way to actively slow down mid-flight.
+- **Fabric API's `ModelLoadingPlugin.register(...)` is a plain static method callable directly from
+  client init code — no `fabric.mod.json` entrypoint needed at all** (confirmed by decompiling the
+  interface itself, not assumed from the Fabric Wiki tutorial's own registration example, which
+  uses the entrypoint form). `Context.addModels(ResourceLocation...)` registers extra, independently
+  -addressable model resources — used to give the Storm Trident/Coral Trident/Petrifying Trident
+  each a "flat icon" fallback model that isn't any item's own default registration
+  (`TridentStyleFlatModels.register()`, called from `OriginModStudyClient`).
+- **A `ModelResourceLocation` passed to `Context.addModels(...)` needs the *bare* model id, no
+  `item/`/`block/` folder prefix — a real, shipped bug this round, not just a theoretical
+  gotcha.** Confirmed directly against vanilla's own real code: `ItemRenderer`'s
+  `TRIDENT_MODEL`/`TRIDENT_IN_HAND_MODEL` constants both wrap `ModelResourceLocation.vanilla(
+  "trident", ...)` — bare `"trident"`, never `"item/trident"` — and the Fabric Wiki's own tutorial
+  registers both its block-state and item variants under the same bare path, differing only in the
+  variant string (`""` vs `"inventory"`). The first version of `TridentStyleFlatModels` used
+  `"item/storm_trident_flat"` as the underlying path, which resolves to a nonexistent
+  `models/item/item/storm_trident_flat.json` (folder prefix duplicated) — the model fails to load,
+  and a missing *model* renders identically to a missing *texture* (the purple/black checkerboard),
+  which is exactly why this was reported back as "wrong texture file," not "wrong model path," at
+  first. Fixed by dropping the `item/` prefix from all three `ResourceLocation` constants; the
+  `"inventory"` variant on the `ModelResourceLocation` wrapper is what actually tells the loader to
+  resolve the bare path under `models/item/`, not anything in the path string itself.
+- **Real vanilla's "flat icon in the hotbar, real 3D when held" split (Trident, Spyglass) is a
+  hardcoded, item-specific special case inside `ItemRenderer` itself — there is no generic
+  per-item toggle for it in vanilla or Fabric, confirmed via web research this round since this
+  project's own prior research never covered it.** `ItemRenderer.getModel()` unconditionally
+  resolves `Items.TRIDENT` to a *separately loaded* `trident_in_hand` model (a
+  `ModelResourceLocation` addressed directly by name, not through the item's own registration);
+  `render()` then swaps it back to the plain flat one specifically for `GUI`/`GROUND`/`FIXED`
+  contexts. Replicating this for a third-party item that (unlike vanilla's Trident) already has a
+  3D `builtin/entity` model as its *default* registration only needs half of vanilla's own dance:
+  no `getModel()` swap is needed (held contexts already get 3D for free), just a `render()`-side
+  mixin forcing the flat fallback for the same three contexts. Implemented as
+  `TridentStyleFlatIconMixin`, using the same HEAD-`@Inject`-captures-into-a-field technique this
+  project already established for a different reason (`ThrownTridentMixin`), rather than declaring
+  extra `@ModifyVariable` handler parameters to read the enclosing method's other arguments — the
+  latter is real, supported Mixin capability (a genuinely different one from the already-documented
+  `@ModifyArg` limitation elsewhere in this file), but untested in this project until now, so the
+  already-proven capture-to-field pattern was preferred for a player-facing render path this
+  environment can't playtest.
+- **The same "GUI/GROUND/FIXED forced back to flat" fix also resolved a second, separately
+  reported bug — dropped Trident-shaped items looking "super small" on the ground — since it's the
+  exact same root cause.** A dropped item entity renders with `ItemDisplayContext.GROUND`; without
+  vanilla's own hardcoded flat-model force-back for that context, a custom `builtin/entity` item
+  renders its full 3D geometry there too, with the model's own `"ground"` display scale (0.25,
+  copied from vanilla) applying on top of whatever additional scaling `ItemEntityRenderer` itself
+  assumes for a normal flat icon — two fixes for the price of one once the actual mechanism was
+  understood, rather than two separate patches.
+- **`Player.hurt(DamageSource, float)` is a real, direct override (confirmed via `javap`, then
+  fully decompiled to check), not just inherited from `LivingEntity` — and it calls `super.hurt(
+  damageSource, f)` at the very end of its own body, after its player-specific checks (invulnerable
+  ability, difficulty scaling).** This matters because it means a HEAD `@Inject` on `LivingEntity
+  .hurt` fires for player defenders too (via that `super` call), *and* a HEAD `@Inject` directly on
+  `Player.hurt` is equally valid and fires strictly earlier, before any of Player's own difficulty-
+  scaling adjustments touch the raw damage number or the `DamageSource`. Used for two separate
+  Serpent Aegis features needing information `blockedByShield`/`hurtCurrentlyUsedShield` are never
+  given: `SerpentAegisBlockMixin` captures the raw blocked damage (from `LivingEntity.hurt`, since
+  reflection logic already lives in that class) to reflect half of it back at the attacker as
+  `damageSources().thorns(...)`; `SerpentAegisDurabilityMixin` separately captures the
+  `DamageSource` itself (from `Player.hurt`, since that's where the real `hurtCurrentlyUsedShield`
+  override lives) to exempt `DamageTypes.FIREBALL` from durability loss entirely. Two independent
+  capture points in two independent mixin classes, deliberately not sharing one field across
+  classes — Mixin doesn't let unrelated mixin classes read each other's injected fields without an
+  explicit accessor, so each mixin captures only what it itself needs, from whichever method
+  actually has that information available on its own target class.
+- **A HEAD `@Inject` into a method that returns a non-`void` type needs `CallbackInfoReturnable`,
+  not plain `CallbackInfo` — even if the handler never touches it, and even at `HEAD` where
+  nothing has been returned yet.** Real launch crash, not a compile error (`javac` has no opinion
+  on which callback type a handler declares): both new damage-source-capturing injections above
+  target `hurt(DamageSource, float)`, which returns `boolean`, but were first written with plain
+  `CallbackInfo` (copied from this project's many *other* HEAD injections, all of which happen to
+  target `void` methods). `InvalidInjectionException: ... CallbackInfoReturnable is required!` —
+  caught by the user's own real playtest, not by anything checked here first, same as the earlier
+  non-private-static-field mixin crash. The fix is purely mechanical: swap the last parameter's
+  type to `CallbackInfoReturnable<Boolean>` (boxed, matching the primitive return type) — no other
+  change needed, since neither handler actually cancels or rewrites the return value. Worth
+  checking the real return type of *any* injection target before assuming `CallbackInfo` is safe,
+  not just pattern-matching against this project's own existing (mostly-`void`-target) mixins.
+- **`LivingEntity.blockedByShield(LivingEntity)` runs on the ATTACKER, with the DEFENDER as its
+  parameter — the exact opposite of what this project's original `SerpentAegisBlockMixin` assumed,
+  a real bug that shipped and was only caught because damage reflection (added on top of the
+  already-"working" Slowness feature) failed completely.** Fresh decompile of the real call chain,
+  re-checked from scratch rather than trusted from memory this time: `LivingEntity.hurt(...)`
+  calls `this.blockUsingShield(attacker)` (defender calling it); `blockUsingShield(LivingEntity
+  livingEntity)` — `this` = defender here — calls `livingEntity.blockedByShield(this)`, i.e.
+  `attacker.blockedByShield(defender)`. Vanilla's own default body confirms the direction:
+  `livingEntity.knockback(0.5, livingEntity.getX() - this.getX(), ...)` knocks back the
+  *parameter* using a vector pointing away from `this` — matching the well-known real vanilla
+  behavior that blocking a heavy hit pushes the *blocker* backward, not the attacker. The original
+  mixin read `this` as the defender and the parameter as the attacker (exactly backwards), so it
+  only ever applied its effects when those roles happened to coincidentally line up (e.g. two
+  Aegis-wielding Medusa players fighting each other) — never in the intended "Medusa blocks,
+  attacker gets punished" case. The lesson: when a "this is called on X, parameter is Y" claim
+  about a vanilla hook was written once and never independently re-verified, a *new* feature
+  built on top of it is a real chance to catch it wrong — don't assume the old feature was
+  necessarily validated as thoroughly as its own comments claim just because nothing looked broken
+  yet.
+- **Vanilla's real water-swimming drag is `this.isSprinting() ? 0.9f : this.getWaterSlowDown()`
+  — sprint-swimming (the normal way anyone swims fast) takes a hardcoded branch that never calls
+  the overridable method at all.** This is why every Mermaid swim-speed multiplier bump this
+  session, despite the JSON value and the underlying `additionalentityattributes:water_speed`
+  attribute genuinely changing (confirmed via decompile of that mod's own mixin — it modifies
+  `moveRelative`'s speed argument unconditionally, sprint or not), never actually felt any
+  different: `MermaidWaterTurningMixin`'s own retention override (0.98, near-zero drag) only ever
+  applied while *not* sprinting, silently inactive for the one case everyone actually uses.
+  `isSprinting()` is declared on `Entity`, not `LivingEntity` (confirmed via `javap` before
+  writing a mixin targeting a different class than the existing one).
+- **The first attempt at the sprint-swim fix above — forcing `Entity.isSprinting()` itself to
+  report `false` while a Mermaid is in water — was a real regression, caught by the user's own
+  playtest, not by anything checked here first.** `isSprinting()` isn't only read by the water-drag
+  ternary; `Entity.updateSwimming()` uses the *exact same flag* to decide whether to enter the
+  swimming pose at all: `this.setSwimming(this.isSprinting() && this.isUnderWater() && ...)`.
+  Globally overriding `isSprinting()` for Mermaid-in-water silently disabled the swimming
+  animation/pose too — she moved through water while stuck in the upright walking pose, reported
+  back as "can't swim, just walks... more similar to gliding." The lesson: overriding a query
+  method used as an input to *one* piece of logic can silently break *other* logic that reads the
+  same query for a completely different purpose — grep for other real callers of a method before
+  assuming an override is scoped to the one call site being targeted, not just the one being
+  fixed. **Corrected fix**: `MermaidSprintSwimMixin` now uses `@ModifyConstant` (standard Sponge
+  Mixin, not a new dependency — the same annotation Additional Entity Attributes' own mixin
+  already uses elsewhere in this project's dependency tree) targeting the literal `0.9f` constant
+  in `travel()`'s water-drag ternary directly, confirmed via decompile to appear exactly once in
+  the entire method body (no ordinal ambiguity, unlike the local-variable techniques this project
+  has otherwise avoided in this same method) — changes only the *value* substituted into that one
+  ternary branch, without touching `isSprinting()` or anything else that calls it.
+- **Vanilla shields have no spatial hitbox at all — blocking is a pure directional check, not a
+  collision volume, confirmed via decompiling `LivingEntity.isDamageSourceBlocked` directly before
+  assuming a "make the shield hitbox bigger" request was literally possible.** The real check is
+  `this.isBlocking() && dot(viewVector, directionToDamageSource) < 0` — evaluated individually on
+  whoever is actually taking damage, with no radius/volume/hitbox concept anywhere in the method.
+  "A shield that defends more people" needed a genuinely new mechanic, not a hitbox resize —
+  `SerpentAegisAllyProtectionMixin` reduces damage to nearby *other* players (not just Medusa
+  herself, and deliberately not extended to arbitrary nearby mobs, to avoid accidentally softening
+  hits against hostile mobs standing nearby) while she's actively blocking with the Aegis, via
+  `@ModifyVariable` on `hurt(DamageSource, float)`'s own float parameter — the single-parameter
+  form of that annotation, matched purely by type, the same safe pattern already established by
+  `TridentStyleFlatIconMixin`.
+
+- **Every modded trident-style thrown entity had Loyalty silently non-functional since it was
+  first introduced — confirmed by decompiling `ThrownTrident` directly.** Its real
+  `(Level, LivingEntity, ItemStack)` constructor is the *only* place vanilla ever populates the
+  private synced-data fields `ID_LOYALTY`/`ID_FOIL` (from `EnchantmentHelper.getLoyalty(itemStack)`/
+  `itemStack.hasFoil()`) — `tick()` reads `ID_LOYALTY` every tick to decide whether/how fast to
+  pull the entity back to its owner. `ThrownJavelin`/`ThrownMermaidTrident`/
+  `ThrownPetrifyingTrident` all have to use the `(EntityType, Level)` constructor instead (per the
+  `tridentItem`-field gotcha below — vanilla's itemstack constructor hardcodes `EntityType
+  .TRIDENT`), which leaves both fields at `defineSynchedData()`'s hardcoded `0`/`false` defaults
+  forever, regardless of what enchantments the real thrown item actually has. This is exactly the
+  kind of case the `tridentItem`-field gotcha already flagged as a risk ("no extension point to
+  build on top of, has to be replicated") but the replication was incomplete — only `tridentItem`
+  itself was ever copied over, not the two enchantment-derived synced fields tick() actually reads.
+  Fixed by extending `ThrownTridentAccessor` with two more `@Accessor` methods exposing the
+  private static `ID_LOYALTY`/`ID_FOIL` keys (Mixin accessors work identically for a static field —
+  the generated method just ignores the receiver and reads/writes the class's own static slot), then
+  setting both synced values explicitly in all three subclasses' itemstack-carrying constructors,
+  matching vanilla's own real constructor line for line.
+- **`origins:add_velocity` supports a `"space": "local"` field (facing-relative, not world-space)
+  and a `"set": true` field (overrides velocity outright instead of adding to it) — confirmed via
+  real Apoli test-resource examples (`trident_jump.json`, `velocity_behind_head.json`,
+  `add_velocity.json` in `apace100/apoli`'s own test resources, via `gh api`) before using either
+  field.** Mermaid's Riptide dash (`powers/mermaid/riptide_dash.json`) uses both together — a
+  fixed local-space velocity along `z`, matching real vanilla Riptide III's own push magnitude
+  (`3.0F * (1 + riptideLevel) / 4`, confirmed via decompile of `TridentItem.releaseUsing`) — to
+  replicate "a forward burst regardless of which way you're facing" without any custom Java. The
+  initial guess (`z: -3.0`) was backward — real playtest confirmed positive `z` (`z: 3.0`) is
+  actually forward in Apoli's local-space convention for `add_velocity`, the opposite of
+  Minecraft's usual "-Z is forward" world-space convention. Worth remembering for any future
+  `add_velocity`/`"space": "local"` power in this project: don't assume the usual -Z-forward
+  convention carries over, verify with a real playtest.
+
 ## Build / verify
 
 ```bash
@@ -517,6 +1065,15 @@ also not a regression.
     this mixin technique intercepts — see the Guardian gotcha above).
   - `tags/items/raw_meat.json` — the raw-meat items (plus rotten flesh) Harpy's Hardy Stomach power
     checks against.
+  - `recipes/mermaid_trident.json` — the Living Coral Trident's own recipe (Task 13): Tube or Horn
+    Coral Block + Prismarine Crystals + Prismarine Shard.
+- `src/main/java/com/example/originmodstudy/loot/MermaidLootEvents.java` — the Living Coral
+  Trident's two loot-related traits, real Java event hooks since neither has a data-driven path:
+  bare-hand coral mining (swaps an already-dropped dead-coral item entity for the live block, since
+  fighting the loot table's own silk-touch `alternatives` structure would need a whole new
+  registered `LootItemCondition` type just for an origin check) and the Mermaid-only 20%
+  prismarine-shard fish drop (`ServerLivingEntityEvents.AFTER_DEATH`, checked against the four
+  vanilla fish entity types directly since 1.20.1 has no `EntityTypeTags.FISH`).
 - `src/main/resources/assets/monster_origins/`
   - `lang/en_us.json` — display names for every real item. Items (unlike powers) always need a
     translation key; there's no inline-string option for them.

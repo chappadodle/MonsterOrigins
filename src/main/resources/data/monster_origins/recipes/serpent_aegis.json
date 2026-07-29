@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key": {
+		"S": {
+			"item": "monster_origins:medusa_scale"
+		},
+		"o": {
+			"item": "minecraft:iron_ingot"
+		}
+	},
+	"pattern": [
+		"SoS",
+		"SSS",
+		" S "
+	],
+	"result": {
+		"item": "monster_origins:serpent_aegis"
+	},
+	"show_notification": true
+}

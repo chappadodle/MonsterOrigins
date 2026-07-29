@@ -7,8 +7,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
@@ -72,15 +70,25 @@ public class ModItems {
 	public static final Item WIDOWFANG = register("widowfang",
 			new FangItem(Tiers.NETHERITE, 3, -1.8F, 3, true, true, new Item.Properties().durability(3500)));
 
-	// Vanilla trident stats/behavior (throwable, riptide, etc.), reskinned, with petrify-on-hit.
+	// Vanilla trident stats/behavior (throwable, riptide, etc.), reskinned, petrify on a thrown
+	// hit only (Task 15). Durability bumped from 250 to 1000, matching this mod's explicit-override
+	// convention for every other weapon/armor piece.
 	public static final Item PETRIFYING_TRIDENT = register("petrifying_trident",
-			new PetrifyingTridentItem(new Item.Properties().durability(250)));
+			new PetrifyingTridentItem(new Item.Properties().durability(1000)));
 
 	// A lighter, faster throwing spear than the vanilla trident (6.0 damage / -2.4 speed instead
 	// of 8.0 / -2.9) — Harpy's weapon. Bleed on hit and a bonus while thrown mid-flight only
-	// trigger for the Harpy origin; see HarpyJavelinItem and ThrownTridentMixin.
-	public static final Item HARPY_JAVELIN = register("harpy_javelin",
+	// trigger for the Harpy origin; see HarpyJavelinItem and ThrownTridentMixin. Renamed to "Storm
+	// Trident" (matching the Storm Javelin lightning ability's own naming) once it switched to
+	// real vanilla Trident geometry and stopped looking like a javelin — item id and display name
+	// only, the Java class/entity/renderer names are unchanged internal implementation detail.
+	public static final Item STORM_TRIDENT = register("storm_trident",
 			new HarpyJavelinItem(new Item.Properties().durability(200)));
+
+	// Harpy sheds these every 10 minutes (feather_shedding.json), same mechanic/pattern as
+	// Arachne's Silk Glands and Medusa's Scale Shedding. A plain crafting material, no
+	// functionality of its own — used in the Harpy Javelin's own recipe.
+	public static final Item HARPY_FEATHER = register("harpy_feather", new Item(new Item.Properties()));
 
 	// A plain crafting material, no functionality yet — deliberately reserved for future recipes.
 	// Craftable by anyone (same recipe-can't-see-the-player limitation as every other weapon in
@@ -94,27 +102,24 @@ public class ModItems {
 	public static final Item SILK_NET_SHOOTER = register("silk_net_shooter",
 			new SilkNetShooterItem(new Item.Properties().durability(100)));
 
-	// Mermaid's exclusive crown: +2 hearts and Regeneration while worn and in water or rain (see
-	// MermaidCrownItem). Diamond-tier defense values, since it's partly crafted from diamonds.
-	// 1000 durability, same explicit-override convention every other weapon/armor piece uses.
-	public static final Item MERMAID_CROWN = register("mermaid_crown",
-			new MermaidCrownItem(ArmorMaterials.DIAMOND, ArmorItem.Type.HELMET, new Item.Properties().durability(1000)));
+	// The Living Coral Trident (Task 13): plain vanilla trident stats, Mermaid's own late-game
+	// weapon. 3500 durability, matching this mod's explicit-override convention for every
+	// weapon/armor piece rather than a tier's raw default. See MermaidTridentItem for its four
+	// on-hit traits (Symbiosis, Barbed Tip, Bleeding Current, +1 reach).
+	public static final Item MERMAID_TRIDENT = register("mermaid_trident",
+			new MermaidTridentItem(new Item.Properties().durability(3500)));
 
-	// Talon Gauntlets: the upgrade path for Harpy's own bare-fist Talons power, a worn claw weapon
-	// rather than a gripped one. Three tiers share HarpyTalonGauntletItem, same one-class-three-tiers
-	// convention as FangItem. attackDamageModifier is chosen so each tier's own SwordItem-tier
-	// ATTACK_DAMAGE math (modifier + tier bonus) lands on exactly 2/3/4 hearts (4.0/6.0/8.0) per the
-	// source doc's "Iron Talon adds 2 hearts, Diamond 3, Netherite 4" spec, before the bare fist
-	// bonus is folded in on top (see HarpyTalonGauntletItem's own class doc). Durability is an
-	// explicit override (1000/2000/3500), matching the doc's own requested values, not each tier's
-	// raw durability. Attack speed (-1.0) is faster than Fang's -1.8, since claws should feel
-	// quicker than a dagger.
-	public static final Item IRON_TALON_GAUNTLET = register("iron_talon_gauntlet",
-			new HarpyTalonGauntletItem(Tiers.IRON, 2, -1.0F, 1, new Item.Properties().durability(1000)));
-	public static final Item DIAMOND_TALON_GAUNTLET = register("diamond_talon_gauntlet",
-			new HarpyTalonGauntletItem(Tiers.DIAMOND, 3, -1.0F, 2, new Item.Properties().durability(2000)));
-	public static final Item NETHERITE_TALON_GAUNTLET = register("netherite_talon_gauntlet",
-			new HarpyTalonGauntletItem(Tiers.NETHERITE, 4, -1.0F, 3, new Item.Properties().durability(3500)));
+	// Medusa sheds these every 20 minutes (Task 19, scale_shedding.json), same mechanic/interval as
+	// Arachne's own Silk Glands. A plain crafting material, no functionality of its own.
+	public static final Item MEDUSA_SCALE = register("medusa_scale", new Item(new Item.Properties()));
+
+	// Medusa's off-hand Serpent Aegis: a real vanilla ShieldItem subclass, 3000 durability
+	// (explicit override, same convention as every other weapon/armor piece in this mod, not
+	// Shield's own raw default). Blocking a melee attack slows the attacker and reflects some of
+	// the blocked damage back, gated on the Medusa origin — see SerpentAegisBlockMixin. Immune to
+	// Ghast fireballs specifically (no durability loss) — see SerpentAegisDurabilityMixin.
+	public static final Item SERPENT_AEGIS = register("serpent_aegis",
+			new SerpentAegisItem(new Item.Properties().durability(3000)));
 
 	private static Item register(String name, Item item) {
 		return Registry.register(BuiltInRegistries.ITEM, OriginModStudy.id(name), item);
@@ -129,15 +134,15 @@ public class ModItems {
 			entries.accept(VENOMFANG);
 			entries.accept(WIDOWFANG);
 			entries.accept(PETRIFYING_TRIDENT);
-			entries.accept(HARPY_JAVELIN);
+			entries.accept(STORM_TRIDENT);
 			entries.accept(SILK_NET_SHOOTER);
-			entries.accept(MERMAID_CROWN);
-			entries.accept(IRON_TALON_GAUNTLET);
-			entries.accept(DIAMOND_TALON_GAUNTLET);
-			entries.accept(NETHERITE_TALON_GAUNTLET);
+			entries.accept(MERMAID_TRIDENT);
+			entries.accept(SERPENT_AEGIS);
 		});
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
 			entries.accept(SILK);
+			entries.accept(MEDUSA_SCALE);
+			entries.accept(HARPY_FEATHER);
 		});
 	}
 }

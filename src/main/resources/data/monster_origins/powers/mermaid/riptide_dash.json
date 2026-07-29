@@ -1,0 +1,20 @@
+{
+	"type": "origins:active_self",
+	"key": {
+		"key": "key.origins.secondary_active",
+		"continuous": false
+	},
+	"cooldown": 100,
+	"entity_action": {
+		"type": "origins:add_velocity",
+		"space": "local",
+		"set": true,
+		"z": 3.0
+	},
+	"hud_render": {
+		"should_render": true,
+		"bar_index": 3
+	},
+	"name": "Riptide",
+	"description": "Press your secondary key (unbound by default, set it in Controls) for a quick burst forward, same strength as a real Riptide III enchantment, so you can travel faster. 5 second cooldown."
+}

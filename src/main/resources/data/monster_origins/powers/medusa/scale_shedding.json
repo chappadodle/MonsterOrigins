@@ -1,0 +1,10 @@
+{
+	"type": "origins:action_over_time",
+	"interval": 12000,
+	"entity_action": {
+		"type": "origins:execute_command",
+		"command": "give @s monster_origins:medusa_scale 6"
+	},
+	"name": "Scale Shedding",
+	"description": "Every 10 minutes, you naturally shed 6 snake scales."
+}

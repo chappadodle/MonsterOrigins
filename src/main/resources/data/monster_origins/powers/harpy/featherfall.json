@@ -1,0 +1,6 @@
+{
+	"type": "origins:modify_falling",
+	"take_fall_damage": false,
+	"name": "Featherfall",
+	"description": "You never take fall damage, no matter how far you drop."
+}

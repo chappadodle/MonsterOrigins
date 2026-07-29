@@ -1,6 +1,28 @@
 {
 	"type": "origins:target_action_on_hit",
 	"cooldown": 100,
+	"condition": {
+		"type": "origins:or",
+		"conditions": [
+			{
+				"type": "origins:equipped_item",
+				"equipment_slot": "mainhand",
+				"item_condition": {
+					"type": "origins:empty"
+				}
+			},
+			{
+				"type": "origins:equipped_item",
+				"equipment_slot": "mainhand",
+				"item_condition": {
+					"type": "origins:ingredient",
+					"ingredient": {
+						"item": "monster_origins:petrifying_trident"
+					}
+				}
+			}
+		]
+	},
 	"entity_action": {
 		"type": "origins:apply_effect",
 		"effects": [
@@ -31,5 +53,5 @@
 		"bar_index": 6
 	},
 	"name": "Petrifying Bite",
-	"description": "Your attacks briefly turn the target to stone: 3 seconds of heavy Slowness, Mining Fatigue, Blindness, and Darkness. 5 second cooldown."
+	"description": "Unarmed strikes, or hits with the Petrifying Trident, briefly turn the target to stone: 3 seconds of heavy Slowness, Mining Fatigue, Blindness, and Darkness. 5 second cooldown."
 }

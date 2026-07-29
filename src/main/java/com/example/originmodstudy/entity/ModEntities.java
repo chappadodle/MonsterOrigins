@@ -32,6 +32,24 @@ public class ModEntities {
 					.trackedUpdateRate(10)
 					.build());
 
+	/** Same real {@code EntityType.TRIDENT} sizing/tracking parameters as {@code
+	 * THROWN_HARPY_JAVELIN}, for the same reason (a thrown trident-derived entity). */
+	public static final EntityType<ThrownMermaidTrident> THROWN_MERMAID_TRIDENT = register("thrown_mermaid_trident",
+			FabricEntityTypeBuilder.<ThrownMermaidTrident>create(MobCategory.MISC, ThrownMermaidTrident::new)
+					.dimensions(EntityDimensions.scalable(0.5F, 0.5F))
+					.trackRangeChunks(4)
+					.trackedUpdateRate(20)
+					.build());
+
+	/** Same real {@code EntityType.TRIDENT} sizing/tracking parameters as the other thrown
+	 * trident-derived entities above. */
+	public static final EntityType<ThrownPetrifyingTrident> THROWN_PETRIFYING_TRIDENT = register("thrown_petrifying_trident",
+			FabricEntityTypeBuilder.<ThrownPetrifyingTrident>create(MobCategory.MISC, ThrownPetrifyingTrident::new)
+					.dimensions(EntityDimensions.scalable(0.5F, 0.5F))
+					.trackRangeChunks(4)
+					.trackedUpdateRate(20)
+					.build());
+
 	private static <T extends Entity> EntityType<T> register(String name, EntityType<T> type) {
 		return Registry.register(BuiltInRegistries.ENTITY_TYPE, OriginModStudy.id(name), type);
 	}

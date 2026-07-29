@@ -2,5 +2,5 @@
 	"type": "origins:elytra_flight",
 	"render_elytra": true,
 	"name": "Wings",
-	"description": "You can fly, always. No elytra item needed."
+	"description": "You can fly, always, no elytra required."
 }

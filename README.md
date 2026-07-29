@@ -1,75 +1,74 @@
 # Monster Origins
 
 A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
-four origins: **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a storm wind
+four origins: **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a swift, stormy
 bird woman), and **Mermaid** (a singer of the deep). Each one plays completely differently: a
 fragile fast assassin, a tanky bruiser, an aerial skirmisher, and aquatic support with crowd
 control.
 
 ### Arachne
 
-- Carnivore only diet, can climb any surface, traverses and crafts cobwebs freely. Immune to poison.
-- Dangerous creatures glow with an outline once spotted (tracking).
-- About 50% of normal height and width (via [Pehkui](https://modrinth.com/mod/pehkui)).
-- Attacks poison the target for 10 seconds (undead immune, 5s cooldown) and briefly web trap them
-  (2s cooldown on the web).
+- Carnivore only diet, can climb any surface (1.65x normal climb speed), traverses and crafts
+  cobwebs freely. Immune to poison.
+- Dangerous creatures glow with an outline once spotted, for as long as you can see them.
+- About 85% of normal height and width (via [Pehkui](https://modrinth.com/mod/pehkui)).
+- Attacks poison the target for 10 seconds (undead immune, 5s cooldown).
 - Every arthropod (spider, cave spider, silverfish, endermite) is friendly until you attack it.
 - Night vision. 6 hearts of health, a small amount of natural armor.
 - **Rappel** (double tap space, same as Origins Minus's Weaver origin): pull yourself upward on a
-  strand of web. Only works indoors, under a ceiling or overhang. Reuses Origins Minus's own
-  `rappel` power directly rather than reimplementing it.
+  strand of web. Only works indoors, under a ceiling or overhang.
 - **Scuttle** (secondary key, unbound by default): a burst of Speed IV for 4 seconds, at the cost
   of burning through food much faster while it's active. 15 second cooldown.
 - Can't use a shield.
-- No fall damage from falls under 10 blocks.
+- Falls under 10 blocks deal no fall damage at all; falls of 10 blocks or more deal only 52% of
+  normal damage (matching Feather Falling IV).
 - Weakened while touching water, a spider out of its element.
 - Takes 50% more damage from fire: brittle, dry, and flammable.
-- Produces 6 silk in your inventory every 20 minutes.
-- **Quickness**: noticeably faster base movement speed (+35%, well past Avian's own barely
-  noticeable +20% tailwind). Spiders are quick for their size. A flat attribute bonus, not a
-  potion effect.
+- Naturally produces 3 silk every 20 minutes.
+- **Quickness**: +35% base movement speed, well past a token buff. Spiders are quick for their
+  size. A flat attribute bonus, not a potion effect.
 - **Golden Spider Eye**: a new food item, the carnivore diet equivalent of a golden apple (which
   Arachne can't eat since apples aren't meat). Same crafting cost (8 gold ingots around the center
   item) and the same buff (Regeneration II for 5s, Absorption I for 2 minutes), just built around
   a spider eye instead of an apple.
 - **Silk**: a new crafting material (3 string makes 1 silk), craftable by anyone but thematically
-  Arachne's own. No use yet, reserved for future recipes.
+  Arachne's own — used in the Silk Net Shooter's own recipe (see Weapons below).
 
 ### Medusa
 
-- Carnivore only diet. 12 hearts of health, solid natural armor: a bruiser, not a glass cannon.
-- **Petrifying Bite**: attacks briefly turn the target to stone, 3 seconds of heavy Slowness,
-  Mining Fatigue, Blindness, and Darkness. 5 second cooldown.
+- Carnivore only diet. 12 hearts of health, 8 armor points: a bruiser, not a glass cannon.
+- **Petrifying Bite**: unarmed strikes, or hits with the Petrifying Trident, briefly turn the
+  target to stone (3 seconds of heavy Slowness, Mining Fatigue, Blindness, and Darkness). 5 second
+  cooldown.
 - **Stone Cursed**: immune to Slowness and Mining Fatigue. Her own curse can't touch her.
 - Immune to fall damage.
-- Permanent night vision, but weakened by direct sunlight, a monster of the dark.
-- **Dreadful Presence**: hostile creatures within 8 blocks are continuously weakened just by being
-  near her.
-- **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature
-  within 5 blocks (same effects as Petrifying Bite, including Darkness) for 3 seconds. 30 second
+- Permanent night vision, a monster of the dark.
+- **Stone Gaze**: hostile creatures (and iron golems) that wander within 6 blocks are turned
+  briefly to stone, once every 8 seconds per creature.
+- **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature (plus
+  villagers and iron golems) within 10 blocks for 5 seconds, with a boulder-impact sound. 30 second
   cooldown.
+- Naturally sheds 6 Medusa Scales every 10 minutes (used in the Serpent Aegis's own recipe).
+- Iron golems see through her and attack on sight; villagers refuse to trade with her and flinch
+  away in fear whenever she gets close.
 
 ### Harpy
 
 - Carnivore only diet. 8 hearts of health, light hollow bones. Can't use a shield.
-- **Glide**: drift down slowly when falling; hold sneak to drop out of the glide and fall
-  normally.
-- **Wings**: true flight, always. No elytra item needed.
-- **Sudden Gust** (primary key, unbound by default, hold while flying): a firework rocket style
-  boost in whatever direction you're currently facing, not a launch into the air. 3.5 second
-  cooldown, effectively unlimited flight.
-- **Talons**: bare handed strikes deal 2.5 extra hearts of damage and inflict **Bleed** for 10
-  seconds (undead immune), a brand new status effect added by this mod, ticking just like Poison
-  (same real tick damage timing, verified against the game's actual source) but unlike Poison, it
-  can kill.
-- **Scream** (secondary key, unbound by default): a shrieking blast (with a Sonic Boom particle
-  burst) that knocks back whatever's in front of you within 8 blocks. Behind you is completely
-  unaffected. 10 second cooldown. Uses a real barn owl screech recording (CC BY SA 4.0, credited
-  in [`CREDITS.md`](CREDITS.md)).
+- **Featherfall**: never takes fall damage, no matter how far she drops.
+- **Wings**: true flight, always. No elytra item needed. Holding forward while flying gradually
+  builds speed up to a cap of 300% of normal elytra speed (a quick initial jump, tapering off as
+  you approach the cap); holding backward actively brakes; letting go of both lets speed drift
+  back down on its own.
+- **Talons**: bare handed strikes deal 4 extra hearts of damage and inflict **Bleed** for 10
+  seconds (undead immune), a status effect added by this mod that ticks like Poison but, unlike
+  Poison, can kill. The faster she's flying when a hit (thrown or melee) lands, the more bonus
+  damage on top — up to +7 extra hearts at full flight speed.
 - 85% of normal height and width (via Pehkui).
-- **Hardy Stomach**: raw meat and rotten flesh are perfectly safe to eat, no Hunger effect, just
-  a brief 2 second burst of Regeneration.
+- **Hardy Stomach**: raw meat and rotten flesh are perfectly safe to eat, no Hunger effect, just a
+  brief burst of Saturation instead.
 - Takes 50% more damage from fire: hollow bones and feathers catch fast.
+- Naturally sheds 3 feathers every 10 minutes (used in the Storm Trident's own recipe).
 
 ### Mermaid
 
@@ -77,61 +76,66 @@ control.
 - **Fully at home in the water**: breathes, sees, and swims underwater with no trouble, and mines
   at full (Aqua Affinity) speed while submerged.
 - **Landbound**: can stay out of water (rain counts as wet too) for 5 minutes at a time before
-  starting to suffocate.
-- **1.5x swim speed, 0.8x walking speed**. She belongs in the water, not on land.
-- **Mermaid's Call** (primary key, unbound by default): a real singing sound effect, and a song
-  that gives everyone nearby, including herself, Saturation and Regeneration, while hostile
-  creatures caught in it are also slowed, blinded, and charmed into leaving everyone alone
-  entirely for the duration. 4 second duration, 20 second cooldown.
-- **Dolphin's Grace** (secondary key, unbound by default): toggles extra swim speed on or off,
-  press once to go faster, press again to drop back down.
+  starting to suffocate. A HUD bar shows how much of that time is left, once any of it has passed.
+- **Swift Current**: 7.41x normal swimming speed, and turns/steers as responsively as walking on
+  land does, not the sluggish drift vanilla swimming normally has.
+- **Landlegs**: 0.8x normal walking speed. She belongs in the water, not on land.
+- **Mermaid's Call** (primary key, unbound by default): a real singing sound effect. Everyone
+  nearby, including herself, is bathed in Saturation and Regeneration, while hostile creatures
+  caught in it are slowed, blinded, weakened, and charmed into leaving everyone alone entirely for
+  the duration. 4 second duration, 20 second cooldown.
+- **Riptide** (secondary key, unbound by default): a quick forward burst, the same push strength
+  as a real Riptide III enchantment, for a fast way to get moving. 5 second cooldown.
 - **Every sea creature is friendly** unless attacked first, including Drowned and Guardians, not
   just the obviously passive fish.
-- **Mermaid's Crown**: exclusive armor, crafted from diamonds and a Heart of the Sea. Grants +2
-  hearts and continuous Regeneration while worn.
-- A new global recipe unlocks crafting a vanilla trident (3 prismarine shards + 2 sticks),
-  craftable by anyone, not exclusive to Mermaid, same recipe can't see the player limitation as
-  every other weapon in this mod.
+- Mining a live coral block bare handed (or with any tool lacking Silk Touch) gets the live block
+  instead of vanilla's usual dead coral fallback.
+- Killing a fish (Cod, Salmon, Pufferfish, or Tropical Fish) has a 5% chance to additionally drop
+  a Prismarine Shard.
+- Takes 50% more damage from fire: dries out fast.
 - No water breathing bubble particles while it's active, just the effect, not the visual spam.
 
-### Weapons
+### Weapons & armor
 
-Every origin gets a themed craftable weapon. Anyone can craft or swing either one, but the bonus
+Every origin gets a themed craftable weapon. Anyone can craft or swing any of them, but the bonus
 on hit effect only triggers for the matching origin. Each is its own origin's signature weapon,
-not generically useful loot:
+not generically useful loot, and every one spells out exactly what it does and who it's for
+directly in its tooltip:
 
 - **Fang**: a light, fast dagger with a real dagger shaped icon: a shortened diagonal blade built
-  the same way vanilla's own sword icons are (alternating light/mid tones, a dark outline, a
-  distinct guard), not a recolored sword, in three tiers, each with its own blade and grip
-  color. Poisons on every hit, undead excluded, Arachne only. Every tier's tooltip spells out
-  exactly what it does and who it's for.
-  - **Fang** (base): iron tier stats, Poison only. Crafted from a spider eye, an iron ingot, and a
-    stick.
-  - **Venomfang**: diamond tier (6 attack damage), adds Bleed. Upgraded on a crafting table from a
+  the same way vanilla's own sword icons are, not a recolored sword. Three tiers, each with its
+  own tiered Poison (escalating on repeated hits within 8 seconds), Bleed, and Wither. Arachne only.
+  - **Fang** (base, iron tier): Poison. Crafted from a spider eye, an iron ingot, and a stick.
+  - **Venomfang** (diamond tier, 6 attack damage): adds Bleed. Upgraded on a crafting table from a
     Fang, a diamond, and a Golden Spider Eye.
-  - **Widowfang**: netherite tier (7 attack damage), adds Wither on top of Poison and Bleed.
-    Upgraded on a **smithing table** from a Venomfang, a netherite ingot, and another Golden
-    Spider Eye, matching vanilla's own Diamond to Netherite upgrade convention rather than a
-    plain crafting recipe.
-- **Petrifying Trident**: a reskinned vanilla trident (same stats and behavior: throwable,
-  riptide) that briefly petrifies whatever it hits (a lighter dose than Medusa's own Petrifying
-  Bite). Medusa only. Crafted from stone and iron ingots.
-- **Harpy Javelin**: a real 3D modeled throwing spear (a custom Blockbench model, not a flat
-  icon), lighter and faster swinging than the vanilla trident it's built on. Renders as its own
-  model everywhere, including in flight and lying on the ground after landing, via a dedicated
-  thrown entity type and renderer, since (unlike the item model) that's hardcoded per projectile
-  in vanilla and not something a simple reskin gets for free. Causes Bleed on hit (undead
-  excluded), whether thrown or swung, and deals bonus damage on a thrown hit landed while flying.
-  Harpy only. Crafted from an iron ingot, a stick, and a feather.
+  - **Widowfang** (netherite tier, 7 attack damage): adds Wither on top. Upgraded on a **smithing
+    table** from a Venomfang, a netherite ingot, and another Golden Spider Eye.
+- **Silk Net Shooter**: a throwable weapon (100 uses) that traps its target in cobwebs and heavy
+  Slowness on a hit. Arachne only. Crafted from silk and sticks.
+- **Petrifying Trident**: vanilla trident stats and behavior (throwable, riptide compatible), but
+  petrifies whatever it hits, thrown or melee. Medusa only. Crafted from stone and iron ingots.
+- **Serpent Aegis**: a real off hand shield (3000 durability). Blocking a melee attack slows the
+  attacker and reflects half the blocked damage back at them; nearby allies take half damage from
+  anything while she's actively blocking with it. Immune to Ghast fireballs. Medusa only. Crafted
+  from Medusa Scales and iron ingots.
+- **Storm Trident**: a real 3D modeled throwing spear built on vanilla's actual Trident geometry,
+  lighter and faster swinging than a plain vanilla trident. Causes Bleed on hit (undead excluded),
+  whether thrown or swung, plus flight speed scaled bonus damage. A thrown hit that lands also
+  calls down a real lightning bolt with area damage, on a 30 second cooldown. Harpy only. Crafted
+  from a diamond, an iron ingot, and a Harpy Feather.
+- **Living Coral Trident**: Mermaid's own late game weapon (3500 durability), also built on real
+  vanilla Trident geometry. Symbiosis (small hunger restore on every hit), Barbed Tip (bonus
+  damage against a target currently in water), Bleeding Current (Bleed on hit while she's in
+  water), and +1 block reach while held. Mermaid only. Crafted from prismarine shards, a fire
+  coral block, and a diamond.
 
-All origin gated weapons spell this out directly in their tooltip, not just in the README. No
-player should have to guess whose weapon they're holding.
+Every trident style weapon (Storm Trident, Living Coral Trident, Petrifying Trident) renders as
+real 3D geometry when held, thrown, and stuck in a target, but as a flat icon in the hotbar and
+when dropped on the ground, matching vanilla's own real Trident behavior exactly.
 
 It's also written as a **worked, documented example** of a data driven pattern for adding more
-origins. See **[`TEMPLATE.md`](TEMPLATE.md)**. Medusa is the second worked example (the first was
-Arachne); Harpy is the third, and the first origin in this mod that genuinely needs custom Java
-beyond a single mixin: a new status effect (Bleed) and a custom Apoli action type (Scream's
-forward cone knockback), since neither has any data driven path. See `CLAUDE.md` for exactly why.
+origins. See **[`TEMPLATE.md`](TEMPLATE.md)**. See `CLAUDE.md` for the full technical history and
+every gotcha found along the way.
 
 ## Requirements (to play)
 
@@ -148,8 +152,8 @@ what this mod's own `fabric.mod.json` actually declares.
 ## Building / developing
 
 See **[`TUTORIAL.md`](TUTORIAL.md)** for a full beginner walkthrough: what an Origins addon even
-is, environment setup, the data pack first approach, and how the one piece of custom code works.
-Needs **JDK 21+** (the Gradle toolchain requires it; the mod itself targets Java 17).
+is, environment setup, the data pack first approach, and how the custom code pieces work. Needs
+**JDK 21+** (the Gradle toolchain requires it; the mod itself targets Java 17).
 
 ```bash
 ./gradlew build       # compile + build the mod jar
@@ -161,6 +165,6 @@ Needs **JDK 21+** (the Gradle toolchain requires it; the mod itself targets Java
 - Built against [Origins](https://github.com/apace100/origins-fabric) and
   [Origins Minus](https://github.com/sisby-folk/origins-minus) by their respective authors. This
   mod is an addon for their work, not affiliated with them.
-- This mod's own code is available under CC0 (the Fabric template's license).
-- Harpy's Scream sound is a real recording used under CC BY SA 4.0. See
-  [`CREDITS.md`](CREDITS.md) for full attribution.
+- This mod's own code, data, and textures are available under CC0 (the Fabric template's
+  license), with two exceptions: its two sound effects are royalty-free stock audio, not CC0 —
+  see [`CREDITS.md`](CREDITS.md) for details.

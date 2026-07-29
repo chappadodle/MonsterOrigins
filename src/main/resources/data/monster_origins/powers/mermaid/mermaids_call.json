@@ -65,6 +65,11 @@
 								"duration": 80
 							},
 							{
+								"effect": "minecraft:weakness",
+								"amplifier": 0,
+								"duration": 80
+							},
+							{
 								"effect": "monster_origins:charmed",
 								"amplifier": 0,
 								"duration": 80
@@ -80,5 +85,5 @@
 		"bar_index": 1
 	},
 	"name": "Mermaid's Call",
-	"description": "Press your primary key (unbound by default, set it in Controls) to sing: everyone nearby (including you) is bathed in Saturation and Regeneration, while hostile creatures are also slowed, blinded, and charmed into leaving everyone alone. 4 second duration, 20 second cooldown."
+	"description": "Press your primary key (unbound by default, set it in Controls) to sing: everyone nearby (including you) is bathed in Saturation and Regeneration, while hostile creatures are also slowed, blinded, weakened, and charmed into leaving everyone alone. 4 second duration, 20 second cooldown."
 }

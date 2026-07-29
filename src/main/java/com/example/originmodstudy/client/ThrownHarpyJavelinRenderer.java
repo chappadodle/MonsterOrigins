@@ -2,17 +2,21 @@ package com.example.originmodstudy.client;
 
 import com.example.originmodstudy.entity.ThrownJavelin;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 /**
- * Renders a flying or landed Harpy Javelin using its own item model — {@link ThrownItemRenderer}
- * is the same vanilla base class used for snowballs/eggs/ender pearls, calling
- * {@code ItemRenderer.renderStatic} with the entity's carried {@code ItemStack} instead of a
- * hardcoded entity model. See {@code ThrownJavelin} and CLAUDE.md for why the default
- * {@code ThrownTridentRenderer} couldn't be reused as-is.
+ * Renders a flying or landed Harpy Javelin (Storm Trident) using vanilla's real Trident geometry,
+ * oriented along its flight direction — see {@link DirectionalThrownItemRenderer} for the full
+ * explanation (this used to extend {@code ThrownItemRenderer}, which billboards toward the
+ * camera instead, causing the javelin to always render "vertical" regardless of throw direction).
  */
-public class ThrownHarpyJavelinRenderer extends ThrownItemRenderer<ThrownJavelin> {
+public class ThrownHarpyJavelinRenderer extends DirectionalThrownItemRenderer<ThrownJavelin> {
 	public ThrownHarpyJavelinRenderer(EntityRendererProvider.Context context) {
 		super(context);
+	}
+
+	@Override
+	protected ResourceLocation getTexture() {
+		return HarpyJavelinRenderer.TEXTURE;
 	}
 }

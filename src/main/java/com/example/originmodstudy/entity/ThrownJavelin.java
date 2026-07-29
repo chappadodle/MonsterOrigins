@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 /**
@@ -42,20 +43,13 @@ import net.minecraft.world.level.Level;
  * completely untouched, same pattern as the Silk Net Shooter's own in-flight render fix (see
  * {@code entity/ThrownSilkNet.java}).
  *
- * <p><b>Storm Javelin throw-time data (plain fields, not synced):</b> {@code stormThrowY}/
- * {@code stormFallDistance} are set by {@link com.example.originmodstudy.item.HarpyJavelinItem
- * #releaseUsing} at the exact moment of the throw and read back by {@code ThrownTridentMixin} on
- * impact to decide whether to call down lightning + AOE damage. They deliberately don't go
- * through {@code SynchedEntityData} — the lightning strike and AOE damage are server-authoritative
- * only, and no client-side rendering depends on this data, so a plain field is sufficient (same
- * reasoning already applied to loyalty/foil not being replicated above).
+ * <p><b>Storm Javelin</b> (lightning + AOE damage on any thrown hit) no longer needs any
+ * throw-time data captured on this entity at all — earlier versions tracked the thrower's fall
+ * distance and/or absolute Y level as trigger conditions; both were dropped per the user's own
+ * successive simplifications, down to just a per-player cooldown checked entirely within {@code
+ * ThrownTridentMixin} itself.
  */
 public class ThrownJavelin extends ThrownTrident implements ItemSupplier {
-	/** The thrower's Y level at the moment of the throw. See the class doc above. */
-	public double stormThrowY;
-
-	/** The thrower's {@code fallDistance} at the moment of the throw. See the class doc above. */
-	public float stormFallDistance;
 
 	public ThrownJavelin(EntityType<? extends ThrownJavelin> entityType, Level level) {
 		super(entityType, level);
@@ -65,11 +59,14 @@ public class ThrownJavelin extends ThrownTrident implements ItemSupplier {
 		this(ModEntities.THROWN_HARPY_JAVELIN, level);
 		this.setPos(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
 		this.setOwner(owner);
-		((ThrownTridentAccessor) this).arachne$setTridentItem(itemStack.copy());
+		ThrownTridentAccessor accessor = (ThrownTridentAccessor) this;
+		accessor.arachne$setTridentItem(itemStack.copy());
+		this.entityData.set(accessor.arachne$getIdLoyaltyKey(), (byte) EnchantmentHelper.getLoyalty(itemStack));
+		this.entityData.set(accessor.arachne$getIdFoilKey(), itemStack.hasFoil());
 	}
 
 	@Override
 	public ItemStack getItem() {
-		return new ItemStack(ModItems.HARPY_JAVELIN);
+		return new ItemStack(ModItems.STORM_TRIDENT);
 	}
 }

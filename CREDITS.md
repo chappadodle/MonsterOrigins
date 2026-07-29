@@ -4,18 +4,17 @@ Third-party assets used in this mod, and their licenses.
 
 ## Audio
 
-- **Harpy's Scream** (`assets/monster_origins/sounds/harpy_scream.ogg`) — a barn owl screech recording.
-  - Source: [xeno-canto recording #345927](https://www.xeno-canto.org/345927) by Luis Gracia.
-  - License: [Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
-  - Used as-is (background noise removed by the original uploader). Per CC BY-SA, any
-    redistribution of this file (including as part of this mod) must credit Luis Gracia and stay
-    under a compatible license — this mod's own code is CC0, but this specific audio file remains
-    CC BY-SA 4.0.
+Both sound effects below came from royalty-free stock audio sites; the exact site/page and its
+specific license terms weren't retained at the time. They are **not** covered by this mod's own
+CC0 code license — treat them as "used under a free-to-use stock license, terms unconfirmed," not
+as public domain. If the original source turns up, replace this note with a precise attribution.
 
-- **Mermaid's Call** (`assets/monster_origins/sounds/mermaid_song.ogg`) — a royalty-free stock singing
-  sound effect, provided by the user (`mermaid_song_01.ogg`). Exact source/creator not specified;
-  update this entry with the original source link if it becomes available.
+- **Mermaid's Call** (`assets/monster_origins/sounds/mermaid_song.ogg`) — a royalty-free stock
+  singing sound effect.
+- **Stone Gaze Burst's impact sound** (`assets/monster_origins/sounds/boulder_drop.ogg`) — a
+  royalty-free stock rock impact sound effect.
 
 Everything else in this mod (textures, other data) is either built from scratch or is a
 programmatic recolor of vanilla Minecraft's own assets (Mojang/Microsoft) — see `CLAUDE.md` for
-the recolor technique used throughout.
+the recolor technique used throughout. That code/data/textures portion is genuinely CC0; the two
+audio files above are the one exception.

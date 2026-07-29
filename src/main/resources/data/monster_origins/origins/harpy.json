@@ -3,14 +3,13 @@
 		"origins:carnivore",
 		"origins:no_shield",
 		"monster_origins:harpy/vigor",
-		"monster_origins:harpy/glide",
+		"monster_origins:harpy/featherfall",
 		"monster_origins:harpy/flight",
-		"monster_origins:harpy/gust",
 		"monster_origins:harpy/talons",
 		"monster_origins:harpy/scale",
-		"monster_origins:harpy/scream",
 		"monster_origins:harpy/hardy_stomach",
-		"monster_origins:harpy/fire_vulnerability"
+		"monster_origins:harpy/fire_vulnerability",
+		"monster_origins:harpy/feather_shedding"
 	],
 	"icon": {
 		"item": "monster_origins:harpy_eye"
@@ -18,5 +17,5 @@
 	"order": 12,
 	"impact": 2,
 	"name": "Harpy",
-	"description": "A swift, stormy bird-woman who screeches through the skies. Fragile with hollow bones, but the sky is hers alone."
+	"description": "A swift, stormy bird-woman of the skies. Fragile with hollow bones, but the sky is hers alone."
 }
