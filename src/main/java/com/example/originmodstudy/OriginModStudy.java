@@ -5,6 +5,7 @@ import com.example.originmodstudy.entity.ModEntities;
 import com.example.originmodstudy.item.ModItems;
 import com.example.originmodstudy.loot.MermaidLootEvents;
 import com.example.originmodstudy.sound.ModSounds;
+import com.example.originmodstudy.util.HarpyFlightStaminaHooks;
 import com.example.originmodstudy.util.MedusaFearHooks;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,7 @@ public class OriginModStudy implements ModInitializer {
 		ModSounds.registerModSounds();
 		MermaidLootEvents.register();
 		MedusaFearHooks.register();
+		HarpyFlightStaminaHooks.register();
 
 		LOGGER.info("Arachne origin loaded");
 	}

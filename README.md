@@ -32,7 +32,7 @@ control.
   item) and the same buff (Regeneration II for 5s, Absorption I for 2 minutes), just built around
   a spider eye instead of an apple.
 - **Silk**: a new crafting material (3 string makes 1 silk), craftable by anyone but thematically
-  Arachne's own — used in the Silk Net Shooter's own recipe (see Weapons below).
+  Arachne's own, used in the Silk Net Shooter's own recipe (see Weapons below).
 
 ### Medusa
 
@@ -46,7 +46,7 @@ control.
 - **Stone Gaze**: hostile creatures (and iron golems) that wander within 6 blocks are turned
   briefly to stone, once every 8 seconds per creature.
 - **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature (plus
-  villagers and iron golems) within 10 blocks for 5 seconds, with a boulder-impact sound. 30 second
+  villagers and iron golems) within 10 blocks for 5 seconds, with a boulder impact sound. 30 second
   cooldown.
 - Naturally sheds 6 Medusa Scales every 10 minutes (used in the Serpent Aegis's own recipe).
 - Iron golems see through her and attack on sight; villagers refuse to trade with her and flinch
@@ -59,11 +59,12 @@ control.
 - **Wings**: true flight, always. No elytra item needed. Holding forward while flying gradually
   builds speed up to a cap of 300% of normal elytra speed (a quick initial jump, tapering off as
   you approach the cap); holding backward actively brakes; letting go of both lets speed drift
-  back down on its own.
+  back down on its own. The first minute of continuous flight is free; every second after that
+  drains saturation until she lands, so flight has a real cost on long trips.
 - **Talons**: bare handed strikes deal 4 extra hearts of damage and inflict **Bleed** for 10
   seconds (undead immune), a status effect added by this mod that ticks like Poison but, unlike
   Poison, can kill. The faster she's flying when a hit (thrown or melee) lands, the more bonus
-  damage on top — up to +7 extra hearts at full flight speed.
+  damage on top, up to +7 extra hearts at full flight speed.
 - 85% of normal height and width (via Pehkui).
 - **Hardy Stomach**: raw meat and rotten flesh are perfectly safe to eat, no Hunger effect, just a
   brief burst of Saturation instead.
@@ -166,5 +167,5 @@ is, environment setup, the data pack first approach, and how the custom code pie
   [Origins Minus](https://github.com/sisby-folk/origins-minus) by their respective authors. This
   mod is an addon for their work, not affiliated with them.
 - This mod's own code, data, and textures are available under CC0 (the Fabric template's
-  license), with two exceptions: its two sound effects are royalty-free stock audio, not CC0 —
-  see [`CREDITS.md`](CREDITS.md) for details.
+  license), with two exceptions: its two sound effects are royalty free stock audio, not CC0.
+  See [`CREDITS.md`](CREDITS.md) for details.

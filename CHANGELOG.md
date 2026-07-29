@@ -6,6 +6,14 @@ section instead of an origin's.
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-07-29
+
+### Harpy
+
+- Added a stamina cost to flight: the first 60 seconds of any continuous flight are free, then
+  saturation starts draining until she lands. Balances permanent flight against every other
+  origin's own tradeoffs.
+
 ## [1.1.0] - 2026-07-29
 
 First official release. Everything below was developed and playtested prior to this tag; nothing
