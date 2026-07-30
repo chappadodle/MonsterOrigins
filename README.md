@@ -59,8 +59,8 @@ control.
 - **Wings**: true flight, always. No elytra item needed. Holding forward while flying gradually
   builds speed up to a cap of 300% of normal elytra speed (a quick initial jump, tapering off as
   you approach the cap); holding backward actively brakes; letting go of both lets speed drift
-  back down on its own. The first minute of continuous flight is free; every second after that
-  drains saturation until she lands, so flight has a real cost on long trips.
+  back down on its own. Gliding at a steady speed is free; actively gaining speed costs hunger,
+  so flight has a real cost on long trips.
 - **Talons**: bare handed strikes deal 4 extra hearts of damage and inflict **Bleed** for 10
   seconds (undead immune), a status effect added by this mod that ticks like Poison but, unlike
   Poison, can kill. The faster she's flying when a hit (thrown or melee) lands, the more bonus

@@ -6,6 +6,13 @@ section instead of an origin's.
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-07-30
+
+### Harpy
+
+- Fixed the flight stamina cost added in 1.1.1 doing nothing at all: it costs hunger while
+  actively gaining speed now, instead of a fixed free-flight timer that never worked in practice.
+
 ## [1.1.2] - 2026-07-29
 
 ### Mermaid
