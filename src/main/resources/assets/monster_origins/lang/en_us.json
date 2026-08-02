@@ -22,5 +22,6 @@
 	"effect.monster_origins.petrify": "Petrify",
 	"effect.monster_origins.stone_gaze_cooldown": "Stone Gaze Cooldown",
 	"effect.monster_origins.immobilized": "Immobilized",
+	"tooltip.monster_origins.rappel.toggle": "Toggled with 2x%s.",
 	"itemGroup.monster_origins.monster_origins": "Monster Origins"
 }

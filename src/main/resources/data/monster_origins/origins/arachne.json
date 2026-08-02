@@ -10,7 +10,7 @@
 		"monster_origins:arachne/tracking_glow",
 		"monster_origins:arachne/scale",
 		"monster_origins:arachne/on_hit_poison",
-		"origins_minus:rappel",
+		"monster_origins:arachne/rappel",
 		"monster_origins:arachne/poison_immunity",
 		"monster_origins:arachne/leap",
 		"monster_origins:arachne/water_weakness",
