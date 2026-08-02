@@ -31,7 +31,6 @@
 		"java": ">=17",
 		"fabric-api": "*",
 		"origins": ">=1.10.2",
-		"origins_minus": ">=2.4.0",
 		"pehkui": ">=3.8.3"
 	}
 }

@@ -67,9 +67,6 @@ dependencies {
 	// via Fabric jar-in-jar, so it does not need its own dependency line.
 	modImplementation "maven.modrinth:origins:${project.origins_version}"
 
-	// Origins Minus — an Origins addon we depend on, per the project's data-driven design: some
-	// of Arachne's future sibling origins may reference its power ids directly.
-	modImplementation "maven.modrinth:origins-minus:${project.origins_minus_version}"
 
 	// Pehkui — used at runtime by the "scale" power (via its `/scale set` command), so it must
 	// be present for the mod to work even though we never call its Java API directly.
