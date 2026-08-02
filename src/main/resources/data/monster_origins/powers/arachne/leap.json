@@ -1,0 +1,21 @@
+{
+	"type": "origins:active_self",
+	"key": {
+		"key": "key.origins.secondary_active",
+		"continuous": false
+	},
+	"cooldown": 300,
+	"entity_action": {
+		"type": "origins:add_velocity",
+		"space": "local",
+		"set": true,
+		"z": 0.65,
+		"y": 0.7
+	},
+	"hud_render": {
+		"should_render": true,
+		"bar_index": 7
+	},
+	"name": "Leap",
+	"description": "Press your secondary key (unbound by default, set it in Controls) for a short pounce forward and up, about 5 blocks. 15 second cooldown. (Distance is a best-effort estimate from vanilla's own drag/gravity physics, not confirmed by a real playtest yet.)"
+}
