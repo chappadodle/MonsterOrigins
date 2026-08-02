@@ -15,8 +15,9 @@ control.
 - Attacks poison the target for 10 seconds (undead immune, 5s cooldown).
 - Every arthropod (spider, cave spider, silverfish, endermite) is friendly until you attack it.
 - Night vision. 6 hearts of health, a small amount of natural armor.
-- **Rappel** (double tap space, same as Origins Minus's Weaver origin): pull yourself upward on a
-  strand of web. Only works indoors, under a ceiling or overhang.
+- **Rappel** (double tap space, a mechanic originally inspired by Origins Minus's Weaver origin,
+  now built in natively): pull yourself upward on a strand of web. Only works indoors, under a
+  ceiling or overhang.
 - **Leap** (secondary key, unbound by default): a short pounce forward and up, about 5 blocks.
   3 second cooldown.
 - Can't use a shield.
@@ -146,9 +147,8 @@ what this mod's own `fabric.mod.json` actually declares.
 
 1. [Fabric API](https://modrinth.com/mod/fabric-api) (`0.92.11+1.20.1` or newer)
 2. [Origins](https://modrinth.com/mod/origins) (`1.10.2+mc.1.20.1` or newer)
-3. [Origins Minus](https://modrinth.com/mod/origins-minus) (`2.4.0+1.20` or newer)
-4. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21` or newer)
-5. This mod's jar (build it with `./gradlew build`, output in `build/libs/`)
+3. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21` or newer)
+4. This mod's jar (build it with `./gradlew build`, output in `build/libs/`)
 
 ## Building / developing
 
@@ -163,9 +163,8 @@ is, environment setup, the data pack first approach, and how the custom code pie
 
 ## Credits & licenses
 
-- Built against [Origins](https://github.com/apace100/origins-fabric) and
-  [Origins Minus](https://github.com/sisby-folk/origins-minus) by their respective authors. This
-  mod is an addon for their work, not affiliated with them.
+- Built against [Origins](https://github.com/apace100/origins-fabric) by its authors. This mod
+  is an addon for their work, not affiliated with them.
 - This mod's own code, data, and textures are available under CC0 (the Fabric template's
   license), with two exceptions: its two sound effects are royalty free stock audio, not CC0.
   See [`CREDITS.md`](CREDITS.md) for details.

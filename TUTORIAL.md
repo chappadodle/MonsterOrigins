@@ -40,7 +40,7 @@ org.gradle.java.home=/usr/lib/jvm/java-21-openjdk-amd64
 environment had going in — the build fails with *"does not provide the required capabilities:
 [JAVA_COMPILER]"*. A JDK includes the compiler; a JRE doesn't.
 
-You already have real copies of Origins, Origins Minus, Pehkui, and Fabric API installed via
+You already have real copies of Origins, Pehkui, and Fabric API installed via
 PrismLauncher (the "SOLO origin" and "1.20.1" instances) — that's genuinely useful here, both as a
 version reference (see `gradle.properties`) and as a ready place to drop this mod's built jar in
 for real testing later (Phase 4).
@@ -161,7 +161,7 @@ JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ./gradlew build
 
 Output lands in `build/libs/originsmodstudy-<version>.jar`. To actually see Arachne in game, copy
 that jar into one of your existing PrismLauncher instances' `mods/` folders (either "SOLO origin"
-or "1.20.1" — both already have Origins, Origins Minus, Pehkui, and Fabric API installed at
+or "1.20.1" — both already have Origins, Pehkui, and Fabric API installed at
 matching versions) and launch that instance. Alternatively, `./gradlew runClient` launches a dev
 copy of Minecraft directly with this mod loaded — but it needs a display, so it has to be run on
 your own machine, not from here.
