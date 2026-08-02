@@ -78,7 +78,7 @@ dependencies {
 	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}"
 
 	// Calio — compile-time only, same reasoning as Cardinal Components above.
-	modCompileOnly "com.github.apace100:calio:${project.calio_version}"
+	modCompileOnly "io.github.apace100:calio:${project.calio_version}"
 
 	// Apoli — compile-time only. Needed the moment we register our own custom power/action type
 	// (Harpy's Scream) into Apoli's own registries; every other power in this mod only needed
@@ -87,7 +87,7 @@ dependencies {
 	// Excludes Apoli's own optional Cloth Config / Mod Menu integration modules, whose transitive
 	// deps cascade into Maven repos we have no other reason to add — we only need Apoli's core
 	// classes (ActionFactory, ApoliRegistries) to compile against, not its config-screen UI.
-	modCompileOnly("com.github.apace100:apoli:${project.apoli_version}") {
+	modCompileOnly("io.github.apace100:apoli:${project.apoli_version}") {
 		exclude group: 'me.shedaniel.cloth', module: 'cloth-config-fabric'
 		exclude group: 'com.terraformersmc', module: 'modmenu'
 		exclude group: 'com.jamieswhiteshirt', module: 'reach-entity-attributes'
