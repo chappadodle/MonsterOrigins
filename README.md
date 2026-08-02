@@ -18,7 +18,7 @@ control.
 - **Rappel** (double tap space, same as Origins Minus's Weaver origin): pull yourself upward on a
   strand of web. Only works indoors, under a ceiling or overhang.
 - **Leap** (secondary key, unbound by default): a short pounce forward and up, about 5 blocks.
-  5 second cooldown.
+  3 second cooldown.
 - Can't use a shield.
 - Falls under 10 blocks deal no fall damage at all; falls of 10 blocks or more deal only 52% of
   normal damage (matching Feather Falling IV).
