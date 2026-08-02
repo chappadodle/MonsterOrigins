@@ -6,6 +6,40 @@ section instead of an origin's.
 
 ## [Unreleased]
 
+## [1.1.4] - 2026-08-02
+
+### Mermaid
+
+- Fixed bare-hand coral mining: mining a living coral block by hand (or any tool that isn't a
+  correct-tool match) now drops the live block directly, instead of nothing. Vanilla only ever
+  rolls coral's loot table with a correct tool, so there was never a drop for the old swap-based
+  fix to catch when mining by hand — the one legitimate way to reach the coral block her own
+  Living Coral Trident recipe needs. Pickaxe mining is unchanged.
+
+### Arachne
+
+- Replaced Scuttle (a Speed IV burst) with Leap: a short forward-and-upward pounce, about 5
+  blocks, on the same secondary key. 3 second cooldown.
+- Rappel climbs twice as fast (vertical speed doubled from 0.2 to 0.4 blocks/tick).
+- Web bite and the Silk Net Shooter now fully immobilize their target — no turning to face or
+  attack while trapped, not just slowed. See Immobilization below.
+
+### Medusa
+
+- Petrify's movement penalty raised from -90% to a true -100%: a petrified target is now
+  completely stopped, not just very slow.
+- Petrify gaze, petrifying bite, and the Petrifying Trident all now fully immobilize their
+  target — no turning to face or attack while affected. See Immobilization below.
+
+### Infrastructure
+
+- All of this mod's items now live in their own dedicated creative-inventory tab (icon:
+  Widowfang) instead of being scattered across vanilla Combat/Food & Drinks/Ingredients tabs.
+- Added a shared `monster_origins:immobilized` marker effect and `ImmobilizedRotationLockMixin`:
+  freezes an affected entity's yaw/pitch/head/body rotation in place (via a per-tick Fabric
+  attachment snapshot) for as long as the effect is present. Wired into all five sources listed
+  above under Arachne/Medusa.
+
 ## [1.1.3] - 2026-07-30
 
 ### Harpy
