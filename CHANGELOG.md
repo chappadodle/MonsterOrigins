@@ -6,6 +6,23 @@ section instead of an origin's.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-08-03
+
+### Arachne
+
+- Rappel no longer depends on Origins Minus: it's now fully native content, ported and
+  simplified in place (same climb mechanic and speed, dropped a few unused flourishes — a
+  resource bar that was never actually drained, an unrelated mining-speed bonus, and a
+  redundant projectile visual effect). Its in-game description now also mentions the double-tap
+  jump step needed to start climbing, which the old description omitted. The original mechanic's
+  design, from Origins Minus's own Weaver origin, is credited in CREDITS.md.
+
+### Infrastructure
+
+- **Origins Minus is no longer a dependency at all.** Rappel was the only thing this mod ever
+  used from it; with that ported natively, the mod jar, build, and install instructions no
+  longer need it installed.
+
 ## [1.1.4] - 2026-08-02
 
 ### Mermaid
