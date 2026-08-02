@@ -24,11 +24,13 @@ than expected once real Origins source was checked — see the gotchas below for
   as this author's other Fabric projects (e.g. `mythicarsenal`). Origins/Apoli's own docs and
   GitHub source are written in Yarn names; see TEMPLATE.md §4 for the translation table and why
   it only matters for vanilla Minecraft classes, never third-party mod classes.
-- **JDK requirement is split:** Gradle needs **Java 21+ to run**, but the mod compiles for
-  **Java 17** (`options.release = 17`). A JDK 17 will be *rejected* by Gradle; a JRE (no `javac`)
-  fails with "does not provide JAVA_COMPILER". This environment ships only a JRE by default — a
-  portable Temurin 21 JDK was downloaded to `~/.local/jdks/temurin-21` for build verification;
-  point `JAVA_HOME`/`org.gradle.java.home` at a JDK 21+ before running Gradle.
+- **JDK requirement (as of the 1.21.1 port):** both Gradle itself and the mod's own compile
+  target need **Java 21+** (`options.release = 21`) — no more 17/21 split, since 1.21.1-era
+  Fabric mods (confirmed from Origins' own `fabric.mod.json`, which declares `"java": ">=21"`)
+  require 21 as their actual compile target too. A JRE (no `javac`) still fails with "does not
+  provide JAVA_COMPILER" either way. This environment ships only a JRE by default — a portable
+  Temurin 21 JDK is available at `~/.local/jdks/temurin-21`; point `JAVA_HOME`/
+  `org.gradle.java.home` at it (or any JDK 21+) before running Gradle.
 - **Almost everything is data**, not Java. Arachne's own powers are 3 references to base Origins
   power IDs + 6 small custom power JSON files + one origin file + two entity-type tags — see
   `src/main/resources/data/monster_origins/`. Only one requirement (arthropods staying passive until
