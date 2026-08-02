@@ -105,6 +105,8 @@ public class PetrifyingTridentItem extends TridentItem {
 		target.addEffect(new MobEffectInstance(ModEffects.PETRIFY, 60, 0));
 		target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60, 0));
 		target.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 60, 0));
+		// Playtest fix (2026-08-02): rotation lock, see ImmobilizedRotationLockMixin.
+		target.addEffect(new MobEffectInstance(ModEffects.IMMOBILIZED, 60, 0));
 	}
 
 	public static boolean isMedusaOrigin(LivingEntity entity) {

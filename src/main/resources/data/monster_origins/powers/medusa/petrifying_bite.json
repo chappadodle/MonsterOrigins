@@ -45,6 +45,11 @@
 				"effect": "minecraft:darkness",
 				"amplifier": 0,
 				"duration": 60
+			},
+			{
+				"effect": "monster_origins:immobilized",
+				"amplifier": 0,
+				"duration": 60
 			}
 		]
 	},
@@ -53,5 +58,5 @@
 		"bar_index": 6
 	},
 	"name": "Petrifying Bite",
-	"description": "Unarmed strikes, or hits with the Petrifying Trident, briefly turn the target to stone: 3 seconds of heavy Slowness, Mining Fatigue, Blindness, and Darkness. 5 second cooldown."
+	"description": "Unarmed strikes, or hits with the Petrifying Trident, briefly turn the target to stone: 3 seconds fully immobilized, plus heavy Slowness, Mining Fatigue, Blindness, and Darkness. 5 second cooldown."
 }

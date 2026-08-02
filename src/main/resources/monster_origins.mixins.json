@@ -19,7 +19,8 @@
 		"HarpyFlightSpeedMixin",
 		"MermaidWaterTurningMixin",
 		"MermaidSprintSwimMixin",
-		"HarpyJavelinSpeedDamageMixin"
+		"HarpyJavelinSpeedDamageMixin",
+		"ImmobilizedRotationLockMixin"
 	],
 	"client": [
 		"MermaidTridentReachMixin",

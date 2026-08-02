@@ -21,5 +21,6 @@
 	"effect.monster_origins.charmed": "Charmed",
 	"effect.monster_origins.petrify": "Petrify",
 	"effect.monster_origins.stone_gaze_cooldown": "Stone Gaze Cooldown",
+	"effect.monster_origins.immobilized": "Immobilized",
 	"itemGroup.monster_origins.monster_origins": "Monster Origins"
 }

@@ -1,5 +1,6 @@
 package com.example.originmodstudy.entity;
 
+import com.example.originmodstudy.effect.ModEffects;
 import com.example.originmodstudy.item.ModItems;
 import com.example.originmodstudy.util.OriginUtil;
 import net.minecraft.core.BlockPos;
@@ -122,6 +123,8 @@ public class ThrownSilkNet extends ThrowableItemProjectile {
 			// Belt-and-suspenders redundancy alongside the cobweb block, in case placement above was
 			// skipped (e.g. currentState wasn't replaceable).
 			livingTarget.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, EFFECT_DURATION_TICKS, SLOWNESS_AMPLIFIER));
+			// Playtest fix (2026-08-02): rotation lock, see ImmobilizedRotationLockMixin.
+			livingTarget.addEffect(new MobEffectInstance(ModEffects.IMMOBILIZED, EFFECT_DURATION_TICKS, 0));
 		}
 	}
 

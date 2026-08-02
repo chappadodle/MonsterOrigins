@@ -38,6 +38,16 @@ public class ModEffects {
 	public static final MobEffect STONE_GAZE_COOLDOWN = register("stone_gaze_cooldown",
 			new MobEffect(MobEffectCategory.NEUTRAL, 0x9696A0) {});
 
+	// Playtest fix (2026-08-02): a shared marker applied alongside Arachne's web bite, the Silk
+	// Net Shooter, Medusa's petrify gaze, Medusa's petrifying bite, and the Petrifying Trident.
+	// ImmobilizedRotationLockMixin is the only thing that ever checks for its presence — a pure
+	// marker, same anonymous-subclass pattern as CHARMED/STONE_GAZE_COOLDOWN above, no attribute
+	// modifiers or tick behavior of its own. The actual movement lock stays with whatever effect
+	// each source already applies (Petrify's attributes, vanilla Slowness); this only adds the
+	// rotation freeze on top.
+	public static final MobEffect IMMOBILIZED = register("immobilized",
+			new MobEffect(MobEffectCategory.HARMFUL, 0x707070) {});
+
 	private static MobEffect register(String name, MobEffect effect) {
 		return Registry.register(BuiltInRegistries.MOB_EFFECT, OriginModStudy.id(name), effect);
 	}

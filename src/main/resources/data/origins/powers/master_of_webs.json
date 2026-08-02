@@ -9,17 +9,32 @@
 			"bar_index": 5
 		},
 		"entity_action": {
-			"type": "origins:block_action_at",
-			"block_action": {
-				"type": "origins:if_else",
-				"condition": {
-					"type": "origins:replacable"
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:block_action_at",
+					"block_action": {
+						"type": "origins:if_else",
+						"condition": {
+							"type": "origins:replacable"
+						},
+						"if_action": {
+							"type": "origins:set_block",
+							"block": "origins:temporary_cobweb"
+						}
+					}
 				},
-				"if_action": {
-					"type": "origins:set_block",
-					"block": "origins:temporary_cobweb"
+				{
+					"type": "origins:apply_effect",
+					"effects": [
+						{
+							"effect": "monster_origins:immobilized",
+							"amplifier": 0,
+							"duration": 60
+						}
+					]
 				}
-			}
+			]
 		},
 		"condition": {
 			"type": "origins:sneaking",

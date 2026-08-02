@@ -44,6 +44,11 @@
 						"duration": 60
 					},
 					{
+						"effect": "monster_origins:immobilized",
+						"amplifier": 0,
+						"duration": 60
+					},
+					{
 						"effect": "monster_origins:stone_gaze_cooldown",
 						"amplifier": 0,
 						"duration": 160,

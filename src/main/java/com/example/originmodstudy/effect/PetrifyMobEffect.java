@@ -35,6 +35,16 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
  * net.minecraft.world.entity.ai.attributes.Attribute}, but a real, unique UUID per modifier is
  * still the documented/expected shape for this API (every vanilla example does the same), so one
  * was minted per attribute rather than reused.
+ *
+ * <p><b>Playtest fix (2026-08-02):</b> movement speed changed from -90% to a true -100% — the
+ * report asked for petrified targets to be "completely locked in place," and -90% still let a
+ * target creep, however slowly. {@code MULTIPLY_TOTAL}'s formula above confirms -1.0 clamps
+ * cleanly to exactly 0, not a negative/backward value. (Rotation is handled separately, by
+ * {@code ImmobilizedRotationLockMixin} reacting to the companion {@code ModEffects.IMMOBILIZED}
+ * marker applied alongside this effect at each of its two application sites —
+ * {@code gaze_petrify.json} and {@code PetrifyingTridentItem.applyPetrify} — rather than from
+ * inside this class, since {@code MobEffect} has no "effect just started" hook in this Minecraft
+ * version to centralize that from, confirmed via {@code javap} before assuming one existed.)
  */
 public class PetrifyMobEffect extends MobEffect {
 	private static final String MOVEMENT_SPEED_MODIFIER_UUID = "7ce5f6da-6cab-4e19-a6c4-1f471e04bb8b";
@@ -43,7 +53,7 @@ public class PetrifyMobEffect extends MobEffect {
 	public PetrifyMobEffect(MobEffectCategory category, int color) {
 		super(category, color);
 		this.addAttributeModifier(Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED_MODIFIER_UUID,
-				-0.9, AttributeModifier.Operation.MULTIPLY_TOTAL);
+				-1.0, AttributeModifier.Operation.MULTIPLY_TOTAL);
 		this.addAttributeModifier(Attributes.ATTACK_SPEED, ATTACK_SPEED_MODIFIER_UUID,
 				-0.8, AttributeModifier.Operation.MULTIPLY_TOTAL);
 	}
