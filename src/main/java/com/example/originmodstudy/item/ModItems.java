@@ -1,14 +1,16 @@
 package com.example.originmodstudy.item;
 
 import com.example.originmodstudy.OriginModStudy;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
 
 /**
@@ -121,28 +123,41 @@ public class ModItems {
 	public static final Item SERPENT_AEGIS = register("serpent_aegis",
 			new SerpentAegisItem(new Item.Properties().durability(3000)));
 
+	// Playtest follow-up (2026-08-02): a dedicated tab for this mod's own content, replacing the
+	// old approach of scattering items into vanilla Combat/Food/Ingredients tabs. The four origin
+	// "eye" icon items (ARACHNE_EYE/MEDUSA_EYE/HARPY_EYE/MERMAID_EYE) are deliberately excluded here
+	// too, same as before — they exist purely to give the origin picker GUI an icon and were never
+	// meant to appear in any creative tab.
+	public static final CreativeModeTab MONSTER_ORIGINS_TAB = Registry.register(
+			BuiltInRegistries.CREATIVE_MODE_TAB,
+			OriginModStudy.id("monster_origins"),
+			FabricItemGroup.builder()
+					.title(Component.translatable("itemGroup.monster_origins.monster_origins"))
+					.icon(() -> new ItemStack(WIDOWFANG))
+					.displayItems((parameters, output) -> {
+						output.accept(GOLDEN_SPIDER_EYE);
+						output.accept(FANG);
+						output.accept(VENOMFANG);
+						output.accept(WIDOWFANG);
+						output.accept(PETRIFYING_TRIDENT);
+						output.accept(STORM_TRIDENT);
+						output.accept(SILK_NET_SHOOTER);
+						output.accept(MERMAID_TRIDENT);
+						output.accept(SERPENT_AEGIS);
+						output.accept(SILK);
+						output.accept(MEDUSA_SCALE);
+						output.accept(HARPY_FEATHER);
+					})
+					.build());
+
 	private static Item register(String name, Item item) {
 		return Registry.register(BuiltInRegistries.ITEM, OriginModStudy.id(name), item);
 	}
 
 	public static void registerModItems() {
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> {
-			entries.accept(GOLDEN_SPIDER_EYE);
-		});
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT).register(entries -> {
-			entries.accept(FANG);
-			entries.accept(VENOMFANG);
-			entries.accept(WIDOWFANG);
-			entries.accept(PETRIFYING_TRIDENT);
-			entries.accept(STORM_TRIDENT);
-			entries.accept(SILK_NET_SHOOTER);
-			entries.accept(MERMAID_TRIDENT);
-			entries.accept(SERPENT_AEGIS);
-		});
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS).register(entries -> {
-			entries.accept(SILK);
-			entries.accept(MEDUSA_SCALE);
-			entries.accept(HARPY_FEATHER);
-		});
+		// Registration now happens entirely via the static final field initializers above
+		// (item fields and the MONSTER_ORIGINS_TAB creative tab field alike). This method is
+		// kept solely to force this class to load at a predictable point, called from
+		// OriginModStudy.onInitialize() — same convention as ModEffects.registerModEffects().
 	}
 }
