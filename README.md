@@ -17,8 +17,8 @@ control.
 - Night vision. 6 hearts of health, a small amount of natural armor.
 - **Rappel** (double tap space, same as Origins Minus's Weaver origin): pull yourself upward on a
   strand of web. Only works indoors, under a ceiling or overhang.
-- **Scuttle** (secondary key, unbound by default): a burst of Speed IV for 4 seconds, at the cost
-  of burning through food much faster while it's active. 15 second cooldown.
+- **Leap** (secondary key, unbound by default): a short pounce forward and up, about 5 blocks.
+  15 second cooldown.
 - Can't use a shield.
 - Falls under 10 blocks deal no fall damage at all; falls of 10 blocks or more deal only 52% of
   normal damage (matching Feather Falling IV).
