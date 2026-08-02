@@ -1,7 +1,7 @@
 {
 	"type": "origins:multiple",
 	"name": "Rappel",
-	"description": "Hold jump under a ceiling or overhang to climb straight up. Doesn't work outdoors, or more than about a block underwater.",
+	"description": "Double tap jump, then hold it, to climb straight up under a ceiling or overhang. Doesn't work outdoors, or more than about a block underwater.",
 	"badges": [
 		{
 			"type": "origins:keybind",

@@ -929,8 +929,8 @@ JAVA_HOME=~/.local/jdks/temurin-21 ./gradlew build   # compile + build mod jar -
 `runClient` needs a display and hasn't been run in this environment — in-game verification (does
 the origin appear in the picker, do the powers behave as specified, does the mixin correctly
 suppress/restore arthropod hostility) is a manual step: drop the built jar into either
-PrismLauncher instance's `mods/` folder alongside the already-installed Origins/Origins
-Minus/Pehkui/Fabric API jars.
+PrismLauncher instance's `mods/` folder alongside the already-installed Origins/Pehkui/Fabric API
+jars.
 
 JSON-lint new data pack files before building:
 ```bash
@@ -1023,8 +1023,8 @@ also not a regression.
     (the same base class snowballs/eggs/ender pearls use), instead of writing a renderer by hand.
 - `src/main/resources/data/monster_origins/`
   - `origins/arachne.json` — the origin: name, description, icon (`monster_origins:arachne_eye`), and its
-    power list (16 entries as of this writing — a mix of references to base-Origins/Origins Minus
-    power IDs and this addon's own custom powers).
+    power list (19 entries as of this writing — a mix of references to base-Origins power IDs and
+    this addon's own custom powers).
   - `origins/medusa.json` — the second origin, tanky/petrify-focused (12 hearts, +6 armor,
     on-hit and AOE petrify, immune to her own petrify effects, weakened by direct sunlight).
     The real second worked example of the per-origin pattern — `example_stub.json` is still the

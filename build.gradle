@@ -7,7 +7,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	// Origins, Origins Minus and Pehkui are all published to the Modrinth Maven. Loom remaps
+	// Origins and Pehkui are both published to the Modrinth Maven. Loom remaps
 	// their published (Intermediary-mapped) classes into our own project's mapping (Mojang
 	// official, below) automatically — same mechanism it already uses for Fabric API.
 	exclusiveContent {
@@ -66,7 +66,6 @@ dependencies {
 	// Origins. Apoli (the power-system library Origins is built on) is bundled inside this jar
 	// via Fabric jar-in-jar, so it does not need its own dependency line.
 	modImplementation "maven.modrinth:origins:${project.origins_version}"
-
 
 	// Pehkui — used at runtime by the "scale" power (via its `/scale set` command), so it must
 	// be present for the mod to work even though we never call its Java API directly.
