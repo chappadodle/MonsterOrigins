@@ -30,7 +30,7 @@
 						{
 							"effect": "monster_origins:immobilized",
 							"amplifier": 0,
-							"duration": 60
+							"duration": 40
 						}
 					]
 				}
@@ -42,7 +42,12 @@
 		}
 	},
 	"no_slowdown": {
-		"type": "origins:simple"
+		"type": "origins:phasing",
+		"block_condition": {
+			"type": "origins:in_tag",
+			"tag": "origins:cobwebs"
+		},
+		"render_type": "none"
 	},
 	"climbing": {
 		"type": "origins:climbing",
