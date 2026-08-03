@@ -4,8 +4,11 @@ import com.example.originmodstudy.OriginModStudy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
  * Registers every status effect this mod adds. Fields are {@code static final} so they are
@@ -55,8 +58,19 @@ public class ModEffects {
 	// modifiers or tick behavior of its own. The actual movement lock stays with whatever effect
 	// each source already applies (Petrify's attributes, vanilla Slowness); this only adds the
 	// rotation freeze on top.
+	// Playtest fix: full rotation-lock (see ImmobilizedRotationLockMixin) left a trapped target
+	// completely unable to fight back at all, even at point-blank range. Rather than remove the
+	// lock, this gives back a small amount of agency: -1 to both real 1.21 reach attributes (the
+	// same two ModItems.MERMAID_TRIDENT already grants a +1 bonus to), so a trapped target can
+	// still swing at whoever's standing right next to them, just not at vanilla's normal range.
 	public static final Holder<MobEffect> IMMOBILIZED = register("immobilized",
-			new MobEffect(MobEffectCategory.HARMFUL, 0x707070) {});
+			new MobEffect(MobEffectCategory.HARMFUL, 0x707070) {}
+					.addAttributeModifier(Attributes.BLOCK_INTERACTION_RANGE,
+							ResourceLocation.fromNamespaceAndPath("monster_origins", "immobilized_block_reach"),
+							-1.0, AttributeModifier.Operation.ADD_VALUE)
+					.addAttributeModifier(Attributes.ENTITY_INTERACTION_RANGE,
+							ResourceLocation.fromNamespaceAndPath("monster_origins", "immobilized_entity_reach"),
+							-1.0, AttributeModifier.Operation.ADD_VALUE));
 
 	private static Holder<MobEffect> register(String name, MobEffect effect) {
 		return Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, OriginModStudy.id(name), effect);

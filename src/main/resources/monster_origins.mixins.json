@@ -9,7 +9,6 @@
 		"ArthropodPassiveTargetMixin",
 		"ThrownTridentMixin",
 		"ThrownTridentAccessor",
-		"SeaCreaturePassiveTargetMixin",
 		"CharmedPassiveTargetMixin",
 		"MermaidTridentBonusDamageMixin",
 		"VillagerNoTradeMixin",
@@ -20,6 +19,7 @@
 		"MermaidWaterTurningMixin",
 		"MermaidSprintSwimMixin",
 		"HarpyJavelinSpeedDamageMixin",
+		"HarpyTalonSpeedDamageMixin",
 		"ImmobilizedRotationLockMixin"
 	],
 	"client": [

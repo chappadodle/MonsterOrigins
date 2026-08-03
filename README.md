@@ -88,8 +88,6 @@ control.
   the duration. 4 second duration, 20 second cooldown.
 - **Riptide** (secondary key, unbound by default): a quick forward burst, the same push strength
   as a real Riptide III enchantment, for a fast way to get moving. 5 second cooldown.
-- **Every sea creature is friendly** unless attacked first, including Drowned and Guardians, not
-  just the obviously passive fish.
 - Mining a live coral block bare handed (or with any tool lacking Silk Touch) gets the live block
   instead of vanilla's usual dead coral fallback.
 - Killing a fish (Cod, Salmon, Pufferfish, or Tropical Fish) has a 5% chance to additionally drop
