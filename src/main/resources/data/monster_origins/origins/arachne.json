@@ -17,8 +17,7 @@
 		"monster_origins:arachne/silk_glands",
 		"monster_origins:arachne/sure_footed",
 		"monster_origins:arachne/quickness",
-		"monster_origins:arachne/fire_vulnerability",
-		"monster_origins:arachne/fall_damage_reduction"
+		"monster_origins:arachne/fire_vulnerability"
 	],
 	"icon": {
 		"id": "monster_origins:arachne_eye"

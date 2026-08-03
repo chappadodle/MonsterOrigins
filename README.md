@@ -21,8 +21,7 @@ control.
 - **Leap** (secondary key, unbound by default): a short pounce forward and up, about 5 blocks.
   3 second cooldown.
 - Can't use a shield.
-- Falls under 10 blocks deal no fall damage at all; falls of 10 blocks or more deal only 52% of
-  normal damage (matching Feather Falling IV).
+- Never takes fall damage, no matter how far she drops.
 - Weakened while touching water, a spider out of its element.
 - Takes 50% more damage from fire: brittle, dry, and flammable.
 - Naturally produces 3 silk every 20 minutes.
