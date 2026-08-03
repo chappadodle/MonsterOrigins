@@ -126,7 +126,8 @@ public class ModItems {
 	// the blocked damage back, gated on the Medusa origin — see SerpentAegisBlockMixin. Immune to
 	// Ghast fireballs specifically (no durability loss) — see SerpentAegisDurabilityMixin.
 	public static final Item SERPENT_AEGIS = register("serpent_aegis",
-			new SerpentAegisItem(new Item.Properties().durability(3000)));
+			new SerpentAegisItem(new Item.Properties().durability(3000)
+					.attributes(SerpentAegisItem.createAttributes())));
 
 	// Playtest follow-up (2026-08-02): a dedicated tab for this mod's own content, replacing the
 	// old approach of scattering items into vanilla Combat/Food/Ingredients tabs. The four origin

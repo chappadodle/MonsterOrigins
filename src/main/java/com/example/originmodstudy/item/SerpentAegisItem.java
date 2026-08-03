@@ -5,16 +5,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -38,15 +37,37 @@ import java.util.List;
  * no extra code needed to make it *not* do something extra there).
  *
  * <p>Playtest addition: a real shield this heavy should cost something even before it blocks
- * anything — {@link #inventoryTick} applies a continuously-refreshed Slowness I to whoever has it
- * in their off-hand, Medusa included, the same tradeoff a shield has in real weight regardless of
- * who's carrying it.
+ * anything. First attempt applied a real, ticking {@code minecraft:slowness} status effect while
+ * equipped — silently never showed up for Medusa specifically, since her own {@code
+ * stone_cursed_immunity.json} (Apoli's {@code origins:effect_immunity}) makes her immune to
+ * Slowness entirely (deliberate — her own petrify powers apply it to herself in passing, and she
+ * shouldn't be slowed by her own curse). Since Medusa is also the *only* origin that can actually
+ * raise/block with this shield (see {@link #use} above), a status-effect-based penalty could never
+ * have worked for its one real user. Fixed by using a real attribute modifier via {@link
+ * #createAttributes()} instead — Slowness I's own real formula (-0.15 to movement speed,
+ * multiplicative, confirmed via decompile — see {@code ThrownSilkNet}'s own doc comment for the
+ * same real number), applied automatically by vanilla's own per-slot attribute system whenever this
+ * is in the off-hand, exactly like {@code MermaidTridentItem}'s own reach bonus does for its own
+ * slot. A flat attribute modifier isn't a status effect at all, so it can't be blocked by {@code
+ * origins:effect_immunity} or anything else gated on "does this entity have effect X."
  */
 public class SerpentAegisItem extends ShieldItem {
 	private static final ResourceLocation MEDUSA_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "medusa");
+	private static final ResourceLocation SLOWNESS_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "serpent_aegis_weight");
 
 	public SerpentAegisItem(Properties properties) {
 		super(properties);
+	}
+
+	/** Slowness I's own real movement-speed penalty (-0.15, {@code ADD_MULTIPLIED_TOTAL}), applied
+	 * as a flat attribute modifier instead of the status effect itself so it can't be silently
+	 * blocked by an effect immunity (see the class doc above). */
+	public static ItemAttributeModifiers createAttributes() {
+		return ItemAttributeModifiers.builder()
+				.add(Attributes.MOVEMENT_SPEED,
+						new AttributeModifier(SLOWNESS_ID, -0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
+						EquipmentSlotGroup.OFFHAND)
+				.build();
 	}
 
 	@Override
@@ -55,16 +76,6 @@ public class SerpentAegisItem extends ShieldItem {
 			return InteractionResultHolder.fail(player.getItemInHand(hand));
 		}
 		return super.use(level, player, hand);
-	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-		super.inventoryTick(stack, level, entity, slotId, isSelected);
-		if (!level.isClientSide()
-				&& entity instanceof LivingEntity livingEntity
-				&& livingEntity.getItemBySlot(EquipmentSlot.OFFHAND) == stack) {
-			livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 0, true, false));
-		}
 	}
 
 	@Override
