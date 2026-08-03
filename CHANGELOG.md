@@ -6,6 +6,44 @@ section instead of an origin's.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-08-03
+
+### Minecraft 1.21.1
+
+- Released support for Minecraft 1.21.1. This is the same mod, ported from Minecraft 1.20.1,
+  now built against Fabric API, Origins, and Apoli for the newer game version, including a
+  full port of every mixin and every data pack power to the new mappings and schema. See
+  README.md for the exact dependency versions needed.
+
+### Arachne
+
+- Walking through cobwebs no longer slows you down. The power meant to do this had silently done
+  nothing since the mod's very first commit, confirmed by decompiling Apoli directly, now fixed
+  with the real, functional power.
+- Sure Footed is now unconditional. She never takes fall damage at all, matching how the fall
+  damage reduction power actually behaved in practice (it never really applied its intended
+  partial reduction above 10 blocks).
+- A normal punch (webbing a target in a temporary cobweb without sneaking) now applies Immobilized
+  for 2 seconds, down from 3. Fixed the same power silently doing nothing on this branch too, a
+  different cause than the cobweb slowdown fix above, the power type it used had been deprecated
+  and left unwired by Apoli for this Minecraft version.
+- An Immobilized target can no longer hit you if you are standing behind it, or from more than
+  point blank range. Previously it could still land hits regardless of facing or distance.
+
+### Medusa
+
+- Removed Stone Gaze, the passive, always on petrify pulse. Stone Gaze Burst, the secondary key
+  ability, is unchanged.
+- The Serpent Aegis is now genuinely Medusa only. Before, any origin able to use a shield at all
+  could raise and block with it, despite the tooltip already claiming otherwise.
+- The Serpent Aegis now actually slows its wielder while equipped, matching Slowness I. This
+  needed a real attribute modifier rather than the status effect itself, since Medusa's own Stone
+  Cursed immunity blocked the effect version entirely.
+
+### Mermaid
+
+- Removed "every sea creature is friendly." Sea creatures behave like vanilla again.
+
 ## [2.0.0] - 2026-08-03
 
 ### Arachne

@@ -1,6 +1,6 @@
 # Monster Origins
 
-A **Minecraft 1.20.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
+A **Minecraft 1.21.1 / Fabric** addon for [Origins](https://modrinth.com/mod/origins) that adds
 four origins: **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a swift, stormy
 bird woman), and **Mermaid** (a singer of the deep). Each one plays completely differently: a
 fragile fast assassin, a tanky bruiser, an aerial skirmisher, and aquatic support with crowd
@@ -136,20 +136,27 @@ every gotcha found along the way.
 
 ## Requirements (to play)
 
-Drop these into your `mods/` folder (all for **1.20.1 Fabric**). Each version below is a
-**minimum**, not an exact pin: any newer release of the same mod for 1.20.1 works too, matching
+Drop these into your `mods/` folder (all for **1.21.1 Fabric**). Each version below is a
+**minimum**, not an exact pin: any newer release of the same mod for 1.21.1 works too, matching
 what this mod's own `fabric.mod.json` actually declares.
 
-1. [Fabric API](https://modrinth.com/mod/fabric-api) (`0.92.11+1.20.1` or newer)
-2. [Origins](https://modrinth.com/mod/origins) (`1.10.2+mc.1.20.1` or newer)
-3. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21` or newer)
+1. [Fabric API](https://modrinth.com/mod/fabric-api) (`0.116.15+1.21.1` or newer)
+2. [Origins](https://modrinth.com/mod/origins) (`1.13.0-pre.3+mc.1.21.1` or newer, currently the
+   newest build available for this Minecraft version. No stable, non prerelease Origins build
+   exists for 1.21.1 yet, so a prerelease is the real requirement here, not a corner being cut)
+3. [Pehkui](https://modrinth.com/mod/pehkui) (`3.8.3+1.14.4-1.21` or newer, the same jar already
+   used on the 1.20.1 release, its own versioning already spans both)
 4. This mod's jar (build it with `./gradlew build`, output in `build/libs/`)
+
+Java 21 or newer is required to even launch this version, both for Gradle itself and for the mod's
+own compiled bytecode, since 1.21.1 era Fabric mods require it (confirmed directly from Origins'
+own `fabric.mod.json`).
 
 ## Building / developing
 
 See **[`TUTORIAL.md`](TUTORIAL.md)** for a full beginner walkthrough: what an Origins addon even
 is, environment setup, the data pack first approach, and how the custom code pieces work. Needs
-**JDK 21+** (the Gradle toolchain requires it; the mod itself targets Java 17).
+**JDK 21+**, both for Gradle itself and for the mod's own compile target.
 
 ```bash
 ./gradlew build       # compile + build the mod jar
