@@ -2,39 +2,42 @@
 	"loading_priority": 1,
 	"type": "origins:multiple",
 	"webbing": {
-		"type": "origins:target_action_on_hit",
+		"type": "origins:action_on_hit",
 		"cooldown": 40,
 		"hud_render": {
 			"sprite_location": "origins:textures/gui/resource_bar.png",
 			"bar_index": 5
 		},
-		"entity_action": {
-			"type": "origins:and",
-			"actions": [
-				{
-					"type": "origins:block_action_at",
-					"block_action": {
-						"type": "origins:if_else",
-						"condition": {
-							"type": "origins:replaceable"
-						},
-						"if_action": {
-							"type": "origins:set_block",
-							"block": "origins:temporary_cobweb"
+		"bientity_action": {
+			"type": "origins:target_action",
+			"action": {
+				"type": "origins:and",
+				"actions": [
+					{
+						"type": "origins:block_action_at",
+						"block_action": {
+							"type": "origins:if_else",
+							"condition": {
+								"type": "origins:replaceable"
+							},
+							"if_action": {
+								"type": "origins:set_block",
+								"block": "origins:temporary_cobweb"
+							}
 						}
+					},
+					{
+						"type": "origins:apply_effect",
+						"effects": [
+							{
+								"amplifier": 0,
+								"duration": 40,
+								"id": "monster_origins:immobilized"
+							}
+						]
 					}
-				},
-				{
-					"type": "origins:apply_effect",
-					"effects": [
-						{
-							"amplifier": 0,
-							"duration": 40,
-							"id": "monster_origins:immobilized"
-						}
-					]
-				}
-			]
+				]
+			}
 		},
 		"condition": {
 			"type": "origins:sneaking",
