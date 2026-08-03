@@ -5,7 +5,9 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 **Monster Origins** (mod ID `monster_origins`; this repo's own local directory is still named
-`origins-mod-study`, unrelated and not worth renaming) — a Minecraft **1.20.1 / Fabric** addon for
+`origins-mod-study`, unrelated and not worth renaming) — a Minecraft **1.21.1 / Fabric** addon
+(ported from an original 1.20.1 codebase — `JAVA_HOME=~/.local/jdks/temurin-21 ./gradlew clean
+build` reports `BUILD SUCCESSFUL` as of that port) for
 the [Origins](https://modrinth.com/mod/origins) mod. Adds four origins,
 **Arachne** (a humanoid spider), **Medusa** (a gorgon), **Harpy** (a storm-wind bird-woman), and
 **Mermaid** (a singer of the deep), as worked, documented examples of a data-driven pattern for
@@ -922,6 +924,81 @@ than expected once real Origins source was checked — see the gotchas below for
   `add_velocity`/`"space": "local"` power in this project: don't assume the usual -Z-forward
   convention carries over, verify with a real playtest.
 
+- **The 1.20.1 → 1.21.1 port (8 planned tasks, this repo's `mc1.21.1-port` branch) touched a wide
+  cluster of vanilla API signatures at once — every one of the following was confirmed via `javap`/
+  CFR decompile of the real mapped 1.21.1 jar before being applied, not guessed from a changelog.**
+  Recorded here as one block since they were all discovered/fixed together and several interact:
+  - **`ItemAttributeModifiers` (a `DataComponentType`) replaces `Item#getDefaultAttributeModifiers
+    (EquipmentSlot)`/`SwordItem`'s old `(Tier, int, float, Properties)` constructor overload.**
+    `SwordItem` itself now only takes `(Tier, Properties)`; its own real damage/speed formula
+    (`ATTACK_DAMAGE = attackDamageModifier + tier.getAttackDamageBonus()`, `ATTACK_SPEED =
+    attackSpeedModifier`, both `ADD_VALUE`, `EquipmentSlotGroup.MAINHAND`) survives as a public
+    static helper, `SwordItem.createAttributes(tier, i, f)` — reused directly by `FangItem` rather
+    than hand-rebuilding the same numbers. A custom item with its own bespoke modifiers (the Harpy
+    Javelin) instead builds an `ItemAttributeModifiers` via its own builder and passes it through
+    `Properties#attributes(...)` before `super(...)`, the same general pattern. Note `EquipmentSlot`
+    (a single slot) and `EquipmentSlotGroup` (e.g. `MAINHAND`, matching *any* hand) are two distinct
+    types in this API — `ItemAttributeModifiers` entries are always scoped by the group, not the
+    single slot.
+  - **`Model#renderToBuffer` and `ModelPart#render` both collapsed their trailing `float red, green,
+    blue, alpha` quartet into one packed ARGB `int` — confirmed real vanilla call sites
+    (`ThrownTridentRenderer`, and `Model`'s own 4-arg convenience overload) both pass literal `-1`
+    (all bits set = opaque white, "no tint") as that packed value, so every `renderToBuffer(...,
+    1.0F, 1.0F, 1.0F, 1.0F)`/`.render(..., 1.0F, 1.0F, 1.0F, 1.0F)` call in this project became
+    `..., -1)`.** Affects both classes identically since `ModelPart` and `Model` gained the same
+    signature change in lockstep — worth checking both, not just the one this session went looking
+    for first.
+  - **Every real API that consumes a `MobEffect` reference now takes `Holder<MobEffect>`, not a
+    plain `MobEffect`** — `MobEffectInstance`'s constructors, `LivingEntity#hasEffect`/
+    `#removeEffect`/`#removeEffectNoUpdate`. Vanilla's own `MobEffects` class registers via
+    `Registry.registerForHolder(...)` (not the plain `Registry.register(...)` this project's
+    `ModEffects` used pre-port) specifically to get a `Holder<MobEffect>` back instead of a bare
+    `MobEffect` — `ModEffects`'s own fields are now typed `Holder<MobEffect>` for the same reason;
+    changing the registration helper's return type at the one shared call site fixed every
+    downstream `addEffect`/`hasEffect` call site in the same pass, rather than wrapping each call
+    site individually.
+  - **`ItemStack#hurtAndBreak` gained a second overload taking a plain `EquipmentSlot` instead of a
+    `Consumer<Item>`/`Consumer<LivingEntity>` break-event callback** — `(int, LivingEntity,
+    EquipmentSlot)`, confirmed against vanilla's own real call sites (`TridentItem.releaseUsing`
+    uses `LivingEntity.getSlotForHand(player.getUsedItemHand())`; `postHurtEnemy` uses the constant
+    `EquipmentSlot.MAINHAND` directly). Every `stack.hurtAndBreak(1, player, p ->
+    p.broadcastBreakEvent(hand))`-shaped call in this project (Fang/Petrifying Trident/Mermaid
+    Trident/Harpy Javelin/Silk Net Shooter/the Serpent Aegis durability mixin) became
+    `stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand))` — the lambda form still
+    compiles (a lambda taking one `Player`/`LivingEntity` param looks like it should satisfy either
+    overload), but resolves to the wrong one and fails with "EquipmentSlot is not a functional
+    interface" once the `Consumer`-based overload stops existing.
+  - **Fabric API's `ModelLoadingPlugin.Context#addModels` dropped its `ModelResourceLocation`
+    overload entirely — it's plain `ResourceLocation` (varargs or `Collection`) now, since
+    `ModelResourceLocation` itself stopped being a `ResourceLocation` subtype in this version (it's
+    now a standalone `record` wrapping one plus a variant string).** More subtly, decompiling
+    Fabric API 2.1.0's own consumer of these ids (`ModelLoaderMixin#addExtraModel`) shows it loads
+    each id through the *raw* model-file path (`models/<path>.json`) with **no automatic `item/`
+    prefix** — unlike vanilla's own real item-loading loop
+    (`ModelBakery#loadItemModelAndDependencies`, which explicitly calls
+    `resourceLocation.withPrefix("item/")` before loading). Since this project's actual flat-icon
+    model files live at `models/item/*.json` (unchanged), the `ResourceLocation` constants handed
+    to `addModels` now need the `"item/"` segment baked into their own path (e.g.
+    `"item/storm_trident_flat"`, not bare `"storm_trident_flat"`) — the exact opposite fix from the
+    1.20.1-era version of this same constant, which needed the prefix *removed* to avoid a doubled
+    `item/item/` path under the old API. The lookup side (`TridentStyleFlatIconMixin`, wrapping the
+    same constant in `ModelResourceLocation.inventory(...)`) didn't need to change at all — both
+    ends only ever need to agree with each other, not with vanilla's own per-real-item convention.
+  - **Fabric API's `HudRenderCallback#onHudRender` changed its second parameter from a plain `float`
+    partial-tick to a `DeltaTracker`** (`net.minecraft.client.DeltaTracker`, exposing
+    `getGameTimeDeltaPartialTick(boolean)` for code that actually needs the interpolation value).
+    `MermaidAirSupplyHud`'s render callback never used the old float at all (it draws a snapped
+    bubble count, no interpolation), so the fix was purely a signature update, accepting and
+    ignoring the `DeltaTracker` the same way the old code accepted and ignored the float.
+  - Beyond this task's own discoveries, the wider port also touched: `ResourceLocation`'s
+    constructor becoming `ResourceLocation.fromNamespaceAndPath(...)`; the Cardinal Components
+    package/Maven coordinates moving to `org.ladysnake.cca` 6.1.0; Origins' own API shifting to
+    `OriginLayerManager.getNullable(...)`/`Origin.getId()`; a cluster of vanilla `Holder<T>`
+    wrapping for enchantments/attributes/food/sounds and the undead-mob-type check; and
+    `MobEffect#isDurationEffectTick` being replaced by `MobEffect#shouldApplyEffectTickThisTick`
+    (a slightly different check worth re-reading rather than assuming a 1:1 rename — confirmed via
+    `javap`/CFR before `BleedMobEffect` was updated to override the new method).
+
 ## Build / verify
 
 ```bash
@@ -939,11 +1016,19 @@ JSON-lint new data pack files before building:
 python3 -c "import json,glob;[json.load(open(f)) for f in glob.glob('src/main/resources/**/*.json', recursive=True)]"
 ```
 
-One benign warning appears on every clean build: Loom's `remapSourcesJar` step fails to remap
-`ArthropodPassiveTargetMixin.java` specifically (a `Mercury`/ECJ source-remapper limitation,
-unrelated to the pattern-matching `instanceof` avoided in that file) — this only affects the
-auxiliary `-sources.jar`'s IDE-navigation copy of that one file, not compilation or the real mod
-jar. `BUILD SUCCESSFUL` with this warning present is expected, not a regression.
+Benign `Cannot remap <member> because it does not exist in any of the targets ...` warnings appear
+on every clean build's `remapSourcesJar`/`remapJar` steps — a `Mercury`/ECJ source-remapper
+limitation (or, post-1.21.1-port, Loom's own mixin-remapping pass not always resolving an
+`@Accessor`/`@Shadow` target back to its real declaring member) that only affects the auxiliary
+`-sources.jar`'s IDE-navigation copy and/or the remap metadata, never compilation or the real mod
+jar's actual behavior. Pre-port this only ever named `ArthropodPassiveTargetMixin.java`; post-port
+(1.21.1) it instead names `tridentItem` (twice — `ThrownTridentAccessor`'s `@Accessor` for
+`ThrownTrident`'s private field) and `getPickRange` (the extra-reach mixin on
+`MultiPlayerGameMode`) during `remapSourcesJar`, plus one `tridentItem` recurrence during
+`remapJar` itself. `BUILD SUCCESSFUL` with these warnings present is expected, not a regression —
+worth re-checking which specific member names show up here after any future mixin/accessor
+change, since this list is exactly the kind of thing that silently drifts and misleads a future
+reader if left stale.
 
 A second benign warning (`warning: unknown enum constant Env.CLIENT` /
 `com.demonwav.mcdev.annotations.Env not found`) started appearing once this project added its
