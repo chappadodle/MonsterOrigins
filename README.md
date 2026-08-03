@@ -44,8 +44,6 @@ control.
 - **Stone Cursed**: immune to Slowness and Mining Fatigue. Her own curse can't touch her.
 - Immune to fall damage.
 - Permanent night vision, a monster of the dark.
-- **Stone Gaze**: hostile creatures (and iron golems) that wander within 6 blocks are turned
-  briefly to stone, once every 8 seconds per creature.
 - **Stone Gaze Burst** (secondary key, unbound by default): petrifies every hostile creature (plus
   villagers and iron golems) within 10 blocks for 5 seconds, with a boulder impact sound. 30 second
   cooldown.

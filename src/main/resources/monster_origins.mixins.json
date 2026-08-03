@@ -20,7 +20,8 @@
 		"MermaidSprintSwimMixin",
 		"HarpyJavelinSpeedDamageMixin",
 		"HarpyTalonSpeedDamageMixin",
-		"ImmobilizedRotationLockMixin"
+		"ImmobilizedRotationLockMixin",
+		"ImmobilizedAttackRangeMixin"
 	],
 	"client": [
 		"TridentStyleFlatIconMixin"
