@@ -26,7 +26,7 @@ public class BleedMobEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		int interval = 25 >> amplifier;
 		if (interval > 0) {
 			return duration % interval == 0;
@@ -35,7 +35,8 @@ public class BleedMobEffect extends MobEffect {
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity entity, int amplifier) {
+	public boolean applyEffectTick(LivingEntity entity, int amplifier) {
 		entity.hurt(entity.damageSources().magic(), 1.0F);
+		return true;
 	}
 }
