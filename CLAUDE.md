@@ -981,9 +981,23 @@ than expected once real Origins source was checked — see the gotchas below for
     to `addModels` now need the `"item/"` segment baked into their own path (e.g.
     `"item/storm_trident_flat"`, not bare `"storm_trident_flat"`) — the exact opposite fix from the
     1.20.1-era version of this same constant, which needed the prefix *removed* to avoid a doubled
-    `item/item/` path under the old API. The lookup side (`TridentStyleFlatIconMixin`, wrapping the
-    same constant in `ModelResourceLocation.inventory(...)`) didn't need to change at all — both
-    ends only ever need to agree with each other, not with vanilla's own per-real-item convention.
+    `item/item/` path under the old API. **This CLAUDE.md entry originally claimed the lookup side
+    (`TridentStyleFlatIconMixin`) "didn't need to change at all" — that claim was wrong, and shipped
+    as a real bug found in a later whole-branch review.** Fabric API 2.1.0's real
+    `ModelLoaderMixin#addExtraModel` (the actual consumer of `Context#addModels(...)`'s ids) wraps
+    each registered id via `ModelLoadingConstants.toResourceModelId(id)`, which is `new
+    ModelResourceLocation(id, "fabric_resource")` — not `"inventory"`. The mixin's own lookup was
+    still constructing `new ModelResourceLocation(flatModelId, "inventory")` by hand, a key nothing
+    had actually registered, so it silently fell through to the missing-model fallback (the
+    purple/black checkerboard) for all three flat icons. Fixed by calling
+    `Minecraft.getInstance().getModelManager().getModel(flatModelId)` instead — `ModelManager`
+    implements `FabricBakedModelManager` via Loom interface injection (confirmed via its
+    `fabric.mod.json`'s `loom:injected_interfaces` entry), and that interface's
+    `getModel(ResourceLocation)` default method performs the correct `toResourceModelId` mapping
+    internally, so the lookup and registration sides agree without either one hand-constructing a
+    `ModelResourceLocation` variant string. The real lesson: "both ends only need to agree with each
+    other" was true in spirit but the lookup side was never actually checked against what
+    `addExtraModel` really does internally — it was assumed unchanged instead of re-verified.
   - **Fabric API's `HudRenderCallback#onHudRender` changed its second parameter from a plain `float`
     partial-tick to a `DeltaTracker`** (`net.minecraft.client.DeltaTracker`, exposing
     `getGameTimeDeltaPartialTick(boolean)` for code that actually needs the interpolation value).

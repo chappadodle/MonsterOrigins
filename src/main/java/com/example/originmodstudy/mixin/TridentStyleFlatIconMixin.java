@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -61,6 +60,17 @@ public abstract class TridentStyleFlatIconMixin {
 		if (flatModelId == null) {
 			return bakedModel;
 		}
-		return Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation(flatModelId, "inventory"));
+		// Fabric API 2.1.0's real ModelLoaderMixin#addExtraModel (the actual consumer of
+		// TridentStyleFlatModels#register()'s Context#addModels(...) call) wraps each registered id
+		// via ModelLoadingConstants.toResourceModelId(id), which is `new ModelResourceLocation(id,
+		// "fabric_resource")` — NOT "inventory". Constructing our own ModelResourceLocation with the
+		// "inventory" variant here looked up a key nothing had actually registered, silently falling
+		// back to the missing/fallback model (confirmed via javap on the real fabric-model-loading-
+		// api-v1 2.1.0 jar). FabricBakedModelManager#getModel(ResourceLocation) — a default method
+		// Fabric mixes into ModelManager itself, confirmed via javap on BakedModelManagerMixin/
+		// FabricBakedModelManager — performs that exact toResourceModelId mapping internally, so
+		// calling it with the bare ResourceLocation is the correct way to reach what's actually
+		// registered.
+		return Minecraft.getInstance().getModelManager().getModel(flatModelId);
 	}
 }
