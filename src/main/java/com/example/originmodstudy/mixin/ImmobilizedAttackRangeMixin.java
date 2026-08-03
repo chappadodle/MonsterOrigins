@@ -1,6 +1,7 @@
 package com.example.originmodstudy.mixin;
 
 import com.example.originmodstudy.effect.ModEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
@@ -10,50 +11,47 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Playtest fix: {@code ModEffects.IMMOBILIZED}'s {@code BLOCK_INTERACTION_RANGE}/
- * {@code ENTITY_INTERACTION_RANGE} attribute penalty (see {@code ModEffects.java}) only ever
- * affects a <em>player's own</em> reach when attacking — confirmed via decompile that a mob's own
- * melee attack range ({@code MeleeAttackGoal#canPerformAttack} → {@code Mob
- * #isWithinMeleeAttackRange(LivingEntity)} → {@code Mob#getAttackBoundingBox()}) never reads that
- * attribute at all; it's a flat bounding-box inflate by a hardcoded constant
- * ({@code DEFAULT_ATTACK_REACH}, real vanilla mob melee reach, independent of any attribute). So a
- * trapped hostile mob's own attacks were never actually affected by the earlier fix — exactly the
- * reported bug: sneak behind an immobilized mob and it still lands hits.
+ * Playtest fix, corrected a second time: the previous version mixed into whichever real reach
+ * check a mob's own {@code MeleeAttackGoal} (or subclass) used — but vanilla has a whole family of
+ * these ({@code SpiderAttackGoal}, {@code VindicatorMeleeAttackGoal}, {@code
+ * RavagerMeleeAttackGoal}, {@code DrownedAttackGoal}, ... — confirmed via the real 1.20.1 jar's own
+ * class list), several of which override the reach calculation *themselves* rather than inheriting
+ * the base goal's. A mixin on just the base class's method never fires for a subclass's own
+ * override (plain Java virtual dispatch — the subclass's override replaces it entirely unless it
+ * calls {@code super}), so the fix only ever worked for mobs using the unmodified base goal
+ * (zombies/husks), not spiders, vindicators, and everything else with its own reach logic —
+ * exactly the residual "still hits from behind" report, and reproducing this correctly for every
+ * vanilla mob would mean chasing down and mixing into each one of these subclasses individually.
  *
- * <p>This mixin overrides {@code isWithinMeleeAttackRange} directly for an immobilized attacker,
- * with two real restrictions per the user's own request: (1) genuine zero reach — no bounding-box
- * inflation at all, only two literally-overlapping bounding boxes can register a hit (the real
- * {@code getHitbox()} vanilla itself compares against is {@code protected}, unreachable on an
- * arbitrary target instance from a mixin class; the public {@code getBoundingBox()} is a close
- * enough equivalent for this restriction, not a byte-for-byte replication); and
- * (2) no hit at all if the target is behind the mob's frozen facing direction (dot product of the
- * mob's look vector against the direction to the target), so an immobilized mob genuinely can't
- * turn and strike someone who snuck around behind it — matching
- * {@code ImmobilizedRotationLockMixin}'s own frozen-facing behavior, which this composes with
- * rather than duplicates.
+ * <p>Far more robust: every one of these goals, however they each compute "am I in range," all
+ * funnel into the exact same place to actually deal the hit — {@code Mob
+ * #doHurtTarget(Entity)} (confirmed identical signature on both this project's 1.20.1 and 1.21.1
+ * branches). Cancelling the hit itself at the one real choke point every melee mob shares, instead
+ * of trying to intercept every different way a mob might decide it's in range, means this doesn't
+ * need to know or care which {@code AttackGoal} subclass got the mob there. Same two real
+ * restrictions as before, now applied uniformly to any mob regardless of its specific attack goal:
+ * the hit is cancelled unless the attacker and target's bounding boxes are actually touching AND
+ * the target is in front of the attacker's frozen facing (matching {@code
+ * ImmobilizedRotationLockMixin}'s own frozen-facing behavior).
  */
 @Mixin(Mob.class)
 public abstract class ImmobilizedAttackRangeMixin {
 
-	@Inject(method = "isWithinMeleeAttackRange", at = @At("HEAD"), cancellable = true)
-	private void immobilized$restrictAttackRange(LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
+	@Inject(method = "doHurtTarget", at = @At("HEAD"), cancellable = true)
+	private void immobilized$restrictAttack(Entity target, CallbackInfoReturnable<Boolean> cir) {
 		Mob self = (Mob) (Object) this;
-		if (!self.hasEffect(ModEffects.IMMOBILIZED)) {
+		if (!self.hasEffect(ModEffects.IMMOBILIZED) || !(target instanceof LivingEntity)) {
 			return;
 		}
 
-		if (!self.getBoundingBox().intersects(target.getBoundingBox())) {
-			cir.setReturnValue(false);
-			return;
-		}
+		boolean touching = self.getBoundingBox().intersects(target.getBoundingBox());
 
 		Vec3 look = self.getLookAngle();
 		Vec3 towardsTarget = target.position().subtract(self.position());
-		if (towardsTarget.lengthSqr() > 1.0E-6 && look.dot(towardsTarget.normalize()) < 0.0) {
-			cir.setReturnValue(false);
-			return;
-		}
+		boolean inFront = towardsTarget.lengthSqr() <= 1.0E-6 || look.dot(towardsTarget.normalize()) >= 0.0;
 
-		cir.setReturnValue(true);
+		if (!touching || !inFront) {
+			cir.setReturnValue(false);
+		}
 	}
 }
