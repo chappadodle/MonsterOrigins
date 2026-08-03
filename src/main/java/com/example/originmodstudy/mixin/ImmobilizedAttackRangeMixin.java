@@ -1,60 +1,57 @@
 package com.example.originmodstudy.mixin;
 
 import com.example.originmodstudy.effect.ModEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Playtest fix, corrected: the first version of this mixin targeted {@code Mob
- * #isWithinMeleeAttackRange(LivingEntity)} — that method genuinely exists on 1.20.1's {@code Mob}
- * class, but decompiling {@code MeleeAttackGoal} directly shows it's never actually called here;
- * vanilla 1.20.1's real reach check is {@code MeleeAttackGoal#getAttackReachSqr(LivingEntity)} —
- * a {@code protected} method declared directly on the GOAL class itself, not on {@code Mob} —
- * compared against a separately precomputed distance in {@code tick()}/{@code
- * checkAndPerformAttack}. Minecraft only moved this onto {@code Mob} as {@code
- * isWithinMeleeAttackRange} in a later version (confirmed already working correctly on this
- * project's 1.21.1 port, which really does call that method). Targeting the wrong class's method
- * doesn't crash — Mixin dutifully finds and no-ops nothing since the injection site is just never
- * reached — it just silently never restricts anything, exactly matching the reported bug (identical
- * mixin logic worked on 1.21.1, did nothing at all on 1.20.1).
+ * Playtest fix, corrected a second time: the previous version mixed into whichever real reach
+ * check a mob's own {@code MeleeAttackGoal} (or subclass) used — but vanilla has a whole family of
+ * these ({@code SpiderAttackGoal}, {@code VindicatorMeleeAttackGoal}, {@code
+ * RavagerMeleeAttackGoal}, {@code DrownedAttackGoal}, ... — confirmed via the real 1.20.1 jar's own
+ * class list), several of which override the reach calculation *themselves* rather than inheriting
+ * the base goal's. A mixin on just the base class's method never fires for a subclass's own
+ * override (plain Java virtual dispatch — the subclass's override replaces it entirely unless it
+ * calls {@code super}), so the fix only ever worked for mobs using the unmodified base goal
+ * (zombies/husks), not spiders, vindicators, and everything else with its own reach logic —
+ * exactly the residual "still hits from behind" report, and reproducing this correctly for every
+ * vanilla mob would mean chasing down and mixing into each one of these subclasses individually.
  *
- * <p>Real fix: {@code @Mixin(MeleeAttackGoal.class)}, injecting into the actual
- * {@code getAttackReachSqr} call every hostile mob's melee attack goes through. The goal's own
- * {@code protected final PathfinderMob mob} field (shadowed here) is the real attacker. Same two
- * restrictions as before: forces a guaranteed-fail return (`0.0`, always less than any real
- * distance-squared) unless the attacker and target's bounding boxes are actually touching AND the
- * target is in front of the attacker's frozen facing (matching {@code
- * ImmobilizedRotationLockMixin}'s own frozen-facing behavior) — otherwise forces a
- * guaranteed-pass return ({@code Double.MAX_VALUE}) so a valid point-blank frontal hit isn't
- * accidentally denied by whatever real reach value vanilla would have computed.
+ * <p>Far more robust: every one of these goals, however they each compute "am I in range," all
+ * funnel into the exact same place to actually deal the hit — {@code Mob
+ * #doHurtTarget(Entity)} (confirmed identical signature on both this project's 1.20.1 and 1.21.1
+ * branches). Cancelling the hit itself at the one real choke point every melee mob shares, instead
+ * of trying to intercept every different way a mob might decide it's in range, means this doesn't
+ * need to know or care which {@code AttackGoal} subclass got the mob there. Same two real
+ * restrictions as before, now applied uniformly to any mob regardless of its specific attack goal:
+ * the hit is cancelled unless the attacker and target's bounding boxes are actually touching AND
+ * the target is in front of the attacker's frozen facing (matching {@code
+ * ImmobilizedRotationLockMixin}'s own frozen-facing behavior).
  */
-@Mixin(MeleeAttackGoal.class)
+@Mixin(Mob.class)
 public abstract class ImmobilizedAttackRangeMixin {
 
-	@Shadow
-	@Final
-	protected PathfinderMob mob;
-
-	@Inject(method = "getAttackReachSqr", at = @At("HEAD"), cancellable = true)
-	private void immobilized$restrictAttackReach(LivingEntity target, CallbackInfoReturnable<Double> cir) {
-		if (!this.mob.hasEffect(ModEffects.IMMOBILIZED)) {
+	@Inject(method = "doHurtTarget", at = @At("HEAD"), cancellable = true)
+	private void immobilized$restrictAttack(Entity target, CallbackInfoReturnable<Boolean> cir) {
+		Mob self = (Mob) (Object) this;
+		if (!self.hasEffect(ModEffects.IMMOBILIZED) || !(target instanceof LivingEntity)) {
 			return;
 		}
 
-		boolean touching = this.mob.getBoundingBox().intersects(target.getBoundingBox());
+		boolean touching = self.getBoundingBox().intersects(target.getBoundingBox());
 
-		Vec3 look = this.mob.getLookAngle();
-		Vec3 towardsTarget = target.position().subtract(this.mob.position());
+		Vec3 look = self.getLookAngle();
+		Vec3 towardsTarget = target.position().subtract(self.position());
 		boolean inFront = towardsTarget.lengthSqr() <= 1.0E-6 || look.dot(towardsTarget.normalize()) >= 0.0;
 
-		cir.setReturnValue(touching && inFront ? Double.MAX_VALUE : 0.0);
+		if (!touching || !inFront) {
+			cir.setReturnValue(false);
+		}
 	}
 }
