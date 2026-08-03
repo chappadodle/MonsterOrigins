@@ -1,7 +1,7 @@
 {
 	"powers": [],
 	"icon": {
-		"item": "minecraft:egg"
+		"id": "minecraft:egg"
 	},
 	"order": 100,
 	"impact": 0,

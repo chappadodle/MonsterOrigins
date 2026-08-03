@@ -12,7 +12,7 @@
 		"monster_origins:mermaid/fire_vulnerability"
 	],
 	"icon": {
-		"item": "monster_origins:mermaid_eye"
+		"id": "monster_origins:mermaid_eye"
 	},
 	"order": 14,
 	"impact": 2,

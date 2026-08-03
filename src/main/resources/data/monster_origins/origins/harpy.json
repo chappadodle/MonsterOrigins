@@ -12,7 +12,7 @@
 		"monster_origins:harpy/feather_shedding"
 	],
 	"icon": {
-		"item": "monster_origins:harpy_eye"
+		"id": "monster_origins:harpy_eye"
 	},
 	"order": 12,
 	"impact": 2,

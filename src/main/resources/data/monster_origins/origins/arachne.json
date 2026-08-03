@@ -21,7 +21,7 @@
 		"monster_origins:arachne/fall_damage_reduction"
 	],
 	"icon": {
-		"item": "monster_origins:arachne_eye"
+		"id": "monster_origins:arachne_eye"
 	},
 	"order": 10,
 	"impact": 2,

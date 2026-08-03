@@ -12,7 +12,7 @@
 		"monster_origins:medusa/scale_shedding"
 	],
 	"icon": {
-		"item": "monster_origins:medusa_eye"
+		"id": "monster_origins:medusa_eye"
 	},
 	"order": 11,
 	"impact": 3,
