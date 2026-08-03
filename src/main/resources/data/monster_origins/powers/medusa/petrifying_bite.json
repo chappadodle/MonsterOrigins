@@ -27,29 +27,29 @@
 		"type": "origins:apply_effect",
 		"effects": [
 			{
-				"effect": "minecraft:slowness",
 				"amplifier": 3,
-				"duration": 60
+				"duration": 60,
+				"id": "minecraft:slowness"
 			},
 			{
-				"effect": "minecraft:mining_fatigue",
 				"amplifier": 2,
-				"duration": 60
+				"duration": 60,
+				"id": "minecraft:mining_fatigue"
 			},
 			{
-				"effect": "minecraft:blindness",
 				"amplifier": 0,
-				"duration": 60
+				"duration": 60,
+				"id": "minecraft:blindness"
 			},
 			{
-				"effect": "minecraft:darkness",
 				"amplifier": 0,
-				"duration": 60
+				"duration": 60,
+				"id": "minecraft:darkness"
 			},
 			{
-				"effect": "monster_origins:immobilized",
 				"amplifier": 0,
-				"duration": 60
+				"duration": 60,
+				"id": "monster_origins:immobilized"
 			}
 		]
 	},

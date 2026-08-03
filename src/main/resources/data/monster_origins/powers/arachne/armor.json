@@ -1,10 +1,10 @@
 {
 	"type": "origins:attribute",
 	"modifier": {
-		"name": "Arachne exoskeleton",
 		"attribute": "minecraft:generic.armor",
-		"value": 4.0,
-		"operation": "addition"
+		"operation": "add_value",
+		"id": "monster_origins:arachne_armor",
+		"amount": 4.0
 	},
 	"name": "Exoskeleton",
 	"description": "A chitinous exoskeleton grants you a small amount of natural armor, even with nothing equipped."

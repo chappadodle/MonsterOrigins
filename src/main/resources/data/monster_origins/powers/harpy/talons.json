@@ -3,9 +3,8 @@
 	"damage": {
 		"type": "origins:modify_damage_dealt",
 		"modifier": {
-			"name": "Harpy talon damage",
-			"operation": "addition",
-			"value": 4.0
+			"operation": "add_base_early",
+			"amount": 4.0
 		},
 		"condition": {
 			"type": "origins:equipped_item",
@@ -26,16 +25,16 @@
 			}
 		},
 		"target_condition": {
-			"type": "origins:entity_group",
-			"group": "undead",
+			"type": "origins:in_tag",
+			"tag": "minecraft:undead",
 			"inverted": true
 		},
 		"entity_action": {
 			"type": "origins:apply_effect",
 			"effect": {
-				"effect": "monster_origins:bleed",
 				"amplifier": 0,
-				"duration": 200
+				"duration": 200,
+				"id": "monster_origins:bleed"
 			}
 		}
 	},

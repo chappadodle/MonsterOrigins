@@ -25,14 +25,14 @@
 						"type": "origins:apply_effect",
 						"effects": [
 							{
-								"effect": "minecraft:saturation",
 								"amplifier": 0,
-								"duration": 80
+								"duration": 80,
+								"id": "minecraft:saturation"
 							},
 							{
-								"effect": "minecraft:regeneration",
 								"amplifier": 1,
-								"duration": 80
+								"duration": 80,
+								"id": "minecraft:regeneration"
 							}
 						]
 					}
@@ -55,24 +55,24 @@
 						"type": "origins:apply_effect",
 						"effects": [
 							{
-								"effect": "minecraft:slowness",
 								"amplifier": 1,
-								"duration": 80
+								"duration": 80,
+								"id": "minecraft:slowness"
 							},
 							{
-								"effect": "minecraft:blindness",
 								"amplifier": 0,
-								"duration": 80
+								"duration": 80,
+								"id": "minecraft:blindness"
 							},
 							{
-								"effect": "minecraft:weakness",
 								"amplifier": 0,
-								"duration": 80
+								"duration": 80,
+								"id": "minecraft:weakness"
 							},
 							{
-								"effect": "monster_origins:charmed",
 								"amplifier": 0,
-								"duration": 80
+								"duration": 80,
+								"id": "monster_origins:charmed"
 							}
 						]
 					}

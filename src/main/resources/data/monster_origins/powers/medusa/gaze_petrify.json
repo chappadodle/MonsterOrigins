@@ -39,21 +39,21 @@
 				"type": "origins:apply_effect",
 				"effects": [
 					{
-						"effect": "monster_origins:petrify",
 						"amplifier": 0,
-						"duration": 60
+						"duration": 60,
+						"id": "monster_origins:petrify"
 					},
 					{
-						"effect": "monster_origins:immobilized",
 						"amplifier": 0,
-						"duration": 60
+						"duration": 60,
+						"id": "monster_origins:immobilized"
 					},
 					{
-						"effect": "monster_origins:stone_gaze_cooldown",
 						"amplifier": 0,
 						"duration": 160,
 						"show_particles": false,
-						"show_icon": false
+						"show_icon": false,
+						"id": "monster_origins:stone_gaze_cooldown"
 					}
 				]
 			}

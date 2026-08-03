@@ -1,10 +1,10 @@
 {
 	"type": "origins:attribute",
 	"modifier": {
-		"name": "Mermaid land slowness",
 		"attribute": "minecraft:generic.movement_speed",
-		"value": -0.2,
-		"operation": "multiply_base"
+		"operation": "add_multiplied_base",
+		"id": "monster_origins:mermaid_land_slowness",
+		"amount": -0.2
 	},
 	"name": "Landlegs",
 	"description": "0.8x normal walking speed. She belongs in the water, not on land."

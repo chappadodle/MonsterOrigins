@@ -10,9 +10,9 @@
 	"entity_action": {
 		"type": "origins:apply_effect",
 		"effect": {
-			"effect": "minecraft:saturation",
 			"amplifier": 0,
-			"duration": 40
+			"duration": 40,
+			"id": "minecraft:saturation"
 		}
 	},
 	"name": "Hardy Stomach",

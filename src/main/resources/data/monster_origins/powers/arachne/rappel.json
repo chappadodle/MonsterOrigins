@@ -55,8 +55,8 @@
 			]
 		},
 		"modifier": {
-			"value": -1,
-			"operation": "multiply_total"
+			"operation": "multiply_total_additive",
+			"amount": -1
 		},
 		"axes": [
 			"x",
@@ -85,12 +85,12 @@
 		},
 		"modifiers": [
 			{
-				"value": 0.4,
-				"operation": "max_total"
+				"operation": "max_total",
+				"amount": 0.4
 			},
 			{
-				"value": -0.4,
-				"operation": "min_total"
+				"operation": "min_total",
+				"amount": -0.4
 			}
 		],
 		"axes": [
@@ -109,7 +109,11 @@
 			"type": "origins:spawn_particles",
 			"particle": {
 				"type": "minecraft:item",
-				"params": "minecraft:string"
+				"params": {
+					"item": {
+						"id": "minecraft:cobweb"
+					}
+				}
 			},
 			"count": 1,
 			"speed": 0.02,

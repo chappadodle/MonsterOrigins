@@ -1,10 +1,10 @@
 {
 	"type": "origins:attribute",
 	"modifier": {
-		"name": "Medusa stone scales",
 		"attribute": "minecraft:generic.armor",
-		"value": 8.0,
-		"operation": "addition"
+		"operation": "add_value",
+		"id": "monster_origins:medusa_stone_scales",
+		"amount": 8.0
 	},
 	"name": "Stone Scales",
 	"description": "Hardened, scaly skin grants solid natural armor, even with nothing equipped."

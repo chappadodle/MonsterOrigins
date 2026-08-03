@@ -44,19 +44,19 @@
 						"type": "origins:apply_effect",
 						"effects": [
 							{
-								"effect": "monster_origins:petrify",
 								"amplifier": 0,
-								"duration": 100
+								"duration": 100,
+								"id": "monster_origins:petrify"
 							},
 							{
-								"effect": "minecraft:blindness",
 								"amplifier": 0,
-								"duration": 100
+								"duration": 100,
+								"id": "minecraft:blindness"
 							},
 							{
-								"effect": "minecraft:darkness",
 								"amplifier": 0,
-								"duration": 100
+								"duration": 100,
+								"id": "minecraft:darkness"
 							}
 						]
 					}

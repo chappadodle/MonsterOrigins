@@ -1,10 +1,10 @@
 {
 	"type": "origins:attribute",
 	"modifier": {
-		"name": "Arachne fragile body",
 		"attribute": "minecraft:generic.max_health",
-		"value": -8.0,
-		"operation": "addition"
+		"operation": "add_value",
+		"id": "monster_origins:arachne_max_health",
+		"amount": -8.0
 	},
 	"name": "Fragile Body",
 	"description": "You have 6 hearts of health instead of 10. Your frame is light and easily broken."

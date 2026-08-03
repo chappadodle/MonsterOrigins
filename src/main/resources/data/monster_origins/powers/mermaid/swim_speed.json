@@ -1,10 +1,10 @@
 {
 	"type": "origins:attribute",
 	"modifier": {
-		"name": "Mermaid swim speed",
 		"attribute": "additionalentityattributes:water_speed",
-		"value": 8.2625,
-		"operation": "multiply_base"
+		"operation": "add_multiplied_base",
+		"id": "monster_origins:mermaid_swim_speed",
+		"amount": 8.2625
 	},
 	"name": "Swift Current",
 	"description": "Much higher swimming speed."

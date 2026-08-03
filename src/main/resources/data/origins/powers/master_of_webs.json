@@ -16,7 +16,7 @@
 					"block_action": {
 						"type": "origins:if_else",
 						"condition": {
-							"type": "origins:replacable"
+							"type": "origins:replaceable"
 						},
 						"if_action": {
 							"type": "origins:set_block",
@@ -100,8 +100,8 @@
 					}
 				},
 				{
-					"type": "origins:entity_group",
-					"group": "arthropod",
+					"type": "origins:in_tag",
+					"tag": "arthropod",
 					"inverted": true
 				}
 			]
@@ -121,7 +121,7 @@
 				}
 			],
 			"result": {
-				"item": "minecraft:cobweb"
+				"id": "minecraft:cobweb"
 			}
 		}
 	}
