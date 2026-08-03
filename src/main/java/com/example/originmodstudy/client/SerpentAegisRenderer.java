@@ -47,8 +47,8 @@ public class SerpentAegisRenderer implements BuiltinItemRendererRegistry.Dynamic
 		poseStack.scale(1.0F, -1.0F, -1.0F);
 		RenderType renderType = this.shieldModel.renderType(TEXTURE);
 		VertexConsumer vertexConsumer = ItemRenderer.getFoilBufferDirect(bufferSource, renderType, true, stack.hasFoil());
-		this.shieldModel.handle().render(poseStack, vertexConsumer, light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
-		this.shieldModel.plate().render(poseStack, vertexConsumer, light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.shieldModel.handle().render(poseStack, vertexConsumer, light, overlay, -1);
+		this.shieldModel.plate().render(poseStack, vertexConsumer, light, overlay, -1);
 		poseStack.popPose();
 	}
 }

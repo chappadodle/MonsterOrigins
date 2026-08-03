@@ -75,7 +75,7 @@ public abstract class DirectionalThrownItemRenderer<T extends Entity & ItemSuppl
 		poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.rotLerp(partialTick, entity.xRotO, entity.getXRot()) + 90.0F));
 		RenderType renderType = tridentModel.renderType(getTexture());
 		VertexConsumer vertexConsumer = ItemRenderer.getFoilBufferDirect(buffer, renderType, false, false);
-		tridentModel.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		tridentModel.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, -1);
 		poseStack.popPose();
 		super.render(entity, yaw, partialTick, poseStack, buffer, packedLight);
 	}

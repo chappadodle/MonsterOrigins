@@ -52,7 +52,7 @@ public class HarpyJavelinRenderer implements BuiltinItemRendererRegistry.Dynamic
 		poseStack.scale(1.0F, -1.0F, -1.0F);
 		RenderType renderType = this.tridentModel.renderType(TEXTURE);
 		VertexConsumer vertexConsumer = ItemRenderer.getFoilBufferDirect(bufferSource, renderType, false, stack.hasFoil());
-		this.tridentModel.renderToBuffer(poseStack, vertexConsumer, light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.tridentModel.renderToBuffer(poseStack, vertexConsumer, light, overlay, -1);
 		poseStack.popPose();
 	}
 }
