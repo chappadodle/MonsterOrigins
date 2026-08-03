@@ -8,6 +8,12 @@ section instead of an origin's.
 
 ## [2.1.0] - 2026-08-03
 
+### Minecraft 1.21.1
+
+- Released support for Minecraft 1.21.1, on its own branch (`mc1.21.1-port`). All the gameplay
+  changes below are included there too, along with a full technical port of the mixins and data
+  pack to the newer game version. See that branch for its own build, changelog, and requirements.
+
 ### Arachne
 
 - Walking through cobwebs no longer slows you down. The power meant to do this had silently done
