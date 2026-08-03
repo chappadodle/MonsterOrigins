@@ -1,6 +1,6 @@
 package com.example.originmodstudy.util;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentKey;
+import org.ladysnake.cca.api.v3.component.ComponentKey;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;

@@ -74,8 +74,8 @@ dependencies {
 	// Cardinal Components API — compile-time only. Origins already bundles it via jar-in-jar, so
 	// it's provided at runtime by Origins' own jar; we only need its classes (ComponentKey, etc.)
 	// visible to javac for the mixin's OriginComponent lookup.
-	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}"
-	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}"
+	modCompileOnly "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}"
+	modCompileOnly "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}"
 
 	// Calio — compile-time only, same reasoning as Cardinal Components above.
 	modCompileOnly "io.github.apace100:calio:${project.calio_version}"
