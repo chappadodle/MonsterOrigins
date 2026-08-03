@@ -1012,6 +1012,27 @@ than expected once real Origins source was checked — see the gotchas below for
     `MobEffect#isDurationEffectTick` being replaced by `MobEffect#shouldApplyEffectTickThisTick`
     (a slightly different check worth re-reading rather than assuming a 1:1 rename — confirmed via
     `javap`/CFR before `BleedMobEffect` was updated to override the new method).
+  - **A mixin whose `@Shadow`ed field or method stops existing on the target class is invisible to
+    every compile-error-fixing pass — `./gradlew build` cannot catch it, only a real launch can.**
+    This is exactly what happened here: `ThrownTrident`'s own private `tridentItem` field (used by
+    `ThrownTridentMixin`'s `@Shadow` field and, separately, by `ThrownTridentAccessor`'s `@Accessor`
+    pair) was removed entirely in 1.21.1 — the itemstack it used to hold moved up to
+    `AbstractArrow`'s own private `pickupItemStack` field instead. The whole 8-task compile-fix plan
+    built clean (`BUILD SUCCESSFUL`) with this mixin completely broken, because Mixin annotations
+    aren't validated by `javac` at all — the actual failure only surfaced as a real
+    `InvalidMixinException: @Shadow field tridentItem was not located in the target class` at game
+    launch, crashing before the main menu ever loads. **Fixed two ways depending on what the mixin
+    actually needed:** `ThrownJavelin`/`ThrownMermaidTrident`/`ThrownPetrifyingTrident` (which used
+    to `@Accessor`-set the field directly) now just call `AbstractArrow`'s own already-`protected`
+    `setPickupItemStack(ItemStack)` from their own constructors — no mixin/accessor needed at all,
+    since they're real subclasses; `ThrownTridentMixin` (which only ever *read* the field to check
+    `.getItem() instanceof HarpyJavelinItem`/etc.) replaced its `@Shadow private ItemStack
+    tridentItem` field with a `@Shadow public abstract ItemStack getWeaponItem();` method stub —
+    `ThrownTrident`'s own real `getWeaponItem()` just returns `AbstractArrow#getPickupItemStackOrigin()`
+    (confirmed via decompile), so it's the same value the old field held. **Lesson for any future
+    version bump on this project:** grep every `@Shadow`/`@Accessor` target across all mixins and
+    re-verify each one against the new mapped jar via `javap` *in addition to* fixing compile
+    errors — a clean build is not proof the mixins still work, only that the non-mixin code does.
 
 ## Build / verify
 
