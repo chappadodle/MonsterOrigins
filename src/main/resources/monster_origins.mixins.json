@@ -23,7 +23,6 @@
 		"ImmobilizedRotationLockMixin"
 	],
 	"client": [
-		"MermaidTridentReachMixin",
 		"TridentStyleFlatIconMixin"
 	],
 	"injectors": {

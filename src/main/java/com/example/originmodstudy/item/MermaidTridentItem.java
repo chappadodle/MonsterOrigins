@@ -11,14 +11,18 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -27,16 +31,16 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 /**
- * The Living Coral Trident (Task 13): a late-game Mermaid weapon, plain vanilla trident stats
- * (real trident-level 8.0 damage / -2.9 speed, plus the vanilla tool-tier data) — unlike
- * {@code HarpyJavelinItem}, this class itself declares no custom {@code ItemAttributeModifiers}
- * at all, since the source doc never asked for different damage/speed here. In 1.21.1 those
- * stats no longer come from any constructor-time default (there's no
- * {@code getDefaultAttributeModifiers} to inherit or override any more); they have to be built
- * explicitly via {@code TridentItem.createAttributes()}/{@code createToolProperties()} and passed
- * into {@code Item.Properties} at registration time, the same mechanism real vanilla
- * {@code Items.TRIDENT} itself uses — see {@code ModItems.MERMAID_TRIDENT}'s registration, which
- * is where this item actually gets real trident stats from, not this class. 3500 durability.
+ * The Living Coral Trident (Task 13): a late-game Mermaid weapon, plain vanilla trident damage/
+ * speed (real trident-level 8.0 damage / -2.9 speed) plus its own +1 block/entity interaction
+ * range bonus, via this class's own {@link #createAttributes()} — unlike a plain
+ * {@code TridentItem} subclass with no bespoke stats at all, this one needs its own attributes
+ * builder specifically for the reach bonus (see below). In 1.21.1 these stats no longer come from
+ * any constructor-time default (there's no {@code getDefaultAttributeModifiers} to inherit or
+ * override any more); they have to be built explicitly and passed into {@code Item.Properties} at
+ * registration time, the same mechanism real vanilla {@code Items.TRIDENT} itself uses — see
+ * {@code ModItems.MERMAID_TRIDENT}'s registration, which calls {@link #createAttributes()}
+ * (not {@code TridentItem.createAttributes()} directly) for exactly this reason. 3500 durability.
  * Anyone can craft/throw it,
  * but its three on-hit traits below only trigger for the Mermaid origin, same hit-time gating
  * every other origin weapon in this mod uses (see {@link OriginUtil}):
@@ -60,16 +64,47 @@ import java.util.List;
  * item model and leaves a bubble trail through water (see that class) instead of vanilla's plain
  * {@code ThrownTrident}.
  *
- * <p>The requested "+1 block reach" lives entirely in {@code MermaidTridentReachMixin}, a
- * client-only mixin on {@code MultiPlayerGameMode.getPickRange()} — see that class doc for why a
- * mixin was used instead of the third-party Reach Entity Attributes dependency Origins' own
- * {@code extra_reach.json} power relies on.
+ * <p>The requested "+1 block/entity reach" used to live in a client-only mixin on
+ * {@code MultiPlayerGameMode.getPickRange()} (needed under 1.20.1, which had no reach attribute
+ * at all — see the removed {@code MermaidTridentReachMixin}'s own now-obsolete reasoning, kept
+ * only in git history). Minecraft 1.21 added real {@code Attributes.BLOCK_INTERACTION_RANGE}/
+ * {@code ENTITY_INTERACTION_RANGE} attributes (confirmed via {@code javap} on the real
+ * {@code Attributes} class — this project's own 1.20.1-era mixin doc had already predicted this
+ * exact addition), so the mixin's whole client-render-hook approach is now unnecessary: the reach
+ * bonus is just two more {@code ItemAttributeModifiers} entries, applied automatically by
+ * vanilla's own generic per-slot attribute system the same way the damage/speed entries already
+ * are — no mixin, no client-only code, and (unlike the old mixin) it now also works for other
+ * players seeing this weapon's effect, not just the local client's own raycast.
  */
 public class MermaidTridentItem extends TridentItem {
 	private static final ResourceLocation MERMAID_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid");
+	private static final ResourceLocation REACH_BLOCK_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid_trident_block_reach");
+	private static final ResourceLocation REACH_ENTITY_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid_trident_entity_reach");
+	private static final double REACH_BONUS = 1.0;
 
 	public MermaidTridentItem(Properties properties) {
 		super(properties);
+	}
+
+	/** Real trident damage/speed (identical to {@code TridentItem.createAttributes()}, confirmed
+	 * via {@code javap}: +8.0 {@code ATTACK_DAMAGE}, -2.9 {@code ATTACK_SPEED}, both
+	 * {@code ADD_VALUE}/{@code MAINHAND}) plus this weapon's own +1 block/entity interaction range,
+	 * replacing the old client-only reach mixin. */
+	public static ItemAttributeModifiers createAttributes() {
+		return ItemAttributeModifiers.builder()
+				.add(Attributes.ATTACK_DAMAGE,
+						new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 8.0, AttributeModifier.Operation.ADD_VALUE),
+						EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.ATTACK_SPEED,
+						new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.9, AttributeModifier.Operation.ADD_VALUE),
+						EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.BLOCK_INTERACTION_RANGE,
+						new AttributeModifier(REACH_BLOCK_ID, REACH_BONUS, AttributeModifier.Operation.ADD_VALUE),
+						EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.ENTITY_INTERACTION_RANGE,
+						new AttributeModifier(REACH_ENTITY_ID, REACH_BONUS, AttributeModifier.Operation.ADD_VALUE),
+						EquipmentSlotGroup.MAINHAND)
+				.build();
 	}
 
 	@Override

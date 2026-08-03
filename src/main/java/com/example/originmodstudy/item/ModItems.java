@@ -113,7 +113,7 @@ public class ModItems {
 	// on-hit traits (Symbiosis, Barbed Tip, Bleeding Current, +1 reach).
 	public static final Item MERMAID_TRIDENT = register("mermaid_trident",
 			new MermaidTridentItem(new Item.Properties().durability(3500)
-					.attributes(TridentItem.createAttributes())
+					.attributes(MermaidTridentItem.createAttributes())
 					.component(DataComponents.TOOL, TridentItem.createToolProperties())));
 
 	// Medusa sheds these every 20 minutes (Task 19, scale_shedding.json), same mechanic/interval as
