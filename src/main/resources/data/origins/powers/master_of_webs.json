@@ -28,9 +28,9 @@
 					"type": "origins:apply_effect",
 					"effects": [
 						{
-							"effect": "monster_origins:immobilized",
 							"amplifier": 0,
-							"duration": 60
+							"duration": 60,
+							"id": "monster_origins:immobilized"
 						}
 					]
 				}
@@ -42,7 +42,12 @@
 		}
 	},
 	"no_slowdown": {
-		"type": "origins:simple"
+		"type": "origins:phasing",
+		"block_condition": {
+			"type": "origins:in_tag",
+			"tag": "origins:cobwebs"
+		},
+		"render_type": "none"
 	},
 	"climbing": {
 		"type": "origins:climbing",
