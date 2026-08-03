@@ -29,7 +29,7 @@
 					"effects": [
 						{
 							"amplifier": 0,
-							"duration": 20,
+							"duration": 40,
 							"id": "monster_origins:immobilized"
 						}
 					]
