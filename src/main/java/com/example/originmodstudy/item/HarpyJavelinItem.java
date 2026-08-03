@@ -3,8 +3,6 @@ package com.example.originmodstudy.item;
 import com.example.originmodstudy.effect.ModEffects;
 import com.example.originmodstudy.entity.ThrownJavelin;
 import com.example.originmodstudy.util.OriginUtil;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,17 +12,18 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -38,9 +37,15 @@ import java.util.List;
  * hit-time-gating pattern as FangItem/PetrifyingTridentItem, see OriginUtil for why.
  *
  * <p>Lighter/faster than the vanilla trident stats {@link TridentItem} would otherwise give it
- * (8.0 damage / -2.9 speed) — {@code getDefaultAttributeModifiers} is overridden with its own
- * Multimap since TridentItem builds its modifiers in its constructor from hardcoded constants,
- * not a field subclasses can adjust.
+ * (8.0 damage / -2.9 speed) — its own {@link ItemAttributeModifiers} data component is built via
+ * {@code createHarpyAttributes()} and passed into {@code Properties#attributes(...)} before
+ * construction (1.21.1's per-slot {@code getDefaultAttributeModifiers(EquipmentSlot)} override
+ * point no longer exists), matching real vanilla {@code TridentItem.createAttributes()}'s own
+ * pattern rather than a field subclasses adjust after the fact. Named {@code createHarpyAttributes}
+ * rather than reusing {@code createAttributes} verbatim since {@code TridentItem} itself already
+ * declares a same-signature {@code public static createAttributes()} — a subclass can't legally
+ * redeclare that name with weaker (package-private/private) access, confirmed by a real javac
+ * error when first tried.
  *
  * <p>The airborne-throw bonus and thrown-hit Bleed live in {@code ThrownTridentMixin}, not here:
  * vanilla's {@code ThrownTrident.onHitEntity} deals its own damage directly (confirmed by
@@ -64,24 +69,29 @@ import java.util.List;
  */
 public class HarpyJavelinItem extends TridentItem {
 	private static final ResourceLocation HARPY_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "harpy");
-	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-	public HarpyJavelinItem(Properties properties) {
-		super(properties);
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
-				BASE_ATTACK_DAMAGE_UUID, "Tool modifier", 6.0, AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
-				BASE_ATTACK_SPEED_UUID, "Tool modifier", -2.4, AttributeModifier.Operation.ADDITION));
-		this.defaultModifiers = builder.build();
+	/**
+	 * Built once at construction time via {@code Properties#attributes(...)}, since 1.21.1's
+	 * {@code Item#getDefaultAttributeModifiers(EquipmentSlot)} per-slot override no longer exists
+	 * (confirmed via javap — the real current API is a single no-arg
+	 * {@code Item#getDefaultAttributeModifiers()} returning this immutable data component). Mirrors
+	 * real vanilla {@code TridentItem.createAttributes()}'s own static-factory pattern (this one is
+	 * named {@code createHarpyAttributes} to avoid clashing with that existing same-signature
+	 * public static method inherited from {@code TridentItem} — see class doc above).
+	 */
+	private static ItemAttributeModifiers createHarpyAttributes() {
+		return ItemAttributeModifiers.builder()
+				.add(Attributes.ATTACK_DAMAGE,
+						new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 6.0, AttributeModifier.Operation.ADD_VALUE),
+						EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.ATTACK_SPEED,
+						new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.4, AttributeModifier.Operation.ADD_VALUE),
+						EquipmentSlotGroup.MAINHAND)
+				.build();
 	}
 
-	@Override
-	public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-		if (slot == EquipmentSlot.MAINHAND) {
-			return this.defaultModifiers;
-		}
-		return super.getDefaultAttributeModifiers(slot);
+	public HarpyJavelinItem(Properties properties) {
+		super(properties.attributes(createHarpyAttributes()));
 	}
 
 	@Override
