@@ -15,11 +15,11 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 /**
- * The Living Coral Trident's own thrown entity — same reasoning and same
- * {@code ThrownTridentAccessor}-based construction as {@code ThrownJavelin} (see that class's own
- * doc for the full decompiled explanation of why {@code ThrownTrident}'s itemstack-carrying
- * constructor can't be reused, and why the private {@code tridentItem} field needs an accessor
- * mixin rather than a real synced-data field). Extending {@link ThrownTrident} directly (instead
+ * The Living Coral Trident's own thrown entity — same reasoning and same construction pattern as
+ * {@code ThrownJavelin} (see that class's own doc for the full decompiled explanation of why
+ * {@code ThrownTrident}'s itemstack-carrying constructor can't be reused, and why the carried item
+ * is set via {@code AbstractArrow}'s own protected {@code setPickupItemStack(ItemStack)} rather
+ * than a real synced-data field). Extending {@link ThrownTrident} directly (instead
  * of a lighter base like {@code ThrownSilkNet} does) keeps riptide/loyalty/pickup handling and
  * on-hit damage logic for free, including {@code ThrownTridentMixin}'s Mermaid-gated Barbed Tip/
  * Bleeding Current/Symbiosis additions, inherited automatically since this class never overrides
@@ -41,15 +41,15 @@ public class ThrownMermaidTrident extends ThrownTrident implements ItemSupplier 
 		this(ModEntities.THROWN_MERMAID_TRIDENT, level);
 		this.setPos(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
 		this.setOwner(owner);
+		this.setPickupItemStack(itemStack.copy());
 		ThrownTridentAccessor accessor = (ThrownTridentAccessor) this;
-		accessor.arachne$setTridentItem(itemStack.copy());
 		this.entityData.set(accessor.arachne$getIdLoyaltyKey(), (byte) EnchantmentHelper.getItemEnchantmentLevel(
 				level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOYALTY), itemStack));
 		this.entityData.set(accessor.arachne$getIdFoilKey(), itemStack.hasFoil());
 	}
 
 	/** In-flight/stuck render item only, same fix as {@code ThrownJavelin#getItem()} — the real
-	 * {@code tridentItem} field (server-side hit/pickup logic) is untouched. */
+	 * {@code pickupItemStack} field (server-side hit/pickup logic) is untouched. */
 	@Override
 	public ItemStack getItem() {
 		return new ItemStack(ModItems.MERMAID_TRIDENT);

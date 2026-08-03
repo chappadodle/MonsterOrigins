@@ -57,8 +57,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Mixin(ThrownTrident.class)
 public abstract class ThrownTridentMixin {
+	/**
+	 * 1.21.1 update: {@code ThrownTrident}'s own private {@code tridentItem} field no longer
+	 * exists (confirmed via {@code javap}) — the carried item moved up to {@code AbstractArrow}'s
+	 * private {@code pickupItemStack}, exposed through the real public
+	 * {@code ThrownTrident#getWeaponItem()} method (which itself just returns
+	 * {@code AbstractArrow#getPickupItemStackOrigin()}). A {@code @Shadow} method stub for that
+	 * real public method replaces the old {@code @Shadow} field — same "was not located in the
+	 * target class" launch-time crash risk this project's CLAUDE.md already documents for any
+	 * mixin whose shadowed member stops existing.
+	 */
 	@Shadow
-	private ItemStack tridentItem;
+	public abstract ItemStack getWeaponItem();
 
 	/** UUID-keyed last-trigger game time (ticks), gating Storm Javelin's lightning + AOE damage
 	 * behind a per-player cooldown, separate from the Bleed/airborne-bonus logic above. A plain
@@ -88,7 +98,7 @@ public abstract class ThrownTridentMixin {
 		index = 1
 	)
 	private float harpyJavelin$airborneBonusDamage(float amount) {
-		if (!(this.tridentItem.getItem() instanceof HarpyJavelinItem)) {
+		if (!(this.getWeaponItem().getItem() instanceof HarpyJavelinItem)) {
 			return amount;
 		}
 		Entity owner = harpyJavelin$owner();
@@ -100,7 +110,7 @@ public abstract class ThrownTridentMixin {
 
 	@Inject(method = "onHitEntity", at = @At("TAIL"))
 	private void harpyJavelin$applyBleedOnThrow(EntityHitResult entityHitResult, CallbackInfo ci) {
-		if (!(this.tridentItem.getItem() instanceof HarpyJavelinItem)) {
+		if (!(this.getWeaponItem().getItem() instanceof HarpyJavelinItem)) {
 			return;
 		}
 		if (!(harpyJavelin$owner() instanceof LivingEntity livingOwner)) {
@@ -148,7 +158,7 @@ public abstract class ThrownTridentMixin {
 		index = 1
 	)
 	private float mermaidTrident$barbedTipBonusDamage(float amount) {
-		if (!(this.tridentItem.getItem() instanceof MermaidTridentItem)) {
+		if (!(this.getWeaponItem().getItem() instanceof MermaidTridentItem)) {
 			return amount;
 		}
 		if (!(harpyJavelin$owner() instanceof LivingEntity livingOwner) || !MermaidTridentItem.isMermaidOrigin(livingOwner)) {
@@ -169,7 +179,7 @@ public abstract class ThrownTridentMixin {
 	 */
 	@Inject(method = "onHitEntity", at = @At("TAIL"))
 	private void mermaidTrident$applyOnHitTraits(EntityHitResult entityHitResult, CallbackInfo ci) {
-		if (!(this.tridentItem.getItem() instanceof MermaidTridentItem)) {
+		if (!(this.getWeaponItem().getItem() instanceof MermaidTridentItem)) {
 			return;
 		}
 		if (!(harpyJavelin$owner() instanceof LivingEntity livingOwner) || !MermaidTridentItem.isMermaidOrigin(livingOwner)) {
@@ -190,7 +200,7 @@ public abstract class ThrownTridentMixin {
 	 */
 	@Inject(method = "onHitEntity", at = @At("TAIL"))
 	private void medusaTrident$applyPetrifyOnThrow(EntityHitResult entityHitResult, CallbackInfo ci) {
-		if (!(this.tridentItem.getItem() instanceof PetrifyingTridentItem)) {
+		if (!(this.getWeaponItem().getItem() instanceof PetrifyingTridentItem)) {
 			return;
 		}
 		if (!(harpyJavelin$owner() instanceof LivingEntity livingOwner) || !PetrifyingTridentItem.isMedusaOrigin(livingOwner)) {
@@ -212,7 +222,7 @@ public abstract class ThrownTridentMixin {
 	 */
 	@Inject(method = "onHitEntity", at = @At("TAIL"))
 	private void harpyJavelin$stormJavelinLightning(EntityHitResult entityHitResult, CallbackInfo ci) {
-		if (!(this.tridentItem.getItem() instanceof HarpyJavelinItem)) {
+		if (!(this.getWeaponItem().getItem() instanceof HarpyJavelinItem)) {
 			return;
 		}
 		if (!(harpyJavelin$owner() instanceof LivingEntity livingOwner)) {

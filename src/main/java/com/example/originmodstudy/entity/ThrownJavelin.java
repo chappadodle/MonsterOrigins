@@ -25,23 +25,28 @@ import net.minecraft.world.level.Level;
  * .TRIDENT}, so it can't be reused here. This instead calls the (EntityType, Level) constructor
  * and replicates the position/owner setup {@code AbstractArrow}'s own (EntityType, LivingEntity,
  * Level) constructor does (read directly from decompiled source, not guessed), then sets the
- * private {@code tridentItem} field via {@link ThrownTridentAccessor} since nothing else can
- * reach it from outside {@code ThrownTrident} itself. Loyalty/foil enchantment display is not
+ * carried item via {@code AbstractArrow}'s own protected {@code setPickupItemStack(ItemStack)} —
+ * the real field this ends up in ({@code pickupItemStack}, confirmed via decompile) moved up from
+ * {@code ThrownTrident}'s own now-removed private {@code tridentItem} field in the 1.21.1 port; no
+ * mixin/accessor is needed for it anymore since the setter is already protected and this class is
+ * a real subclass. {@link ThrownTridentAccessor} is still needed, just narrower now — only for the
+ * {@code ID_LOYALTY}/{@code ID_FOIL} synced-data keys below. Loyalty/foil enchantment display is not
  * replicated (those fields stay at their {@code defineSynchedData} defaults) — an accepted, minor
  * simplification, not something a thrown javelin is expected to need.
  *
- * <p><b>Stuck-in-ground render bug (fixed):</b> {@code ThrownTrident}'s private {@code
- * tridentItem} field is never added to {@code SynchedEntityData} — confirmed by decompiling
- * {@code ThrownTrident} directly: {@code defineSynchedData()} only defines the loyalty/foil
- * accessors, and {@code tridentItem} is otherwise only set in the throw-time constructor (never
- * called for a client-reconstructed entity) and touched by NBT save/load only, which governs
- * world persistence, not the initial spawn-packet sync the client actually uses to build its own
- * copy of this entity. The client-side entity therefore keeps {@code tridentItem}'s hardcoded
+ * <p><b>Stuck-in-ground render bug (fixed):</b> {@code AbstractArrow}'s private {@code
+ * pickupItemStack} field (formerly {@code ThrownTrident}'s own {@code tridentItem} pre-1.21.1) is
+ * never added to {@code SynchedEntityData} — confirmed by decompiling directly:
+ * {@code defineSynchedData()} only defines the loyalty/foil accessors, and {@code
+ * pickupItemStack} is otherwise only set in the throw-time constructor (never called for a
+ * client-reconstructed entity) and touched by NBT save/load only, which governs world
+ * persistence, not the initial spawn-packet sync the client actually uses to build its own copy
+ * of this entity. The client-side entity therefore keeps {@code pickupItemStack}'s hardcoded
  * default ({@code new ItemStack(Items.TRIDENT)}) for its entire client-side lifetime, so {@code
  * getItem()} — inherited unmodified from {@code ThrownTrident} before this fix — rendered a plain
  * vanilla trident, most visibly once the javelin stuck in the ground and stopped moving. {@code
  * getItem()} is overridden below to unconditionally return a fresh javelin stack for rendering
- * purposes only; the real {@code tridentItem} field (server-side hit/pickup logic) is left
+ * purposes only; the real {@code pickupItemStack} field (server-side hit/pickup logic) is left
  * completely untouched, same pattern as the Silk Net Shooter's own in-flight render fix (see
  * {@code entity/ThrownSilkNet.java}).
  *
@@ -61,8 +66,8 @@ public class ThrownJavelin extends ThrownTrident implements ItemSupplier {
 		this(ModEntities.THROWN_HARPY_JAVELIN, level);
 		this.setPos(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
 		this.setOwner(owner);
+		this.setPickupItemStack(itemStack.copy());
 		ThrownTridentAccessor accessor = (ThrownTridentAccessor) this;
-		accessor.arachne$setTridentItem(itemStack.copy());
 		this.entityData.set(accessor.arachne$getIdLoyaltyKey(), (byte) EnchantmentHelper.getItemEnchantmentLevel(
 				level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOYALTY), itemStack));
 		this.entityData.set(accessor.arachne$getIdFoilKey(), itemStack.hasFoil());

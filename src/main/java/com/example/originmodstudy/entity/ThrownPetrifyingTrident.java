@@ -31,8 +31,8 @@ public class ThrownPetrifyingTrident extends ThrownTrident implements ItemSuppli
 		this(ModEntities.THROWN_PETRIFYING_TRIDENT, level);
 		this.setPos(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
 		this.setOwner(owner);
+		this.setPickupItemStack(itemStack.copy());
 		ThrownTridentAccessor accessor = (ThrownTridentAccessor) this;
-		accessor.arachne$setTridentItem(itemStack.copy());
 		this.entityData.set(accessor.arachne$getIdLoyaltyKey(), (byte) EnchantmentHelper.getItemEnchantmentLevel(
 				level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOYALTY), itemStack));
 		this.entityData.set(accessor.arachne$getIdFoilKey(), itemStack.hasFoil());
