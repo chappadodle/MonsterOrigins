@@ -3,6 +3,7 @@ package com.example.originmodstudy.item;
 import com.example.originmodstudy.effect.ModEffects;
 import com.example.originmodstudy.entity.ThrownPetrifyingTrident;
 import com.example.originmodstudy.util.OriginUtil;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -59,7 +61,8 @@ public class PetrifyingTridentItem extends TridentItem {
 		if (chargeTicks < 10) {
 			return;
 		}
-		int riptide = EnchantmentHelper.getRiptide(stack);
+		int riptide = EnchantmentHelper.getItemEnchantmentLevel(
+				level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.RIPTIDE), stack);
 		if (riptide > 0 && !player.isInWaterOrRain()) {
 			return;
 		}
@@ -72,7 +75,7 @@ public class PetrifyingTridentItem extends TridentItem {
 					thrownTrident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 				}
 				level.addFreshEntity(thrownTrident);
-				level.playSound(null, thrownTrident, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+				level.playSound(null, thrownTrident, SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
 				if (!player.getAbilities().instabuild) {
 					player.getInventory().removeItem(stack);
 				}
@@ -96,7 +99,7 @@ public class PetrifyingTridentItem extends TridentItem {
 				player.move(MoverType.SELF, new Vec3(0.0, 1.1999999284744263, 0.0));
 			}
 			var soundEvent = riptide >= 3 ? SoundEvents.TRIDENT_RIPTIDE_3 : (riptide == 2 ? SoundEvents.TRIDENT_RIPTIDE_2 : SoundEvents.TRIDENT_RIPTIDE_1);
-			level.playSound(null, player, soundEvent, SoundSource.PLAYERS, 1.0F, 1.0F);
+			level.playSound(null, player, soundEvent.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 	}
 

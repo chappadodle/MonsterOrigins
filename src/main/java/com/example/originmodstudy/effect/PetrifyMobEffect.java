@@ -1,5 +1,6 @@
 package com.example.originmodstudy.effect;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -23,18 +24,26 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
  * sources jar, same gap this project's other gotchas about {@code TridentItem}/{@code
  * ThrownTrident} hit, filled the same way): e.g. {@code MobEffects.MOVEMENT_SLOWDOWN} is built as
  * {@code new MobEffect(HARMFUL, color).addAttributeModifier(Attributes.MOVEMENT_SPEED,
- * "<uuid>", -0.15, MULTIPLY_TOTAL)}. {@code MULTIPLY_TOTAL} applies its value as the signed
+ * <id>, ADD_MULTIPLIED_TOTAL)}. {@code ADD_MULTIPLIED_TOTAL} applies its value as the signed
  * fractional change on the already-fully-computed attribute (final = base * (1 + value)) — not
- * the "added fraction before a final +1" behavior {@code MULTIPLY_BASE} has (see this project's
- * own gotcha about that operation, hit while planning Mermaid's swim speed). A value of -0.9/-0.8
- * here is therefore a real, literal -90%/-80% reduction, strong enough to read as "turned to
- * stone" rather than a reskinned Slowness III/Mining Fatigue III.
+ * the "added fraction before a final +1" behavior {@code ADD_MULTIPLIED_BASE} has (see this
+ * project's own gotcha about that operation, hit while planning Mermaid's swim speed — written
+ * under this same operation's pre-1.21.1 name, {@code MULTIPLY_BASE}). A value of -0.9/-0.8 here is
+ * therefore a real, literal -90%/-80% reduction, strong enough to read as "turned to stone" rather
+ * than a reskinned Slowness III/Mining Fatigue III.
  *
- * <p>The two UUID strings are freshly generated (not reused from any vanilla or other mod
- * modifier) — {@code addAttributeModifier} keys its internal map by {@link
- * net.minecraft.world.entity.ai.attributes.Attribute}, but a real, unique UUID per modifier is
- * still the documented/expected shape for this API (every vanilla example does the same), so one
- * was minted per attribute rather than reused.
+ * <p><b>1.21.1 port:</b> {@code addAttributeModifier}'s identity key changed from a {@code String}
+ * UUID to a real {@link net.minecraft.resources.ResourceLocation}, and {@code
+ * AttributeModifier.Operation}'s own constants were renamed ({@code ADDITION}→{@code ADD_VALUE},
+ * {@code MULTIPLY_BASE}→{@code ADD_MULTIPLIED_BASE}, {@code MULTIPLY_TOTAL}→
+ * {@code ADD_MULTIPLIED_TOTAL} — confirmed via {@code javap} on
+ * {@code MobEffect.class} — same {@code Holder<T>}/{@code ResourceLocation}-identity migration hit
+ * throughout the rest of this port, see CLAUDE.md/the task-4 fixing doc). The two modifier ids
+ * below are freshly minted {@code monster_origins} namespace ids (not reused from any vanilla or
+ * other mod modifier) — {@code addAttributeModifier} keys its internal map by {@link
+ * net.minecraft.world.entity.ai.attributes.Attribute}, but a real, unique id per modifier is still
+ * the documented/expected shape for this API (every vanilla example does the same), so one was
+ * minted per attribute rather than reused.
  *
  * <p><b>Playtest fix (2026-08-02):</b> movement speed changed from -90% to a true -100% — the
  * report asked for petrified targets to be "completely locked in place," and -90% still let a
@@ -47,14 +56,16 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
  * version to centralize that from, confirmed via {@code javap} before assuming one existed.)
  */
 public class PetrifyMobEffect extends MobEffect {
-	private static final String MOVEMENT_SPEED_MODIFIER_UUID = "7ce5f6da-6cab-4e19-a6c4-1f471e04bb8b";
-	private static final String ATTACK_SPEED_MODIFIER_UUID = "3698061e-4048-40fc-87a5-cb2ca0c05f0a";
+	private static final ResourceLocation MOVEMENT_SPEED_MODIFIER_ID =
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "petrify_movement_speed");
+	private static final ResourceLocation ATTACK_SPEED_MODIFIER_ID =
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "petrify_attack_speed");
 
 	public PetrifyMobEffect(MobEffectCategory category, int color) {
 		super(category, color);
-		this.addAttributeModifier(Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED_MODIFIER_UUID,
-				-1.0, AttributeModifier.Operation.MULTIPLY_TOTAL);
-		this.addAttributeModifier(Attributes.ATTACK_SPEED, ATTACK_SPEED_MODIFIER_UUID,
-				-0.8, AttributeModifier.Operation.MULTIPLY_TOTAL);
+		this.addAttributeModifier(Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED_MODIFIER_ID,
+				-1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+		this.addAttributeModifier(Attributes.ATTACK_SPEED, ATTACK_SPEED_MODIFIER_ID,
+				-0.8, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 	}
 }

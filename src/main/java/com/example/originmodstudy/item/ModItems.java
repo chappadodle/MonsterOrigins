@@ -27,8 +27,7 @@ public class ModItems {
 			new Item(new Item.Properties().food(
 					new FoodProperties.Builder()
 							.nutrition(4)
-							.saturationMod(1.2F)
-							.meat()
+							.saturationModifier(1.2F)
 							.effect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1), 1.0F)
 							.effect(new MobEffectInstance(MobEffects.ABSORPTION, 2400, 0), 1.0F)
 							.build())));

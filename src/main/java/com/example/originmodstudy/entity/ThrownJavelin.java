@@ -6,8 +6,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 /**
@@ -61,7 +63,8 @@ public class ThrownJavelin extends ThrownTrident implements ItemSupplier {
 		this.setOwner(owner);
 		ThrownTridentAccessor accessor = (ThrownTridentAccessor) this;
 		accessor.arachne$setTridentItem(itemStack.copy());
-		this.entityData.set(accessor.arachne$getIdLoyaltyKey(), (byte) EnchantmentHelper.getLoyalty(itemStack));
+		this.entityData.set(accessor.arachne$getIdLoyaltyKey(), (byte) EnchantmentHelper.getItemEnchantmentLevel(
+				level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.LOYALTY), itemStack));
 		this.entityData.set(accessor.arachne$getIdFoilKey(), itemStack.hasFoil());
 	}
 

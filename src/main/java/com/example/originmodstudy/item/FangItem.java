@@ -5,10 +5,10 @@ import com.example.originmodstudy.util.ArachnePoisonLock;
 import com.example.originmodstudy.util.OriginUtil;
 import com.example.originmodstudy.util.TieredHitTracker;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
@@ -101,7 +101,7 @@ public class FangItem extends SwordItem {
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		boolean result = super.hurtEnemy(stack, target, attacker);
 		if (OriginUtil.hasOrigin(attacker, ARACHNE_ORIGIN_ID)) {
-			boolean targetIsUndead = target.getMobType() == MobType.UNDEAD;
+			boolean targetIsUndead = target.getType().is(EntityTypeTags.UNDEAD);
 
 			// Always advance the shared sequence, even for a hit that ends up not applying Poison
 			// below (blocked by undead immunity) — otherwise that hit wouldn't count and a real

@@ -5,16 +5,17 @@ import com.example.originmodstudy.entity.ThrownJavelin;
 import com.example.originmodstudy.util.OriginUtil;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -98,7 +100,8 @@ public class HarpyJavelinItem extends TridentItem {
 		if (chargeTicks < 10) {
 			return;
 		}
-		int riptide = EnchantmentHelper.getRiptide(stack);
+		int riptide = EnchantmentHelper.getItemEnchantmentLevel(
+				level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.RIPTIDE), stack);
 		if (riptide > 0 && !player.isInWaterOrRain()) {
 			return;
 		}
@@ -111,7 +114,7 @@ public class HarpyJavelinItem extends TridentItem {
 					thrownJavelin.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 				}
 				level.addFreshEntity(thrownJavelin);
-				level.playSound(null, thrownJavelin, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+				level.playSound(null, thrownJavelin, SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
 				if (!player.getAbilities().instabuild) {
 					player.getInventory().removeItem(stack);
 				}
@@ -135,13 +138,13 @@ public class HarpyJavelinItem extends TridentItem {
 				player.move(MoverType.SELF, new Vec3(0.0, 1.1999999284744263, 0.0));
 			}
 			var soundEvent = riptide >= 3 ? SoundEvents.TRIDENT_RIPTIDE_3 : (riptide == 2 ? SoundEvents.TRIDENT_RIPTIDE_2 : SoundEvents.TRIDENT_RIPTIDE_1);
-			level.playSound(null, player, soundEvent, SoundSource.PLAYERS, 1.0F, 1.0F);
+			level.playSound(null, player, soundEvent.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
 		}
 	}
 
 	/** Shared with ThrownTridentMixin so the thrown-hit path applies the exact same rule. */
 	public static void applyBleed(LivingEntity target, LivingEntity attacker) {
-		if (target.getMobType() != MobType.UNDEAD && OriginUtil.hasOrigin(attacker, HARPY_ORIGIN_ID)) {
+		if (!target.getType().is(EntityTypeTags.UNDEAD) && OriginUtil.hasOrigin(attacker, HARPY_ORIGIN_ID)) {
 			target.addEffect(new MobEffectInstance(ModEffects.BLEED, 200, 0));
 		}
 	}
