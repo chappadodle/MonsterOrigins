@@ -28,8 +28,16 @@ import java.util.List;
 
 /**
  * The Living Coral Trident (Task 13): a late-game Mermaid weapon, plain vanilla trident stats
- * (no {@code getDefaultAttributeModifiers} override, unlike {@code HarpyJavelinItem} — the source
- * doc never asked for different damage/speed here), 3500 durability. Anyone can craft/throw it,
+ * (real trident-level 8.0 damage / -2.9 speed, plus the vanilla tool-tier data) — unlike
+ * {@code HarpyJavelinItem}, this class itself declares no custom {@code ItemAttributeModifiers}
+ * at all, since the source doc never asked for different damage/speed here. In 1.21.1 those
+ * stats no longer come from any constructor-time default (there's no
+ * {@code getDefaultAttributeModifiers} to inherit or override any more); they have to be built
+ * explicitly via {@code TridentItem.createAttributes()}/{@code createToolProperties()} and passed
+ * into {@code Item.Properties} at registration time, the same mechanism real vanilla
+ * {@code Items.TRIDENT} itself uses — see {@code ModItems.MERMAID_TRIDENT}'s registration, which
+ * is where this item actually gets real trident stats from, not this class. 3500 durability.
+ * Anyone can craft/throw it,
  * but its three on-hit traits below only trigger for the Mermaid origin, same hit-time gating
  * every other origin weapon in this mod uses (see {@link OriginUtil}):
  *

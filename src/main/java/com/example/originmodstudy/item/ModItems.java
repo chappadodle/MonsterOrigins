@@ -3,6 +3,7 @@ package com.example.originmodstudy.item;
 import com.example.originmodstudy.OriginModStudy;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TridentItem;
 
 /**
  * Registers every item this mod adds. Fields are {@code static final} so they are
@@ -75,7 +77,9 @@ public class ModItems {
 	// hit only (Task 15). Durability bumped from 250 to 1000, matching this mod's explicit-override
 	// convention for every other weapon/armor piece.
 	public static final Item PETRIFYING_TRIDENT = register("petrifying_trident",
-			new PetrifyingTridentItem(new Item.Properties().durability(1000)));
+			new PetrifyingTridentItem(new Item.Properties().durability(1000)
+					.attributes(TridentItem.createAttributes())
+					.component(DataComponents.TOOL, TridentItem.createToolProperties())));
 
 	// A lighter, faster throwing spear than the vanilla trident (6.0 damage / -2.4 speed instead
 	// of 8.0 / -2.9) — Harpy's weapon. Bleed on hit and a bonus while thrown mid-flight only
@@ -108,7 +112,9 @@ public class ModItems {
 	// weapon/armor piece rather than a tier's raw default. See MermaidTridentItem for its four
 	// on-hit traits (Symbiosis, Barbed Tip, Bleeding Current, +1 reach).
 	public static final Item MERMAID_TRIDENT = register("mermaid_trident",
-			new MermaidTridentItem(new Item.Properties().durability(3500)));
+			new MermaidTridentItem(new Item.Properties().durability(3500)
+					.attributes(TridentItem.createAttributes())
+					.component(DataComponents.TOOL, TridentItem.createToolProperties())));
 
 	// Medusa sheds these every 20 minutes (Task 19, scale_shedding.json), same mechanic/interval as
 	// Arachne's own Silk Glands. A plain crafting material, no functionality of its own.
