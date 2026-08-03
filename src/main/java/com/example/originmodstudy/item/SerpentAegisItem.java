@@ -2,10 +2,10 @@ package com.example.originmodstudy.item;
 
 import com.example.originmodstudy.util.OriginUtil;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -29,8 +29,8 @@ public class SerpentAegisItem extends ShieldItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, level, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 		OriginUtil.addOriginGatedTooltip(tooltip, "Blocking a melee attack slows the attacker and reflects half the damage");
 		OriginUtil.addOriginGatedTooltip(tooltip, "Immune to Ghast fireballs");
 		OriginUtil.addOriginGatedTooltip(tooltip, "Nearby allies take half damage while you block");

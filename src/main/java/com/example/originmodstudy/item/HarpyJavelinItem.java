@@ -106,7 +106,7 @@ public class HarpyJavelinItem extends TridentItem {
 		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
-		int chargeTicks = this.getUseDuration(stack) - chargeTicksRemaining;
+		int chargeTicks = this.getUseDuration(stack, livingEntity) - chargeTicksRemaining;
 		if (chargeTicks < 10) {
 			return;
 		}
@@ -143,7 +143,7 @@ public class HarpyJavelinItem extends TridentItem {
 			l *= o / n;
 			m *= o / n;
 			player.push(h, l, m);
-			player.startAutoSpinAttack(20);
+			player.startAutoSpinAttack(20, 8.0F, stack);
 			if (player.onGround()) {
 				player.move(MoverType.SELF, new Vec3(0.0, 1.1999999284744263, 0.0));
 			}
@@ -195,8 +195,8 @@ public class HarpyJavelinItem extends TridentItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, level, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 		OriginUtil.addOriginGatedTooltip(tooltip, "Causes Bleed; the faster you're flying, the more bonus damage (up to +7)");
 		OriginUtil.addOriginGatedTooltip(tooltip, "A thrown hit calls down lightning (30 second cooldown)");
 		OriginUtil.addOriginGatedTooltip(tooltip, "Harpy only");

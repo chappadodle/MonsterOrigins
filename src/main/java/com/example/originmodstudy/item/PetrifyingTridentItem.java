@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.TridentItem;
@@ -57,7 +58,7 @@ public class PetrifyingTridentItem extends TridentItem {
 		if (!(livingEntity instanceof Player player)) {
 			return;
 		}
-		int chargeTicks = this.getUseDuration(stack) - chargeTicksRemaining;
+		int chargeTicks = this.getUseDuration(stack, livingEntity) - chargeTicksRemaining;
 		if (chargeTicks < 10) {
 			return;
 		}
@@ -94,7 +95,7 @@ public class PetrifyingTridentItem extends TridentItem {
 			l *= o / n;
 			m *= o / n;
 			player.push(h, l, m);
-			player.startAutoSpinAttack(20);
+			player.startAutoSpinAttack(20, 8.0F, stack);
 			if (player.onGround()) {
 				player.move(MoverType.SELF, new Vec3(0.0, 1.1999999284744263, 0.0));
 			}
@@ -117,8 +118,8 @@ public class PetrifyingTridentItem extends TridentItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, level, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 		OriginUtil.addOriginGatedTooltip(tooltip, "Petrifies on a hit, thrown or melee");
 		OriginUtil.addOriginGatedTooltip(tooltip, "Medusa only");
 	}
