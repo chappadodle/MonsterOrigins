@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(LivingEntity.class)
 public abstract class HarpyFlightSpeedMixin {
-	private static final ResourceLocation HARPY_ORIGIN_ID = new ResourceLocation("monster_origins", "harpy");
+	private static final ResourceLocation HARPY_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "harpy");
 	/** Lives on {@link HarpyJavelinItem}, not here: Mixin rejects a non-private static field
 	 * declared directly inside a mixin class (it would need to attach a public static field onto
 	 * {@code LivingEntity} itself, which Sponge Mixin's pre-processor disallows outright — this

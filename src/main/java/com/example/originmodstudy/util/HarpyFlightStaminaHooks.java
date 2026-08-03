@@ -61,7 +61,7 @@ import java.util.UUID;
  * gone, exactly the vanilla sprinting-when-hungry feel this was meant to have.
  */
 public final class HarpyFlightStaminaHooks {
-	private static final ResourceLocation HARPY_ORIGIN_ID = new ResourceLocation("monster_origins", "harpy");
+	private static final ResourceLocation HARPY_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "harpy");
 	private static final int SCAN_INTERVAL_TICKS = 20;
 	// A tiny margin above zero, not an exact ">", so ordinary floating-point noise between two
 	// otherwise-equal samples (coasting at a constant speed) doesn't register as "gaining speed."

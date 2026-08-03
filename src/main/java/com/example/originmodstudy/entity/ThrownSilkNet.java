@@ -67,8 +67,8 @@ public class ThrownSilkNet extends ThrowableItemProjectile {
 	 */
 	private static final int SLOWNESS_AMPLIFIER = 6;
 
-	private static final ResourceLocation TEMPORARY_COBWEB_ID = new ResourceLocation("origins", "temporary_cobweb");
-	private static final ResourceLocation ARACHNE_ORIGIN_ID = new ResourceLocation("monster_origins", "arachne");
+	private static final ResourceLocation TEMPORARY_COBWEB_ID = ResourceLocation.fromNamespaceAndPath("origins", "temporary_cobweb");
+	private static final ResourceLocation ARACHNE_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "arachne");
 
 	public ThrownSilkNet(EntityType<? extends ThrownSilkNet> entityType, Level level) {
 		super(entityType, level);

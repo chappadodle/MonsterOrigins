@@ -61,7 +61,7 @@ import java.util.List;
  * time) — the two are kept deliberately separate, not merged into one condition.
  */
 public class HarpyJavelinItem extends TridentItem {
-	private static final ResourceLocation HARPY_ORIGIN_ID = new ResourceLocation("monster_origins", "harpy");
+	private static final ResourceLocation HARPY_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "harpy");
 	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
 	public HarpyJavelinItem(Properties properties) {

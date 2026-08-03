@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Villager.class)
 public abstract class VillagerNoTradeMixin {
-	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("monster_origins", "medusa");
+	private static final ResourceLocation MEDUSA_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "medusa");
 
 	@Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
 	private void medusaFear$refuseTrade(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {

@@ -35,7 +35,7 @@ public final class TieredHitTracker {
 	 * {@code trackerKey:attackerUuid} sub-tags, so Arachne's poison tracker and Harpy's bleed
 	 * tracker (or any future one) never collide even when attached to the same target entity. */
 	private static final AttachmentType<CompoundTag> HIT_TRACKER_DATA = AttachmentRegistry.createPersistent(
-			new ResourceLocation("monster_origins", "tiered_hit_tracker"),
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "tiered_hit_tracker"),
 			CompoundTag.CODEC
 	);
 

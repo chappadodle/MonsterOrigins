@@ -33,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class SerpentAegisRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
 	private static final ResourceLocation TEXTURE =
-			new ResourceLocation("monster_origins", "textures/entity/serpent_aegis.png");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "textures/entity/serpent_aegis.png");
 
 	private ShieldModel shieldModel;
 

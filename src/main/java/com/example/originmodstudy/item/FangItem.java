@@ -65,7 +65,7 @@ import java.util.List;
  * heart and lock it down with Slowness and Blindness until it heals back up or dies.
  */
 public class FangItem extends SwordItem {
-	private static final ResourceLocation ARACHNE_ORIGIN_ID = new ResourceLocation("monster_origins", "arachne");
+	private static final ResourceLocation ARACHNE_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "arachne");
 
 	/** Shared "repeat hit" tracker key for all three Fang tiers — a target's poison tier climbs
 	 * the same sequence regardless of which tier actually lands the follow-up hit. */

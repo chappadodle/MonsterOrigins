@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class MermaidTridentRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
 	static final ResourceLocation TEXTURE =
-			new ResourceLocation("monster_origins", "textures/entity/mermaid_trident.png");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "textures/entity/mermaid_trident.png");
 
 	private TridentModel tridentModel;
 

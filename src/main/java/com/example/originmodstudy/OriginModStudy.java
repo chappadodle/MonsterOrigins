@@ -35,6 +35,6 @@ public class OriginModStudy implements ModInitializer {
 
 	/** Helper to build a ResourceLocation namespaced to this mod, e.g. arachne:golden_spider_eye. */
 	public static ResourceLocation id(String path) {
-		return new ResourceLocation(MOD_ID, path);
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 }

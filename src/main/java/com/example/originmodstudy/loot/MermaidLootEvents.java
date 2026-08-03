@@ -56,7 +56,7 @@ import java.util.List;
  * rather than a tag lookup.
  */
 public final class MermaidLootEvents {
-	private static final ResourceLocation MERMAID_ORIGIN_ID = new ResourceLocation("monster_origins", "mermaid");
+	private static final ResourceLocation MERMAID_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid");
 	private static final float FISH_SHARD_DROP_CHANCE = 0.05F;
 	private static final double CORAL_SWAP_SEARCH_RADIUS = 1.5;
 
@@ -84,7 +84,7 @@ public final class MermaidLootEvents {
 
 		Block liveCoralBlock = state.getBlock();
 		ResourceLocation liveId = BuiltInRegistries.BLOCK.getKey(liveCoralBlock);
-		ResourceLocation deadId = new ResourceLocation(liveId.getNamespace(), "dead_" + liveId.getPath());
+		ResourceLocation deadId = ResourceLocation.fromNamespaceAndPath(liveId.getNamespace(), "dead_" + liveId.getPath());
 		Block deadCoralBlock = BuiltInRegistries.BLOCK.get(deadId);
 		if (deadCoralBlock == net.minecraft.world.level.block.Blocks.AIR) {
 			return;

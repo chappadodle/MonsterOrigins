@@ -45,7 +45,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LivingEntity.class)
 public abstract class ImmobilizedRotationLockMixin {
 	private static final AttachmentType<float[]> ROTATION_SNAPSHOT = AttachmentRegistry.create(
-			new ResourceLocation("monster_origins", "immobilize_rotation_snapshot"));
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "immobilize_rotation_snapshot"));
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void immobilized$lockRotation(CallbackInfo ci) {

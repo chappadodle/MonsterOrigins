@@ -52,7 +52,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 public abstract class SerpentAegisBlockMixin {
-	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("monster_origins", "medusa");
+	private static final ResourceLocation MEDUSA_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "medusa");
 	// Half the blocked damage reflected back — a real, meaningful bite (not just a token amount)
 	// without literally negating the shield's own point (100% reflection would mean nothing was
 	// truly "blocked" at all, damage-wise, just redirected).

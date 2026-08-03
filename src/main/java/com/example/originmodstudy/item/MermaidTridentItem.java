@@ -55,7 +55,7 @@ import java.util.List;
  * {@code extra_reach.json} power relies on.
  */
 public class MermaidTridentItem extends TridentItem {
-	private static final ResourceLocation MERMAID_ORIGIN_ID = new ResourceLocation("monster_origins", "mermaid");
+	private static final ResourceLocation MERMAID_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid");
 
 	public MermaidTridentItem(Properties properties) {
 		super(properties);

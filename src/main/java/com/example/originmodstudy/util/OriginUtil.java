@@ -20,7 +20,7 @@ import java.util.List;
  * boilerplate.
  */
 public final class OriginUtil {
-	private static final ResourceLocation ORIGIN_LAYER_ID = new ResourceLocation("origins", "origin");
+	private static final ResourceLocation ORIGIN_LAYER_ID = ResourceLocation.fromNamespaceAndPath("origins", "origin");
 
 	private OriginUtil() {
 	}

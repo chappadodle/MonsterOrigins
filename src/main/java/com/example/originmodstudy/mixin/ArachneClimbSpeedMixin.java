@@ -62,7 +62,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(LivingEntity.class)
 public abstract class ArachneClimbSpeedMixin {
 	private static final ResourceLocation ARACHNE_ORIGIN_ID =
-		new ResourceLocation("monster_origins", "arachne");
+		ResourceLocation.fromNamespaceAndPath("monster_origins", "arachne");
 
 	/** Arachne moves on climbable surfaces at 1.65x vanilla's fixed rate. */
 	private static final double CLIMB_SPEED_MULTIPLIER = 1.65D;

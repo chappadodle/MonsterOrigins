@@ -23,7 +23,7 @@ import net.minecraft.world.entity.LivingEntity;
  */
 public final class ArachnePoisonLock {
 	private static final AttachmentType<Boolean> POISON_LOCK_CANDIDATE = AttachmentRegistry.createPersistent(
-			new ResourceLocation("monster_origins", "arachne_poison_lock_candidate"),
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "arachne_poison_lock_candidate"),
 			Codec.BOOL
 	);
 

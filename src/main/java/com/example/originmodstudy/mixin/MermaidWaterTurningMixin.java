@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 public abstract class MermaidWaterTurningMixin {
-	private static final ResourceLocation MERMAID_ORIGIN_ID = new ResourceLocation("monster_origins", "mermaid");
+	private static final ResourceLocation MERMAID_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid");
 	private static final float MERMAID_WATER_RETENTION = 0.98F;
 
 	@Inject(method = "getWaterSlowDown", at = @At("RETURN"), cancellable = true)

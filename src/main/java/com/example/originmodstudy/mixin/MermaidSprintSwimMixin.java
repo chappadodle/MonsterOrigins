@@ -39,7 +39,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
  */
 @Mixin(LivingEntity.class)
 public abstract class MermaidSprintSwimMixin {
-	private static final ResourceLocation MERMAID_ORIGIN_ID = new ResourceLocation("monster_origins", "mermaid");
+	private static final ResourceLocation MERMAID_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid");
 	private static final float MERMAID_SPRINT_SWIM_RETENTION = 0.98F;
 
 	@ModifyConstant(method = "travel", constant = @Constant(floatValue = 0.9F))

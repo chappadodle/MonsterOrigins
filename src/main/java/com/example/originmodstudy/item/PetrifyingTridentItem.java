@@ -44,7 +44,7 @@ import java.util.List;
  * {@code tridentItem} field directly.
  */
 public class PetrifyingTridentItem extends TridentItem {
-	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("monster_origins", "medusa");
+	private static final ResourceLocation MEDUSA_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "medusa");
 
 	public PetrifyingTridentItem(Properties properties) {
 		super(properties);

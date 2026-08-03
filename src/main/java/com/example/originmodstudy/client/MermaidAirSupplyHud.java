@@ -44,8 +44,8 @@ import net.minecraft.world.entity.player.Player;
  * player-facing bar without one.
  */
 public final class MermaidAirSupplyHud {
-	private static final ResourceLocation MERMAID_ORIGIN_ID = new ResourceLocation("monster_origins", "mermaid");
-	private static final ResourceLocation ICONS_TEXTURE = new ResourceLocation("textures/gui/icons.png");
+	private static final ResourceLocation MERMAID_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid");
+	private static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/icons.png");
 
 	/** Matches dehydration.json's onset_delay (6000 ticks, 5 minutes). */
 	private static final int ONSET_DELAY_TICKS = 6000;

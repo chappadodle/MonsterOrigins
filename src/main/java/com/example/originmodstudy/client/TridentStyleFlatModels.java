@@ -40,11 +40,11 @@ public class TridentStyleFlatModels {
 	// resolves to the same visual as a missing texture, which is what made this look like a wrong-
 	// texture-file problem at first rather than a wrong-model-path one).
 	public static final ResourceLocation STORM_TRIDENT_FLAT =
-			new ResourceLocation("monster_origins", "storm_trident_flat");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "storm_trident_flat");
 	public static final ResourceLocation MERMAID_TRIDENT_FLAT =
-			new ResourceLocation("monster_origins", "mermaid_trident_flat");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid_trident_flat");
 	public static final ResourceLocation PETRIFYING_TRIDENT_FLAT =
-			new ResourceLocation("monster_origins", "petrifying_trident_flat");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "petrifying_trident_flat");
 
 	/** Looked up by {@code TridentStyleFlatIconMixin} for whichever item is actually being
 	 * rendered — keyed by {@code Item} instance rather than a per-item field, so adding a fourth

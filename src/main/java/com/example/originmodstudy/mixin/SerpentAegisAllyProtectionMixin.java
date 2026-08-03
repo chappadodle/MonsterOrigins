@@ -37,7 +37,7 @@ import java.util.List;
  */
 @Mixin(LivingEntity.class)
 public abstract class SerpentAegisAllyProtectionMixin {
-	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("monster_origins", "medusa");
+	private static final ResourceLocation MEDUSA_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "medusa");
 	private static final double PROTECTION_RADIUS = 6.0;
 	private static final float DAMAGE_REDUCTION_FRACTION = 0.5F;
 

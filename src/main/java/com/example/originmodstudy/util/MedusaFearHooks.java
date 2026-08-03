@@ -37,7 +37,7 @@ import java.util.List;
  * of persistent flee behavior.
  */
 public final class MedusaFearHooks {
-	private static final ResourceLocation MEDUSA_ORIGIN_ID = new ResourceLocation("monster_origins", "medusa");
+	private static final ResourceLocation MEDUSA_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "medusa");
 	private static final int SCAN_INTERVAL_TICKS = 20;
 	private static final double GOLEM_AGGRO_RADIUS = 16.0;
 	private static final double VILLAGER_FEAR_RADIUS = 8.0;
