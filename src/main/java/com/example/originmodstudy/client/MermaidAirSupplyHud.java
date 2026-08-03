@@ -46,7 +46,14 @@ import net.minecraft.world.entity.player.Player;
  */
 public final class MermaidAirSupplyHud {
 	private static final ResourceLocation MERMAID_ORIGIN_ID = ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid");
-	private static final ResourceLocation ICONS_TEXTURE = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/icons.png");
+	// 1.21.1 port: minecraft:textures/gui/icons.png was removed from vanilla in this version —
+	// confirmed genuinely absent from the jar. Vanilla's own bubble-bar rendering (decompiled
+	// directly, Gui.renderPlayerHealth's "air" section) now draws two named sprites instead of
+	// atlas coordinates: `ResourceLocation.withDefaultNamespace("hud/air")` (full bubble) and
+	// `"hud/air_bursting"` (bursting/empty), each drawn via `guiGraphics.blitSprite(sprite, x, y,
+	// 9, 9)` — the exact same 9x9 size this HUD already used as atlas-coordinate rectangles.
+	private static final ResourceLocation AIR_SPRITE = ResourceLocation.withDefaultNamespace("hud/air");
+	private static final ResourceLocation AIR_BURSTING_SPRITE = ResourceLocation.withDefaultNamespace("hud/air_bursting");
 
 	/** Matches dehydration.json's onset_delay (6000 ticks, 5 minutes). */
 	private static final int ONSET_DELAY_TICKS = 6000;
@@ -104,9 +111,9 @@ public final class MermaidAirSupplyHud {
 		for (int i = 0; i < BUBBLE_COUNT; i++) {
 			int x = right - i * 8 - 9;
 			if (i < filledBubbles) {
-				guiGraphics.blit(ICONS_TEXTURE, x, top, 16, 18, 9, 9);
+				guiGraphics.blitSprite(AIR_SPRITE, x, top, 9, 9);
 			} else {
-				guiGraphics.blit(ICONS_TEXTURE, x, top, 25, 18, 9, 9);
+				guiGraphics.blitSprite(AIR_BURSTING_SPRITE, x, top, 9, 9);
 			}
 		}
 	}
