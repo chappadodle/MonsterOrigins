@@ -4,7 +4,7 @@ import org.ladysnake.cca.api.v3.component.ComponentKey;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
-import io.github.apace100.origins.origin.OriginLayers;
+import io.github.apace100.origins.origin.OriginLayerManager;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -64,12 +64,12 @@ public abstract class SeaCreaturePassiveTargetMixin {
 
 		ComponentKey<OriginComponent> originKey = ModComponents.ORIGIN;
 		OriginComponent originComponent = originKey.get(player);
-		OriginLayer layer = OriginLayers.getLayer(ORIGIN_LAYER_ID);
+		OriginLayer layer = OriginLayerManager.getNullable(ORIGIN_LAYER_ID);
 		if (layer == null || !originComponent.hasOrigin(layer)) {
 			return;
 		}
 		Origin origin = originComponent.getOrigin(layer);
-		if (origin.getIdentifier().equals(MERMAID_ORIGIN_ID)) {
+		if (origin.getId().equals(MERMAID_ORIGIN_ID)) {
 			cir.setReturnValue(false);
 		}
 	}

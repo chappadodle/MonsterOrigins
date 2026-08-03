@@ -4,7 +4,7 @@ import org.ladysnake.cca.api.v3.component.ComponentKey;
 import io.github.apace100.origins.component.OriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
-import io.github.apace100.origins.origin.OriginLayers;
+import io.github.apace100.origins.origin.OriginLayerManager;
 import io.github.apace100.origins.registry.ModComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -33,12 +33,12 @@ public final class OriginUtil {
 		Player player = (Player) entity;
 		ComponentKey<OriginComponent> originKey = ModComponents.ORIGIN;
 		OriginComponent originComponent = originKey.get(player);
-		OriginLayer layer = OriginLayers.getLayer(ORIGIN_LAYER_ID);
+		OriginLayer layer = OriginLayerManager.getNullable(ORIGIN_LAYER_ID);
 		if (layer == null || !originComponent.hasOrigin(layer)) {
 			return false;
 		}
 		Origin origin = originComponent.getOrigin(layer);
-		return origin.getIdentifier().equals(originId);
+		return origin.getId().equals(originId);
 	}
 
 	/** Shared styling for every origin-gated item's tooltip (Fang tiers, Petrifying Trident,
