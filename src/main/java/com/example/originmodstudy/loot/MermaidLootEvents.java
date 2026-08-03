@@ -52,8 +52,10 @@ import java.util.List;
  *
  * <p><b>Mermaid-only 5% prismarine shard fish drop:</b> {@link ServerLivingEntityEvents#AFTER_DEATH}
  * fires once a fish's death is final, well after loot resolution — checked directly against the
- * four vanilla fish entity types (1.20.1 has no {@code EntityTypeTags.FISH} tag, confirmed absent
- * via {@code javap} on {@code EntityTypeTags} — that tag doesn't exist until a later game version)
+ * four vanilla fish entity types (1.21.1 still has no {@code EntityTypeTags.FISH} tag, confirmed
+ * absent via {@code javap} on {@code EntityTypeTags} — re-checked against the real 1.21.1 mapped
+ * jar during the port, not just carried over from the 1.20.1-era claim; that tag doesn't exist
+ * until a later game version)
  * rather than a tag lookup.
  */
 public final class MermaidLootEvents {

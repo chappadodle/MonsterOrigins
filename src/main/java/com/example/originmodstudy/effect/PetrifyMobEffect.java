@@ -47,7 +47,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
  *
  * <p><b>Playtest fix (2026-08-02):</b> movement speed changed from -90% to a true -100% — the
  * report asked for petrified targets to be "completely locked in place," and -90% still let a
- * target creep, however slowly. {@code MULTIPLY_TOTAL}'s formula above confirms -1.0 clamps
+ * target creep, however slowly. {@code ADD_MULTIPLIED_TOTAL}'s formula above confirms -1.0 clamps
  * cleanly to exactly 0, not a negative/backward value. (Rotation is handled separately, by
  * {@code ImmobilizedRotationLockMixin} reacting to the companion {@code ModEffects.IMMOBILIZED}
  * marker applied alongside this effect at each of its two application sites —

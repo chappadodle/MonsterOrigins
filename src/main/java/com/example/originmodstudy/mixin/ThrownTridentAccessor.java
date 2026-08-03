@@ -13,7 +13,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
  *
  * <p>Also exposes the private static {@code ID_LOYALTY}/{@code ID_FOIL} synced-data keys
  * (confirmed via decompile: the real itemstack-carrying constructor is the only place vanilla
- * ever populates these, from {@code EnchantmentHelper.getLoyalty}/{@code itemStack.hasFoil()} —
+ * ever populates these, from {@code EnchantmentHelper.getItemEnchantmentLevel(Holder<Enchantment>,
+ * ItemStack)} (resolved via the registry-holder pattern established elsewhere in this port, not
+ * the old, now-removed {@code EnchantmentHelper.getLoyalty})/{@code itemStack.hasFoil()} —
  * since our subclasses can't call that constructor either, per the {@code tridentItem} doc above,
  * they never got populated, silently leaving Loyalty non-functional on every modded trident-style
  * weapon). Mixin accessors work the same way for a static field as an instance one — the

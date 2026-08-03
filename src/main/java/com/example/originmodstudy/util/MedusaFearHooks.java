@@ -30,7 +30,7 @@ import java.util.List;
  * <p>Villagers get a lighter touch: a scared knockback + vanilla's own "I don't want to do that"
  * sound ({@code SoundEvents.VILLAGER_NO}) whenever Medusa gets close, on top of {@code
  * VillagerNoTradeMixin} refusing the trade screen outright. A full Brain/memory-based fear
- * reaction (making a villager path away and stay away) would need reverse-engineering 1.20.1's
+ * reaction (making a villager path away and stay away) would need reverse-engineering 1.21.1's
  * villager Brain/Sensor system — real complexity disproportionate to a "study" project's own
  * established scope precedent (see {@code util/OriginUtil.java}'s own reasoning for a similar
  * proportionate-scope call) — so this settles for an immediate, repeatable "flinch away" instead
