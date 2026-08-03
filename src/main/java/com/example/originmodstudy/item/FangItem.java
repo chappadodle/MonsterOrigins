@@ -91,7 +91,15 @@ public class FangItem extends SwordItem {
 
 	public FangItem(Tier tier, int attackDamageModifier, float attackSpeedModifier, int basePoisonTier,
 			boolean bleedOnHit, boolean witherOnHit, Properties properties) {
-		super(tier, attackDamageModifier, attackSpeedModifier, properties);
+		// 1.21.1's SwordItem constructor dropped its own (Tier, int, float, Properties) overload —
+		// confirmed via decompile: the damage/speed modifiers now have to be built as an explicit
+		// ItemAttributeModifiers component and attached via Properties#attributes(...) before
+		// construction, same as HarpyJavelinItem's own createHarpyAttributes(). SwordItem itself
+		// still exposes the exact formula it used to apply internally as a public static helper —
+		// SwordItem.createAttributes(tier, i, f) returns ATTACK_DAMAGE = i + tier.getAttackDamageBonus()
+		// (ADD_VALUE) and ATTACK_SPEED = f (ADD_VALUE), both MAINHAND-scoped — reused verbatim here
+		// rather than hand-rebuilding the same formula.
+		super(tier, properties.attributes(SwordItem.createAttributes(tier, attackDamageModifier, attackSpeedModifier)));
 		this.basePoisonTier = basePoisonTier;
 		this.bleedOnHit = bleedOnHit;
 		this.witherOnHit = witherOnHit;

@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +46,7 @@ public class SilkNetShooterItem extends Item {
 			ThrownSilkNet net = new ThrownSilkNet(level, player);
 			net.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
 			level.addFreshEntity(net);
-			stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(hand));
+			stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
 		}
 		player.awardStat(Stats.ITEM_USED.get(this));
 		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());

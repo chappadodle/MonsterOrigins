@@ -4,7 +4,6 @@ import com.example.originmodstudy.item.HarpyJavelinItem;
 import com.example.originmodstudy.item.MermaidTridentItem;
 import com.example.originmodstudy.item.PetrifyingTridentItem;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -31,20 +30,26 @@ import java.util.Map;
  * bl2-branch logic exactly.
  */
 public class TridentStyleFlatModels {
-	// Bare model id, no "item/" folder prefix — matches vanilla's own real convention exactly
-	// (confirmed via decompile: `ModelResourceLocation.vanilla("trident", "inventory")` wraps the
-	// bare path "trident", not "item/trident"; the "inventory" variant is what tells the loader to
-	// resolve it under models/item/ automatically). Getting this wrong resolves to a nonexistent
-	// "models/item/item/storm_trident_flat.json" — a real bug shipped in the first version of this
-	// class, reported back as "missing texture" in the hotbar/inventory (a missing *model*
-	// resolves to the same visual as a missing texture, which is what made this look like a wrong-
-	// texture-file problem at first rather than a wrong-model-path one).
+	// 1.21.1 port note: this constant's own path DOES need the "item/" prefix now — the opposite of
+	// the 1.20.1-era bare-path convention this comment used to document. Confirmed by decompiling
+	// both ends of Fabric API 2.1.0's real extra-model path: real vanilla items get their "item/"
+	// prefix added automatically by `ModelBakery.loadItemModelAndDependencies` (`resourceLocation
+	// .withPrefix("item/")`, confirmed via CFR), but Fabric's own `ModelLoaderMixin.addExtraModel`
+	// (the actual consumer of `Context.addModels(...)`'s ids, confirmed via decompiling
+	// fabric-model-loading-api-v1) loads its ids through the *raw* `getOrLoadModel`/`getModel` path
+	// with no such prefix — it resolves straight to `models/<path>.json`, not `models/item/<path>
+	// .json`. Since this project's real model files live at `models/item/storm_trident_flat.json`
+	// etc (unchanged from before), the ResourceLocation handed to `addModels` now has to spell that
+	// prefix out itself. The lookup side (`TridentStyleFlatIconMixin`) just needs to wrap the same
+	// constant in `ModelResourceLocation.inventory(...)`/`new ModelResourceLocation(..., "inventory")`
+	// consistently, which it already does — both ends only ever need to agree with each other, not
+	// with vanilla's own per-item convention.
 	public static final ResourceLocation STORM_TRIDENT_FLAT =
-			ResourceLocation.fromNamespaceAndPath("monster_origins", "storm_trident_flat");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "item/storm_trident_flat");
 	public static final ResourceLocation MERMAID_TRIDENT_FLAT =
-			ResourceLocation.fromNamespaceAndPath("monster_origins", "mermaid_trident_flat");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "item/mermaid_trident_flat");
 	public static final ResourceLocation PETRIFYING_TRIDENT_FLAT =
-			ResourceLocation.fromNamespaceAndPath("monster_origins", "petrifying_trident_flat");
+			ResourceLocation.fromNamespaceAndPath("monster_origins", "item/petrifying_trident_flat");
 
 	/** Looked up by {@code TridentStyleFlatIconMixin} for whichever item is actually being
 	 * rendered — keyed by {@code Item} instance rather than a per-item field, so adding a fourth
@@ -66,10 +71,17 @@ public class TridentStyleFlatModels {
 	}
 
 	public static void register() {
+		// Context#addModels(ResourceLocation...) as of Fabric API 2.1.0 (1.21.1) — confirmed via
+		// javap that ModelLoadingPlugin.Context no longer has a ModelResourceLocation-accepting
+		// overload at all, only plain ResourceLocation (ModelResourceLocation stopped being a
+		// ResourceLocation subtype in this version too — it's now its own standalone record wrapping
+		// one). The "inventory" variant is applied on the lookup side instead (see
+		// TridentStyleFlatIconMixin), matching how Fabric's own ModelLoaderMixin#addExtraModel
+		// registers these ids internally.
 		ModelLoadingPlugin.register(context -> context.addModels(
-				new ModelResourceLocation(STORM_TRIDENT_FLAT, "inventory"),
-				new ModelResourceLocation(MERMAID_TRIDENT_FLAT, "inventory"),
-				new ModelResourceLocation(PETRIFYING_TRIDENT_FLAT, "inventory")
+				STORM_TRIDENT_FLAT,
+				MERMAID_TRIDENT_FLAT,
+				PETRIFYING_TRIDENT_FLAT
 		));
 	}
 }

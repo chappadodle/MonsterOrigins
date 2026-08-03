@@ -68,7 +68,7 @@ public class PetrifyingTridentItem extends TridentItem {
 			return;
 		}
 		if (!level.isClientSide) {
-			stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(livingEntity.getUsedItemHand()));
+			stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(livingEntity.getUsedItemHand()));
 			if (riptide == 0) {
 				ThrownPetrifyingTrident thrownTrident = new ThrownPetrifyingTrident(level, player, stack);
 				thrownTrident.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F + riptide * 0.5F, 1.0F);

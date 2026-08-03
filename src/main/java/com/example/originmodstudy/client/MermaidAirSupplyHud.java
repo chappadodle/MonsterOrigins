@@ -3,6 +3,7 @@ package com.example.originmodstudy.client;
 import com.example.originmodstudy.util.OriginUtil;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -86,7 +87,12 @@ public final class MermaidAirSupplyHud {
 		}
 	}
 
-	private static void render(GuiGraphics guiGraphics, float tickDelta) {
+	// 1.21.1 port: HudRenderCallback#onHudRender's second parameter changed from a plain float
+	// partial-tick to a DeltaTracker (confirmed via javap: real method is now
+	// onHudRender(GuiGraphics, DeltaTracker)) — this HUD never actually used the interpolation
+	// value (the bubble bar just draws a snapped integer count each frame), so the parameter is
+	// accepted and otherwise ignored, same as before.
+	private static void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		Player player = Minecraft.getInstance().player;
 		if (player == null || dryTicks <= 0 || !OriginUtil.hasOrigin(player, MERMAID_ORIGIN_ID)) {
 			return;

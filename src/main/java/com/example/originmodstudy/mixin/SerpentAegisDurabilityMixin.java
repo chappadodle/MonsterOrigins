@@ -8,6 +8,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -67,7 +68,7 @@ public abstract class SerpentAegisDurabilityMixin {
 		if (amount >= 3.0F) {
 			int durabilityLoss = 1 + Mth.floor(amount);
 			InteractionHand hand = player.getUsedItemHand();
-			useItem.hurtAndBreak(durabilityLoss, player, p -> p.broadcastBreakEvent(hand));
+			useItem.hurtAndBreak(durabilityLoss, player, LivingEntity.getSlotForHand(hand));
 			if (useItem.isEmpty()) {
 				if (hand == InteractionHand.MAIN_HAND) {
 					player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
